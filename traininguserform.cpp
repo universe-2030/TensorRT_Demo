@@ -17,10 +17,8 @@ TrainingUserForm::TrainingUserForm(QWidget *parent) :
     Figures_motion[2] = cv::imread("../TRT_demo/Figures/Motions/Wrist Extension.png", cv::IMREAD_UNCHANGED);
     Figures_motion[3] = cv::imread("../TRT_demo/Figures/Motions/Radial Deviation.png", cv::IMREAD_UNCHANGED);
     Figures_motion[4] = cv::imread("../TRT_demo/Figures/Motions/Ulnar Deviation.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[5] = cv::imread("../TRT_demo/Figures/Motions/Wrist Pronation.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[6] = cv::imread("../TRT_demo/Figures/Motions/Wrist Supination.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[7] = cv::imread("../TRT_demo/Figures/Motions/Hand Close.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[8] = cv::imread("../TRT_demo/Figures/Motions/Hand Open.png", cv::IMREAD_UNCHANGED);
+    Figures_motion[5] = cv::imread("../TRT_demo/Figures/Motions/Hand Close.png", cv::IMREAD_UNCHANGED);
+    Figures_motion[6] = cv::imread("../TRT_demo/Figures/Motions/Hand Open.png", cv::IMREAD_UNCHANGED);
 
     /////////////////////////////////// OpenGL widget ///////////////////////////////////
     Qt3DExtras::Qt3DWindow *view = new Qt3DExtras::Qt3DWindow();

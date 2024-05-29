@@ -244,9 +244,6 @@ void MainWindow::Initialize_DAVariables() {
 void MainWindow::Initialize_NI() {
     AI_sEMG = new NI_AI_sEMG("Dev1/ai0:15", DELSYS_CH_MAX);
     NI_AI_sEMG::InitializeNI();
-
-    AI_Flex = new NI_AI_Flex("Dev2/ai0:4", N_FLEX_CH);
-    NI_AI_Flex::InitializeNI();
 }
 
 void MainWindow::Initialize_GUI() {
@@ -348,10 +345,8 @@ void MainWindow::Initialize_Figures() {
     Figures_motion[2] = cv::imread("../TRT_demo/Figures/Motions/Wrist Extension.png", cv::IMREAD_UNCHANGED);
     Figures_motion[3] = cv::imread("../TRT_demo/Figures/Motions/Radial Deviation.png", cv::IMREAD_UNCHANGED);
     Figures_motion[4] = cv::imread("../TRT_demo/Figures/Motions/Ulnar Deviation.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[5] = cv::imread("../TRT_demo/Figures/Motions/Wrist Pronation.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[6] = cv::imread("../TRT_demo/Figures/Motions/Wrist Supination.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[7] = cv::imread("../TRT_demo/Figures/Motions/Hand Close.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[8] = cv::imread("../TRT_demo/Figures/Motions/Hand Open.png", cv::IMREAD_UNCHANGED);
+    Figures_motion[5] = cv::imread("../TRT_demo/Figures/Motions/Hand Close.png", cv::IMREAD_UNCHANGED);
+    Figures_motion[6] = cv::imread("../TRT_demo/Figures/Motions/Hand Open.png", cv::IMREAD_UNCHANGED);
 }
 
 void MainWindow::Initialize_trnForm() {
@@ -1057,9 +1052,6 @@ void MainWindow::DAQ_Online() {
         else if (m_radioMode == 2)
             stack_Ball_Ctr_sEMG_raw[i].push_back(sEMG_raw[sEMG_CH[i]]);
     }
-
-    AI_Flex->ReadOneStep();
-    Flex_raw = AI_Flex->Get_m_ReadValue();
 }
 
 void MainWindow::DAQ_Offline() {
@@ -2410,18 +2402,10 @@ void MainWindow::Set_Motion_Trajectory(int mode) {
                                                                 / (float)(T_MARGIN_START);
                 }
                 else if (M == 4) {          // Radial Deviation
-                    trj_wrist_Y[t] = 0.0 + WP_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
-                                                                / (float)(T_MARGIN_START);
-                }
-                else if (M == 5) {          // Ulnar Deviation
-                    trj_wrist_Y[t] = 0.0 - WS_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
-                                                                / (float)(T_MARGIN_START);
-                }
-                else if (M == 6) {          // Radial Deviation
                     trj_hand[t] = -10.0 - HC_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
                                                                 / (float)(T_MARGIN_START);
                 }
-                else if (M == 7) {          // Ulnar Deviation
+                else if (M == 5) {          // Ulnar Deviation
                     trj_hand[t] = -10.0 + HO_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
                                                                 / (float)(T_MARGIN_START);
                 }
@@ -2442,15 +2426,9 @@ void MainWindow::Set_Motion_Trajectory(int mode) {
                     trj_wrist_X[t] = 10.0 - UD_ROM;
                 }
                 else if (M == 4) {          // Radial Deviation
-                    trj_wrist_Y[t] = 0.0 + WP_ROM;
-                }
-                else if (M == 5) {          // Ulnar Deviation
-                    trj_wrist_Y[t] = 0.0 - WS_ROM;
-                }
-                else if (M == 6) {          // Radial Deviation
                     trj_hand[t] = -10.0 - HC_ROM;
                 }
-                else if (M == 7) {          // Ulnar Deviation
+                else if (M == 5) {          // Ulnar Deviation
                     trj_hand[t] = -10.0 + HO_ROM;
                 }
             }
@@ -2474,18 +2452,10 @@ void MainWindow::Set_Motion_Trajectory(int mode) {
                                                                 / (float)(T_MARGIN_END);
                 }
                 else if (M == 4) {          // Radial Deviation
-                    trj_wrist_Y[t] = 0.0 + WP_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
-                                                                / (float)(T_MARGIN_END);
-                }
-                else if (M == 5) {          // Ulnar Deviation
-                    trj_wrist_Y[t] = 0.0 - WS_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
-                                                                / (float)(T_MARGIN_END);
-                }
-                else if (M == 6) {          // Radial Deviation
                     trj_hand[t] = -10.0 - HC_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
                                                                 / (float)(T_MARGIN_END);
                 }
-                else if (M == 7) {          // Ulnar Deviation
+                else if (M == 5) {          // Ulnar Deviation
                     trj_hand[t] = -10.0 + HO_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
                                                                 / (float)(T_MARGIN_END);
                 }
