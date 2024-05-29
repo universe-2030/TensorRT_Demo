@@ -43,9 +43,9 @@
    <widget class="QLineEdit" name="lineEdit_Time">
     <property name="geometry">
      <rect>
-      <x>160</x>
+      <x>210</x>
       <y>35</y>
-      <width>110</width>
+      <width>111</width>
       <height>25</height>
      </rect>
     </property>
@@ -64,7 +64,7 @@
    <widget class="QLabel" name="Txt_Time">
     <property name="geometry">
      <rect>
-      <x>165</x>
+      <x>216</x>
       <y>10</y>
       <width>100</width>
       <height>20</height>
@@ -504,9 +504,9 @@
    <widget class="QLineEdit" name="lineEdit_Sbj_Name">
     <property name="geometry">
      <rect>
-      <x>280</x>
+      <x>336</x>
       <y>35</y>
-      <width>110</width>
+      <width>251</width>
       <height>25</height>
      </rect>
     </property>
@@ -517,7 +517,7 @@
    <widget class="QLabel" name="Txt_Sbj_Name">
     <property name="geometry">
      <rect>
-      <x>280</x>
+      <x>411</x>
       <y>10</y>
       <width>105</width>
       <height>20</height>
@@ -575,76 +575,6 @@
       </item>
      </layout>
     </widget>
-   </widget>
-   <widget class="QLabel" name="Txt_Traj_Idx">
-    <property name="geometry">
-     <rect>
-      <x>510</x>
-      <y>10</y>
-      <width>131</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Trajectory Index</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_Traj_Idx">
-    <property name="geometry">
-     <rect>
-      <x>520</x>
-      <y>35</y>
-      <width>110</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="lineEdit_Trial_Idx">
-    <property name="geometry">
-     <rect>
-      <x>400</x>
-      <y>35</y>
-      <width>110</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-    </property>
-   </widget>
-   <widget class="QLabel" name="Txt_Trial_Idx">
-    <property name="geometry">
-     <rect>
-      <x>400</x>
-      <y>10</y>
-      <width>105</width>
-      <height>20</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>10</pointsize>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Trial Index</string>
-    </property>
-    <property name="alignment">
-     <set>Qt::AlignCenter</set>
-    </property>
    </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

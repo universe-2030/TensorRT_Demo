@@ -145,10 +145,6 @@
 #define HC_ROM 80.0
 #define HO_ROM 10.0
 
-// Ball control cases
-#define N_TRIALS 3
-#define N_TRAJECTORY 2
-
 // Maximal ball control velocity
 #define INC_MAX_X 1
 #define INC_MAX_Y 1
@@ -230,9 +226,6 @@ public:
     int  Get_State_Indicator(int mode, double time);
     void Set_Motion_Trajectory(int mode);
 
-    // Ball control
-    bool Determine_Success(int traj_idx);
-
     // Serial Connection
     void fillPortsInfo();
     QSerialPort* m_serialPort = nullptr;
@@ -253,10 +246,10 @@ public:
     void PopUpData(unsigned int N_delete);
     void SaveData_Training();
     void SaveData_UnlabeledDAQ();
-    void SaveData_BallControl(int trial_idx, int traj_idx);
+    void SaveData_BallControl();
     void ClearData_Training();
     void ClearData_UnlabeledDAQ();
-    void ClearData_BallControl(int trial_idx, int traj_idx);
+    void ClearData_BallControl();
 
 public:
     // 'Get' functions
@@ -278,8 +271,6 @@ private slots:
     void on_lineEdit_WinSize_textEdited(const QString &arg1);
     void on_lineEdit_MAVMax_textEdited(const QString &arg1);
     void on_lineEdit_Sbj_Name_textEdited(const QString &arg1);
-    void on_lineEdit_Trial_Idx_textEdited(const QString &arg1);
-    void on_lineEdit_Traj_Idx_textEdited(const QString &arg1);
 
     // Radio controls
     void RadioCtrl_Mode();
@@ -293,10 +284,6 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-    // Ball control limb pos & trial idx
-    int Trial_idx = 1;
-    int Traj_idx = 1;
-
     bool PracticeOrNot = true;
     bool isSuccess = false;
     bool isSuccess_time_flag = false;
@@ -304,8 +291,6 @@ private:
     bool isTimeOver_time_flag = false;
     bool isRun = false;
     bool isFirstRun = true;
-    bool** SuccessOrNot;
-    double** BallCtrElapsedTime;
 
     double T_trial_start = 0.0;
     double T_trial_end = 0.0;
@@ -391,25 +376,24 @@ private:
     std::vector<int>     stack_Motion_label;
 
     // Vectors for Ball Control
-    std::vector<double>*** stack_Ball_Ctr_sEMG_raw;
-    std::vector<double>*** stack_Ball_Ctr_sEMG_MAV;
-    std::vector<double>*** stack_Ball_Ctr_sEMG_WL;
-    std::vector<double>*** stack_Ball_Ctr_sEMG_SSC;
-    std::vector<double>*** stack_Ball_Ctr_sEMG_ZC;
+    std::vector<double>* stack_Ball_Ctr_sEMG_raw;
+    std::vector<double>* stack_Ball_Ctr_sEMG_MAV;
+    std::vector<double>* stack_Ball_Ctr_sEMG_WL;
+    std::vector<double>* stack_Ball_Ctr_sEMG_SSC;
+    std::vector<double>* stack_Ball_Ctr_sEMG_ZC;
 
-    std::vector<double>** stack_Ball_Ctr_X;
-    std::vector<double>** stack_Ball_Ctr_Y;
-    std::vector<double>** stack_Ball_Ctr_Rot;
-    std::vector<double>** stack_Ball_Ctr_Scale;
+    std::vector<double> stack_Ball_Ctr_X;
+    std::vector<double> stack_Ball_Ctr_Y;
+    std::vector<double> stack_Ball_Ctr_Scale;
 
-    std::vector<double>** stack_Ball_Ctr_Time_elapse_Processing;
-    std::vector<int>**    stack_Ball_Ctr_Motion_est;
+    std::vector<double> stack_Ball_Ctr_Time_elapse_Processing;
+    std::vector<int>    stack_Ball_Ctr_Motion_est;
 
     // Vectors stacked in TensorRT thread
-    std::vector<double>** stack_Ball_Ctr_sEMG_MAV_amp;
-    std::vector<double>** stack_Ball_Ctr_Time_elapse_TensorRT;
-    std::vector<int>**    stack_Ball_Ctr_isMotionExerted;
-    std::vector<int>**    stack_Ball_Ctr_Motion_est_TensorRT_thread;
+    std::vector<double> stack_Ball_Ctr_sEMG_MAV_amp;
+    std::vector<double> stack_Ball_Ctr_Time_elapse_TensorRT;
+    std::vector<int>    stack_Ball_Ctr_isMotionExerted;
+    std::vector<int>    stack_Ball_Ctr_Motion_est_TensorRT_thread;
 
     // Arm trajectory
     std::vector<double> trj_shd_X;

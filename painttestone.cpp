@@ -65,9 +65,9 @@ void PaintTestOne::Initialize_Cursor(int traj_idx) {
         Cur_Scale = Get_Start_Scale_Practice();
     }
     else {
-        Cur_X = Get_Start_X(traj_idx);
-        Cur_Y = Get_Start_Y(traj_idx);
-        Cur_Scale = Get_Start_Scale(traj_idx);
+        Cur_X = Get_Start_X();
+        Cur_Y = Get_Start_Y();
+        Cur_Scale = Get_Start_Scale();
     }
 }
 
@@ -88,12 +88,12 @@ void PaintTestOne::Initialize_DAVariables() {
     End_Scale = new double[N_TRAJ_TEST];
 
     // 1. Trajectory - test 1
-    Start_X[0] = 100;
-    Start_Y[0] = 100;
-    Start_Scale[0] = 1.2;
+    Start_X[0] = 300;
+    Start_Y[0] = 200;
+    Start_Scale[0] = 1.1;
 
-    End_X[0] = 350;
-    End_Y[0] = 300;
+    End_X[0] = 550;
+    End_Y[0] = 200;
     End_Scale[0] = 1.9;
 }
 
@@ -132,14 +132,14 @@ void PaintTestOne::Traj_test(QPainter *painter) {
     int traj_idx = 0;
 
     //! 0. Trajectory point assignment
-        Traj_X_1 = 100;
+        Traj_X_1 = 300;
         Traj_Y_1 = 700;
 
-        Traj_X_2 = 850;
+        Traj_X_2 = 1250;
         Traj_Y_2 = 700;
 
-        Traj_X_3 = 850;
-        Traj_Y_3 = 300;
+        Traj_X_3 = 1250;
+        Traj_Y_3 = 200;
     //!
 
     //! 1. 'Start' location
@@ -165,7 +165,7 @@ void PaintTestOne::Traj_test(QPainter *painter) {
 
     //! 3. 1st trajectory
         painter->setPen(linePen);
-        painter->drawLine(Start_X[traj_idx], Start_Y[traj_idx] - 20, Traj_X_1, Traj_Y_1);
+        painter->drawLine(Start_X[traj_idx], Start_Y[traj_idx], Traj_X_1, Traj_Y_1);
 
         painter->setPen(arrowPen);
         painter->setBrush(arrowBrush);
@@ -279,28 +279,28 @@ double PaintTestOne::Get_Start_Y_Practice() {
     return Start_Y_Practice;
 }
 
-double PaintTestOne::Get_Start_Scale(int traj_idx) {
-    return Start_Scale[traj_idx - 1];
+double PaintTestOne::Get_Start_Scale() {
+    return Start_Scale[0];
 }
 
-double PaintTestOne::Get_Start_X(int traj_idx) {
-    return Start_X[traj_idx - 1];
+double PaintTestOne::Get_Start_X() {
+    return Start_X[0];
 }
 
-double PaintTestOne::Get_Start_Y(int traj_idx) {
-    return Start_Y[traj_idx - 1];
+double PaintTestOne::Get_Start_Y() {
+    return Start_Y[0];
 }
 
-double PaintTestOne::Get_End_Scale(int traj_idx) {
-    return End_Scale[traj_idx - 1];
+double PaintTestOne::Get_End_Scale() {
+    return End_Scale[0];
 }
 
-double PaintTestOne::Get_End_X(int traj_idx) {
-    return End_X[traj_idx - 1];
+double PaintTestOne::Get_End_X() {
+    return End_X[0];
 }
 
-double PaintTestOne::Get_End_Y(int traj_idx) {
-    return End_Y[traj_idx - 1];
+double PaintTestOne::Get_End_Y() {
+    return End_Y[0];
 }
 
 //////////////////////////////////////// 'Set' functions ////////////////////////////////////////
@@ -310,10 +310,6 @@ void PaintTestOne::Set_time(double m_time) {
 
 void PaintTestOne::Set_T_Trial_Start(double m_time) {
     T_trial_start = m_time;
-}
-
-void PaintTestOne::Set_T_Trial_End(double m_time) {
-    T_trial_end = m_time;
 }
 
 void PaintTestOne::Set_Cur_Scale(double m_Cur_Scale) {
@@ -326,14 +322,6 @@ void PaintTestOne::Set_Cur_X(double m_Cur_X) {
 
 void PaintTestOne::Set_Cur_Y(double m_Cur_Y) {
     Cur_Y = m_Cur_Y;
-}
-
-void PaintTestOne::Set_Trial_idx(int trial_idx) {
-    Trial_idx = trial_idx;
-}
-
-void PaintTestOne::Set_Traj_idx(int traj_idx) {
-    Traj_idx = traj_idx;
 }
 
 void PaintTestOne::Set_PracticeOrNot(bool _PracticeOrNot) {

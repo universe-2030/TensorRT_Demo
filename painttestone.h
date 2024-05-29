@@ -21,12 +21,6 @@
 #define N_TRAJ_TEST 1
 
 #define T_READY_BALL_CTR 5.0
-#define T_MAX_BALL_CTR_PRACTICE 75.0
-#define T_MAX_BALL_CTR 75.0
-#define T_DURATION_SUCCESS 5.0
-
-#define N_POS 5
-#define N_TRAJECTORY 2
 
 class PaintTestOne : public QObject{
     Q_OBJECT
@@ -59,13 +53,13 @@ public:
     double Get_Start_X_Practice();
     double Get_Start_Y_Practice();
 
-    double Get_Start_Scale(int trial_idx);
-    double Get_Start_X(int trial_idx);
-    double Get_Start_Y(int trial_idx);
+    double Get_Start_Scale();
+    double Get_Start_X();
+    double Get_Start_Y();
 
-    double Get_End_Scale(int trial_idx);
-    double Get_End_X(int trial_idx);
-    double Get_End_Y(int trial_idx);
+    double Get_End_Scale();
+    double Get_End_X();
+    double Get_End_Y();
 
     // 'Set' Functions
     void Set_time(double m_time);
@@ -81,7 +75,6 @@ public:
     void Set_isRun(bool _isRun);
 
     void Set_T_Trial_Start(double m_time);
-    void Set_T_Trial_End(double m_time);
 
 private:
     // Limb pos & Trial idx
