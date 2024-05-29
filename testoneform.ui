@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TestOneForm</class>
+ <widget class="QWidget" name="TestOneForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1640</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QLabel" name="Txt_Motion_label">
+   <property name="geometry">
+    <rect>
+     <x>5</x>
+     <y>600</y>
+     <width>100</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Estimation</string>
+   </property>
+  </widget>
+  <widget class="QCustomPlot" name="wdg_RTGraph_Est" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>620</y>
+     <width>1240</width>
+     <height>170</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="Img_Est">
+   <property name="geometry">
+    <rect>
+     <x>1290</x>
+     <y>470</y>
+     <width>300</width>
+     <height>300</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QWidget" name="wdg_Upper_limb" native="true">
+   <property name="geometry">
+    <rect>
+     <x>1250</x>
+     <y>10</y>
+     <width>380</width>
+     <height>450</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QCustomPlot" name="wdg_RTGraph_MAV" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>20</y>
+     <width>1240</width>
+     <height>170</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QCustomPlot" name="wdg_RTGraph_Flex" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>420</y>
+     <width>1240</width>
+     <height>170</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="Txt_Flex">
+   <property name="geometry">
+    <rect>
+     <x>5</x>
+     <y>400</y>
+     <width>100</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>Flex sensor</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="Txt_sEMG_MAV">
+   <property name="geometry">
+    <rect>
+     <x>5</x>
+     <y>0</y>
+     <width>100</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>sEMG MAV</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="Txt_IMU">
+   <property name="geometry">
+    <rect>
+     <x>5</x>
+     <y>200</y>
+     <width>100</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>10</pointsize>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="text">
+    <string>IMU</string>
+   </property>
+  </widget>
+  <widget class="QCustomPlot" name="wdg_RTGraph_IMU" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>220</y>
+     <width>1240</width>
+     <height>170</height>
+    </rect>
+   </property>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header location="global">qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
