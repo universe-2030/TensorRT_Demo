@@ -84,7 +84,7 @@
 // sEMG DAQ macros
 #define DELSYS_CH_MAX 16
 #define N_FEATURES 4
-#define N_EMG 7
+#define N_EMG 6
 #define WIN_SIZE 150
 #define N_MOTIONS 8
 #define N_REPEAT 40

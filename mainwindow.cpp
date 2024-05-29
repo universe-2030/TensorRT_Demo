@@ -220,7 +220,6 @@ void MainWindow::Initialize_DAVariables() {
     sEMG_CH[3] = 3;
     sEMG_CH[4] = 4;
     sEMG_CH[5] = 5;
-    sEMG_CH[6] = 6;
 
     Motion_prob = new double[N_MOTIONS];
     Target_motion_N = new int[N_MOTIONS];
