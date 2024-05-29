@@ -8,9 +8,6 @@
 #include <Qt3DRender>
 #include <Qt3DExtras>
 
-// Custom headers
-#include "scenemodifier.h"
-
 namespace Ui {
 class UnlabeledDAQForm;
 }
@@ -24,15 +21,8 @@ public:
 
     Ui::UnlabeledDAQForm *get_UI();
 
-    // 3D arm model
-    SceneModifier* get_Model();
-
 private:
     Ui::UnlabeledDAQForm *ui;
-
-    // 3D arm model
-    SceneModifier *modifier;
-    QWidget* Container_hand;
 };
 
 #endif // UNLABELEDDAQFORM_H

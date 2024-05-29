@@ -24,12 +24,9 @@
 #include "opencv2/opencv.hpp"
 #include <opencv2/imgproc/imgproc.hpp>
 
-// Custom headers
-#include "scenemodifier.h"
-
 #define N_MOTIONS 8
-#define PIXMAP_WIDTH 400
-#define PIXMAP_HEIGHT 400
+#define PIXMAP_WIDTH 1050
+#define PIXMAP_HEIGHT 900
 
 QT_BEGIN_NAMESPACE
 class QAbstractItemView;
@@ -56,9 +53,6 @@ class UnlabeledDAQUserForm : public QWidget {
 public:
     explicit UnlabeledDAQUserForm(QWidget *parent = nullptr);
     ~UnlabeledDAQUserForm();
-
-    // 3D arm model
-    SceneModifier* get_Model();
 
     // Video player
     bool isPlayerAvailable() const;
@@ -102,10 +96,6 @@ private:
 
     // Motion image
     cv::Mat* Figures_motion;
-
-    // 3D arm model
-    SceneModifier *modifier;
-    QWidget* Container_hand;
 
     // Video player
     void setTrackInfo(const QString &info);

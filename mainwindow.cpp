@@ -67,33 +67,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::setMiddleRotZ_Cue_Trn, player_Training->get_Model(), &SceneModifier::set_Middle_RotZ);
     connect(this, &MainWindow::setRingRotZ_Cue_Trn, player_Training->get_Model(), &SceneModifier::set_Ring_RotZ);
     connect(this, &MainWindow::setLittleRotZ_Cue_Trn, player_Training->get_Model(), &SceneModifier::set_Little_RotZ);
-
-    connect(this, &MainWindow::setPalmRotX_Cue_UnlabeledDAQ, player_UnlabeledDAQ->get_Model(), &SceneModifier::set_Palm_RotX);
-    connect(this, &MainWindow::setLowerArmRotY_Cue_UnlabeledDAQ, player_UnlabeledDAQ->get_Model(), &SceneModifier::set_Lower_arm_RotY);
-    connect(this, &MainWindow::setPalmRotZ_Cue_UnlabeledDAQ, player_UnlabeledDAQ->get_Model(), &SceneModifier::set_Palm_RotZ);
-    connect(this, &MainWindow::setThumbRotZ_Cue_UnlabeledDAQ, player_UnlabeledDAQ->get_Model(), &SceneModifier::set_Thumb_RotZ);
-    connect(this, &MainWindow::setIndexRotZ_Cue_UnlabeledDAQ, player_UnlabeledDAQ->get_Model(), &SceneModifier::set_Index_RotZ);
-    connect(this, &MainWindow::setMiddleRotZ_Cue_UnlabeledDAQ, player_UnlabeledDAQ->get_Model(), &SceneModifier::set_Middle_RotZ);
-    connect(this, &MainWindow::setRingRotZ_Cue_UnlabeledDAQ, player_UnlabeledDAQ->get_Model(), &SceneModifier::set_Ring_RotZ);
-    connect(this, &MainWindow::setLittleRotZ_Cue_UnlabeledDAQ, player_UnlabeledDAQ->get_Model(), &SceneModifier::set_Little_RotZ);
-
-    connect(this, &MainWindow::setPalmRotX_MoCap_UnlabeledDAQ, unlabeledDAQForm.get_Model(), &SceneModifier::set_Palm_RotX);
-    connect(this, &MainWindow::setLowerArmRotY_MoCap_UnlabeledDAQ, unlabeledDAQForm.get_Model(), &SceneModifier::set_Lower_arm_RotY);
-    connect(this, &MainWindow::setPalmRotZ_MoCap_UnlabeledDAQ, unlabeledDAQForm.get_Model(), &SceneModifier::set_Palm_RotZ);
-    connect(this, &MainWindow::setThumbRotZ_MoCap_UnlabeledDAQ, unlabeledDAQForm.get_Model(), &SceneModifier::set_Thumb_RotZ);
-    connect(this, &MainWindow::setIndexRotZ_MoCap_UnlabeledDAQ, unlabeledDAQForm.get_Model(), &SceneModifier::set_Index_RotZ);
-    connect(this, &MainWindow::setMiddleRotZ_MoCap_UnlabeledDAQ, unlabeledDAQForm.get_Model(), &SceneModifier::set_Middle_RotZ);
-    connect(this, &MainWindow::setRingRotZ_MoCap_UnlabeledDAQ, unlabeledDAQForm.get_Model(), &SceneModifier::set_Ring_RotZ);
-    connect(this, &MainWindow::setLittleRotZ_MoCap_UnlabeledDAQ, unlabeledDAQForm.get_Model(), &SceneModifier::set_Little_RotZ);
-
-    connect(this, &MainWindow::setPalmRotX_MoCap_TestOne, testOneForm.get_Model(), &SceneModifier::set_Palm_RotX);
-    connect(this, &MainWindow::setLowerArmRotY_MoCap_TestOne, testOneForm.get_Model(), &SceneModifier::set_Lower_arm_RotY);
-    connect(this, &MainWindow::setPalmRotZ_MoCap_TestOne, testOneForm.get_Model(), &SceneModifier::set_Palm_RotZ);
-    connect(this, &MainWindow::setThumbRotZ_MoCap_TestOne, testOneForm.get_Model(), &SceneModifier::set_Thumb_RotZ);
-    connect(this, &MainWindow::setIndexRotZ_MoCap_TestOne, testOneForm.get_Model(), &SceneModifier::set_Index_RotZ);
-    connect(this, &MainWindow::setMiddleRotZ_MoCap_TestOne, testOneForm.get_Model(), &SceneModifier::set_Middle_RotZ);
-    connect(this, &MainWindow::setRingRotZ_MoCap_TestOne, testOneForm.get_Model(), &SceneModifier::set_Ring_RotZ);
-    connect(this, &MainWindow::setLittleRotZ_MoCap_TestOne, testOneForm.get_Model(), &SceneModifier::set_Little_RotZ);
 }
 
 MainWindow::~MainWindow() {
@@ -355,7 +328,6 @@ void MainWindow::Initialize_GUI() {
     ui->radioBtn_Mode_1->setChecked(true);
     ui->radioBtn_Mode_2->setEnabled(true);
     ui->radioBtn_Mode_3->setEnabled(true);
-    ui->radioBtn_Mode_4->setEnabled(false);
 
     ui->radioBtn_Network_1->setEnabled(false);
     ui->radioBtn_Network_2->setEnabled(false);
@@ -396,7 +368,6 @@ void MainWindow::Initialize_GUI() {
     connect(ui->radioBtn_Mode_1, SIGNAL(clicked()), this, SLOT(RadioCtrl_Mode()));
     connect(ui->radioBtn_Mode_2, SIGNAL(clicked()), this, SLOT(RadioCtrl_Mode()));
     connect(ui->radioBtn_Mode_3, SIGNAL(clicked()), this, SLOT(RadioCtrl_Mode()));
-    connect(ui->radioBtn_Mode_4, SIGNAL(clicked()), this, SLOT(RadioCtrl_Mode()));
 
     connect(ui->radioBtn_Network_1, SIGNAL(clicked()), this, SLOT(RadioCtrl_Network()));
     connect(ui->radioBtn_Network_2, SIGNAL(clicked()), this, SLOT(RadioCtrl_Network()));
@@ -462,7 +433,6 @@ void MainWindow::Initialize_trnForm() {
 
 void MainWindow::Initialize_unlabeledDAQForm() {
     GraphInit_sEMG(unlabeledDAQForm.get_UI()->wdg_RTGraph_MAV);
-    GraphInit_Label(unlabeledDAQForm.get_UI()->wdg_RTGraph_Label, 1);
 }
 
 void MainWindow::Initialize_testOneForm() {
@@ -504,11 +474,6 @@ void MainWindow::RealTimeDataPlot() {
         unlabeledDAQForm.get_UI()->wdg_RTGraph_MAV->graph(6)->addData(key, sEMG_MAV[6]);
         unlabeledDAQForm.get_UI()->wdg_RTGraph_MAV->xAxis->setRange(key, Width_X, Qt::AlignRight); // Size is set to [s] scale
         unlabeledDAQForm.get_UI()->wdg_RTGraph_MAV->replot();
-
-        // 4. Motion label
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_Label->graph(0)->addData(key, Motion_label);
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_Label->xAxis->setRange(key, Width_X, Qt::AlignRight); // Size is set to [s] scale
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_Label->replot();
     }
     else if (m_radioMode == 2) {
         // 1. sEMG MAV
@@ -734,31 +699,6 @@ void MainWindow::Thread_TwinCAT_func() {
                             emit setMiddleRotZ_Cue_Trn(trj_hand[m_time_cnt - m_time_last_cnt]);
                             emit setRingRotZ_Cue_Trn(trj_hand[m_time_cnt - m_time_last_cnt]);
                             emit setLittleRotZ_Cue_Trn(trj_hand[m_time_cnt - m_time_last_cnt]);
-                        }
-                    }
-                }
-                else if (m_radioMode == 1) {
-                    if ((m_time_cnt - m_time_last_cnt) % 20 == 0) {
-                        // Visual cue
-                        if ((m_time_cnt - m_time_last_cnt) < (int)((T_READY + N_REPEAT * T_CONTRACT
-                                                + (N_REPEAT - 1) * T_REST + T_RESIDUAL) * FS)) {
-                            emit setPalmRotX_Cue_UnlabeledDAQ(trj_wrist_X[m_time_cnt - m_time_last_cnt]);
-                            emit setLowerArmRotY_Cue_UnlabeledDAQ(trj_wrist_Y[m_time_cnt - m_time_last_cnt]);
-                            emit setPalmRotZ_Cue_UnlabeledDAQ(trj_wrist_Z[m_time_cnt - m_time_last_cnt]);
-
-                            emit setThumbRotZ_Cue_UnlabeledDAQ(trj_hand[m_time_cnt - m_time_last_cnt]);
-                            emit setIndexRotZ_Cue_UnlabeledDAQ(trj_hand[m_time_cnt - m_time_last_cnt]);
-                            emit setMiddleRotZ_Cue_UnlabeledDAQ(trj_hand[m_time_cnt - m_time_last_cnt]);
-                            emit setRingRotZ_Cue_UnlabeledDAQ(trj_hand[m_time_cnt - m_time_last_cnt]);
-                            emit setLittleRotZ_Cue_UnlabeledDAQ(trj_hand[m_time_cnt - m_time_last_cnt]);
-                        }
-                    }
-
-                    // Print the motion order
-                    for (int n = 0; n < N_REPEAT; n++) {
-                        if ((m_time_cnt - m_time_last_cnt) == (int)((T_READY + (T_CONTRACT + T_REST) * n) * FS) + 1) {
-                            std::cout << n + 1 << "th motion complete" << std::endl;
-                            break;
                         }
                     }
                 }
@@ -2127,7 +2067,6 @@ void MainWindow::on_BtnSwitch_clicked() {
         ui->radioBtn_Mode_1->setEnabled(false);
         ui->radioBtn_Mode_2->setEnabled(false);
         ui->radioBtn_Mode_3->setEnabled(false);
-        ui->radioBtn_Mode_4->setEnabled(false);
 
         ui->radioBtn_Network_1->setEnabled(false);
         ui->radioBtn_Network_2->setEnabled(false);
@@ -2255,46 +2194,6 @@ void MainWindow::on_BtnDelete_clicked() {
         player_Training->get_Model()->set_Middle_RotZ(trj_hand[m_time_cnt - m_time_last_cnt]);
         player_Training->get_Model()->set_Ring_RotZ(trj_hand[m_time_cnt - m_time_last_cnt]);
         player_Training->get_Model()->set_Little_RotZ(trj_hand[m_time_cnt - m_time_last_cnt]);
-    }
-    else if (m_radioMode == 1) {
-        //////////////////////////////////////// TrainingForm ////////////////////////////////////////
-        // (TrainingForm)
-        unlabeledDAQForm.get_UI()->Img_Truth->setPixmap(qpix_motion.scaled(unlabeledDAQForm.get_UI()->Img_Truth->width(),
-                                  unlabeledDAQForm.get_UI()->Img_Truth->height(),
-                                  Qt::IgnoreAspectRatio));
-        delete qimg_motion;
-
-        /////////////////////////////////////// TrainingUserForm ///////////////////////////////////////
-        // (TrainingUserForm) Figures - State indicator
-        State_indicator = Get_State_Indicator(m_radioMode, m_time - m_time_last);
-        qimg_motion = new QImage((unsigned char *)Figures_motion[State_indicator].data,
-                                                  Figures_motion[State_indicator].cols, Figures_motion[State_indicator].rows,
-                                                  QImage::Format_ARGB32);
-        qpix_motion = QPixmap::fromImage(*qimg_motion);
-
-        // Video
-        player_UnlabeledDAQ->positionChange(m_time_cnt - m_time_last_cnt);
-
-        // 3D modeling - Shoulder
-        player_UnlabeledDAQ->get_Model()->set_Upper_arm_RotX(trj_shd_X[m_time_cnt - m_time_last_cnt]);
-        player_UnlabeledDAQ->get_Model()->set_Upper_arm_Axis(trj_shd_axis[m_time_cnt - m_time_last_cnt]);
-        player_UnlabeledDAQ->get_Model()->set_Upper_arm_RotY(trj_shd_Y[m_time_cnt - m_time_last_cnt]);
-        player_UnlabeledDAQ->get_Model()->set_Upper_arm_RotZ(trj_shd_Z[m_time_cnt - m_time_last_cnt]);
-
-        // 3D modeling - Elbow
-        player_UnlabeledDAQ->get_Model()->set_Lower_arm_RotX(trj_elb_X[m_time_cnt - m_time_last_cnt]);
-
-        // 3D modeling - Wrist
-        player_UnlabeledDAQ->get_Model()->set_Palm_RotX(trj_wrist_X[m_time_cnt - m_time_last_cnt]);
-        player_UnlabeledDAQ->get_Model()->set_Lower_arm_RotY(trj_wrist_Y[m_time_cnt - m_time_last_cnt]);
-        player_UnlabeledDAQ->get_Model()->set_Palm_RotZ(trj_wrist_Z[m_time_cnt - m_time_last_cnt]);
-
-        // 3D modeling - Hand
-        player_UnlabeledDAQ->get_Model()->set_Thumb_RotZ(trj_hand[m_time_cnt - m_time_last_cnt]);
-        player_UnlabeledDAQ->get_Model()->set_Index_RotZ(trj_hand[m_time_cnt - m_time_last_cnt]);
-        player_UnlabeledDAQ->get_Model()->set_Middle_RotZ(trj_hand[m_time_cnt - m_time_last_cnt]);
-        player_UnlabeledDAQ->get_Model()->set_Ring_RotZ(trj_hand[m_time_cnt - m_time_last_cnt]);
-        player_UnlabeledDAQ->get_Model()->set_Little_RotZ(trj_hand[m_time_cnt - m_time_last_cnt]);
     }
 }
 
@@ -2604,92 +2503,6 @@ void MainWindow::RadioCtrl_Mode() {
         ModeStr = "_Unlabeled_DAQ";
         SaveFolderStr = PathStr + TimeStr + NameStr + ModeStr;
         ui->lineEdit_SaveFolder->setText(SaveFolderStr);
-
-        // Set the randomized rate of motions
-        bool resmp_required = true;
-        int N_min = 0;
-        int N_max = 0;
-        while (resmp_required) {
-            // Probability sampling
-            std::srand(static_cast<unsigned int>(std::time(0)));
-            double sum_Motion_prob = 0.0;
-            for (int M = 0; M < N_MOTIONS; M++) {
-                Motion_prob[M] = (double)(PROB_MIN +
-                                    (PROB_MAX - PROB_MIN) * ((double)std::rand() / (double)RAND_MAX));
-                sum_Motion_prob += Motion_prob[M];
-
-                Target_motion_N[M] = 0;
-            }
-
-            // Normalization to convert into probability
-            for (int M = 0; M < N_MOTIONS; M++) {
-                Motion_prob[M] /= sum_Motion_prob;
-            }
-
-            // Target motion sampling
-            int mot_idx = 0;
-            for (int i = 0; i < N_REPEAT; i++) {
-                double rand_smp = (double)std::rand() / (double)(RAND_MAX + 1);
-                double M_prob_sum = 0.0;
-                for (int M = 0; M < N_MOTIONS; M++) {
-                    M_prob_sum += Motion_prob[M];
-
-                    if (rand_smp < M_prob_sum) {
-                        mot_idx = M + 1;
-                        break;
-                    }
-
-                    if (M == N_MOTIONS - 1) {
-                        mot_idx = M + 1;
-                    }
-                }
-
-                Target_motion_N[mot_idx - 1] += 1;
-                Target_motion_list[i] = mot_idx;
-            }
-
-            // The minimal & maximal number of target motions
-            N_min = Target_motion_N[0];
-            N_max = Target_motion_N[0];
-            for (int M = 1; M < N_MOTIONS; M++) {
-                if (Target_motion_N[M] < N_min)
-                    N_min = Target_motion_N[M];
-
-                if (Target_motion_N[M] > N_max)
-                    N_max = Target_motion_N[M];
-            }
-
-            if (N_min >= N_MOTION_MIN && N_max <= N_MOTION_MAX)
-                resmp_required = false;
-        }
-
-        std::cout.precision(3);
-        std::cout << "\nNormalized motion-wise probbability: ";
-        for (int M = 0; M < N_MOTIONS; M++) {
-            if (M == N_MOTIONS - 1)
-                std::cout << Motion_prob[M] * 100 << "%";
-            else
-                std::cout << Motion_prob[M] * 100 << "%, ";
-        }
-        std::cout << std::endl;
-
-        std::cout << "The number of each target motion: ";
-        for (int M = 0; M < N_MOTIONS; M++) {
-            if (M == N_MOTIONS - 1)
-                std::cout << Target_motion_N[M];
-            else
-                std::cout << Target_motion_N[M] << ", ";
-        }
-        std::cout << " (Min: " << N_min << ", Max: " << N_max << ")" << std::endl;
-        std::cout.precision(6);
-
-        std::cout << "Target motion list: ";
-        for (int i = 0; i < N_REPEAT; i++) {
-            std::cout << Target_motion_list[i] << " ";
-        }
-        std::cout << std::endl;
-
-        Set_Motion_Trajectory(m_radioMode);
     }
     else if (ui->radioBtn_Mode_3->isChecked()) {
         Close_Dialog();
@@ -3035,131 +2848,6 @@ void MainWindow::Set_Motion_Trajectory(int mode) {
                                                                 / (float)(T_MARGIN_END);
                 }
                 else if (M == 7) {          // Ulnar Deviation
-                    trj_hand[t] = -10.0 + HO_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
-                                                                / (float)(T_MARGIN_END);
-                }
-            }
-        }
-    }
-    else if (mode == 1) {   // Unlabeled DAQ
-        // Fill up the vector
-        for (int i = 0; i < (int)((T_READY + N_REPEAT * T_CONTRACT
-                                  + (N_REPEAT - 1) * T_REST + T_RESIDUAL) * FS); i++) {
-            trj_shd_X.push_back(0.0);
-            trj_shd_axis.push_back(0.0);
-            trj_shd_Y.push_back(0.0);
-            trj_shd_Z.push_back(0.0);
-            trj_elb_X.push_back(90.0);
-            trj_wrist_X.push_back(10.0);
-            trj_wrist_Y.push_back(0.0);
-            trj_wrist_Z.push_back(15.0);
-            trj_hand.push_back(-10.0);
-        }
-        // std::cout << trj_shd_X.size() << std::endl;
-
-        //////////////////////////////////// Hand & Wrist Motions ////////////////////////////////////
-        for (int i = 0; i < N_REPEAT; i++) {
-            double T_start_contract = T_READY + T_REST * i + T_CONTRACT * i;
-            double T_end_contract   = T_READY + T_REST * i + T_CONTRACT * i + T_MARGIN_START;
-            double T_start_release  = T_READY + T_REST * i + T_CONTRACT * (i + 1);
-            double T_end_release    = T_READY + T_REST * i + T_CONTRACT * (i + 1) + T_MARGIN_END;
-            // std::cout << T_start_contract << " " << T_end_contract << " " << T_start_release << " " << T_end_release << std::endl;
-
-            // Contraction
-            for (int t = (int)(T_start_contract * FS); t < (int)(T_end_contract * FS); t++) {
-                if (Target_motion_list[i] == 1) {               // Wrist Flexion
-                    trj_wrist_Z[t] = 15.0 - WF_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
-                                                                / (float)(T_MARGIN_START);
-                }
-                else if (Target_motion_list[i] == 2) {          // Wrist Extension
-                    trj_wrist_Z[t] = 15.0 + WE_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
-                                                                / (float)(T_MARGIN_START);
-                }
-                else if (Target_motion_list[i] == 3) {          // Radial Deviation
-                    trj_wrist_X[t] = 10.0 + RD_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
-                                                                / (float)(T_MARGIN_START);
-                }
-                else if (Target_motion_list[i] == 4) {          // Ulnar Deviation
-                    trj_wrist_X[t] = 10.0 - UD_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
-                                                                / (float)(T_MARGIN_START);
-                }
-                else if (Target_motion_list[i] == 5) {          // Radial Deviation
-                    trj_wrist_Y[t] = 0.0 + WP_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
-                                                                / (float)(T_MARGIN_START);
-                }
-                else if (Target_motion_list[i] == 6) {          // Ulnar Deviation
-                    trj_wrist_Y[t] = 0.0 - WS_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
-                                                                / (float)(T_MARGIN_START);
-                }
-                else if (Target_motion_list[i] == 7) {          // Radial Deviation
-                    trj_hand[t] = -10.0 - HC_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
-                                                                / (float)(T_MARGIN_START);
-                }
-                else if (Target_motion_list[i] == 8) {          // Ulnar Deviation
-                    trj_hand[t] = -10.0 + HO_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
-                                                                / (float)(T_MARGIN_START);
-                }
-            }
-
-            // Steady state
-            for (int t = (int)(T_end_contract * FS); t < (int)(T_start_release * FS); t++) {
-                if (Target_motion_list[i] == 1) {               // Wrist Flexion
-                    trj_wrist_Z[t] = 15.0 - WF_ROM;
-                }
-                else if (Target_motion_list[i] == 2) {          // Wrist Extension
-                    trj_wrist_Z[t] = 15.0 + WE_ROM;
-                }
-                else if (Target_motion_list[i] == 3) {          // Radial Deviation
-                    trj_wrist_X[t] = 10.0 + RD_ROM;
-                }
-                else if (Target_motion_list[i] == 4) {          // Ulnar Deviation
-                    trj_wrist_X[t] = 10.0 - UD_ROM;
-                }
-                else if (Target_motion_list[i] == 5) {          // Radial Deviation
-                    trj_wrist_Y[t] = 0.0 + WP_ROM;
-                }
-                else if (Target_motion_list[i] == 6) {          // Ulnar Deviation
-                    trj_wrist_Y[t] = 0.0 - WS_ROM;
-                }
-                else if (Target_motion_list[i] == 7) {          // Radial Deviation
-                    trj_hand[t] = -10.0 - HC_ROM;
-                }
-                else if (Target_motion_list[i] == 8) {          // Ulnar Deviation
-                    trj_hand[t] = -10.0 + HO_ROM;
-                }
-            }
-
-            // Release
-            for (int t = (int)(T_start_release * FS); t < (int)(T_end_release * FS); t++) {
-                if (Target_motion_list[i] == 1) {               // Wrist Flexion
-                    trj_wrist_Z[t] = 15.0 - WF_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
-                                                                / (float)(T_MARGIN_END);
-                }
-                else if (Target_motion_list[i] == 2) {          // Wrist Extension
-                    trj_wrist_Z[t] = 15.0 + WE_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
-                                                                / (float)(T_MARGIN_END);
-                }
-                else if (Target_motion_list[i] == 3) {          // Radial Deviation
-                    trj_wrist_X[t] = 10.0 + RD_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
-                                                                / (float)(T_MARGIN_END);
-                }
-                else if (Target_motion_list[i] == 4) {          // Ulnar Deviation
-                    trj_wrist_X[t] = 10.0 - UD_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
-                                                                / (float)(T_MARGIN_END);
-                }
-                else if (Target_motion_list[i] == 5) {          // Radial Deviation
-                    trj_wrist_Y[t] = 0.0 + WP_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
-                                                                / (float)(T_MARGIN_END);
-                }
-                else if (Target_motion_list[i] == 6) {          // Ulnar Deviation
-                    trj_wrist_Y[t] = 0.0 - WS_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
-                                                                / (float)(T_MARGIN_END);
-                }
-                else if (Target_motion_list[i] == 7) {          // Radial Deviation
-                    trj_hand[t] = -10.0 - HC_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
-                                                                / (float)(T_MARGIN_END);
-                }
-                else if (Target_motion_list[i] == 8) {          // Ulnar Deviation
                     trj_hand[t] = -10.0 + HO_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
                                                                 / (float)(T_MARGIN_END);
                 }
