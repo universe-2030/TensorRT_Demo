@@ -78,8 +78,6 @@
 // Real-time graph macros
 #define GRAPH_MAV_Y_MIN 0.0
 #define GRAPH_MAV_Y_MAX 0.3
-#define GRAPH_IMU_MIN -180.0
-#define GRAPH_IMU_MAX 180.0
 #define GRAPH_FLEX_MIN -1.45
 #define GRAPH_FLEX_MAX 0.45
 
@@ -236,8 +234,6 @@ public:
 
     // Real-time graph initialization
     void GraphInit_sEMG(QCustomPlot* Graph_);
-    void GraphInit_IMU(QCustomPlot* Graph_);
-    void GraphInit_Flex(QCustomPlot* Graph_);
     void GraphInit_Label(QCustomPlot* Graph_, int Session);
 
     // Real-time graph plot
@@ -245,7 +241,6 @@ public:
 
     // Individual Initialization
     void Initialize_NI();
-    void Initialize_SerialComm();
     void Initialize_GUI();
     void Initialize_Variables();
     void Initialize_DAVariables();
@@ -267,9 +262,6 @@ public:
     void Feature_Extraction();
     void Normalize_Features();
     void Offset_Calculation();
-
-    // Flex sensor processing
-    void Flex_Angle_Calculation();
 
     // Motion classification
     void Rest_mean_std_Calculation();
@@ -315,10 +307,6 @@ public:
     void Set_TimeStr();
 
 private slots:
-    // Serial Connection
-    void readSerialIMU();
-    void handleError(QSerialPort::SerialPortError error);
-
     // GUI slots
     void OnTimerControlTimeCallbackFunc();
     void OnTimerRTPlotCallbackFunc();
@@ -409,12 +397,6 @@ private:
     int*    Target_motion_N;
     int*    Target_motion_list;
 
-    // IMU variables
-    double* IMU_Ori_Lower;
-    double* IMU_Gyro_Lower;
-    double* IMU_Acc_Lower;
-    double* IMU_Mag_Lower;
-
     // Flexor sensor variables
     double* Flex_raw;
     double* Flex_raw_offset;
@@ -444,15 +426,6 @@ private:
     std::vector<double>* stack_sEMG_SSC;
     std::vector<double>* stack_sEMG_ZC;
 
-    std::vector<double>* stack_IMU_ori;
-    std::vector<double>* stack_IMU_gyro;
-    std::vector<double>* stack_IMU_acc;
-    std::vector<double>* stack_IMU_mag;
-
-    std::vector<double>* stack_Flex_raw;
-    std::vector<double>* stack_Flex_processed;
-    std::vector<double>* stack_Flex_Angle;
-
     std::vector<double>  stack_Time_elapse_Processing;
     std::vector<double>  stack_Time_elapse_TensorRT;
     std::vector<int>     stack_Motion_label;
@@ -463,15 +436,6 @@ private:
     std::vector<double>*** stack_Ball_Ctr_sEMG_WL;
     std::vector<double>*** stack_Ball_Ctr_sEMG_SSC;
     std::vector<double>*** stack_Ball_Ctr_sEMG_ZC;
-
-    std::vector<double>*** stack_Ball_Ctr_IMU_ori;
-    std::vector<double>*** stack_Ball_Ctr_IMU_gyro;
-    std::vector<double>*** stack_Ball_Ctr_IMU_acc;
-    std::vector<double>*** stack_Ball_Ctr_IMU_mag;
-
-    std::vector<double>*** stack_Ball_Ctr_Flex_raw;
-    std::vector<double>*** stack_Ball_Ctr_Flex_processed;
-    std::vector<double>*** stack_Ball_Ctr_Flex_Angle;
 
     std::vector<double>** stack_Ball_Ctr_X;
     std::vector<double>** stack_Ball_Ctr_Y;

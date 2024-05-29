@@ -158,76 +158,6 @@ void MainWindow::GraphInit_sEMG(QCustomPlot* Graph_) {
             Graph_->yAxis2, SLOT(setRange(QCPRange)));
 }
 
-void MainWindow::GraphInit_IMU(QCustomPlot* Graph_) {
-    Graph_->addGraph();
-    Graph_->graph(0)->setPen(QPen(QColor(255, 0, 0))); // Red line
-    Graph_->graph(0)->setName("Roll");
-    Graph_->addGraph();
-    Graph_->graph(1)->setPen(QPen(QColor(0, 255, 0))); // Green line
-    Graph_->graph(1)->setName("Pitch");
-    Graph_->addGraph();
-    Graph_->graph(2)->setPen(QPen(QColor(0, 0, 255))); // Blue line
-    Graph_->graph(2)->setName("Yaw");
-
-    QSharedPointer<QCPAxisTickerTime> timeTicker(new QCPAxisTickerTime);
-    timeTicker->setTimeFormat("%m:%s");
-    Graph_->xAxis->setTicker(timeTicker);
-    Graph_->axisRect()->setupFullAxesBox();
-    Graph_->yAxis->setRange(GRAPH_IMU_MIN, GRAPH_IMU_MAX);
-
-    Graph_->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-    Graph_->axisRect()->setRangeDrag(Qt::Vertical); // Only Y-directional drag is available.
-
-    Graph_->axisRect()->setAutoMargins(QCP::msLeft | QCP::msTop | QCP::msBottom);
-    Graph_->axisRect()->setMargins(QMargins(0,0,10,0));
-    Graph_->axisRect()->insetLayout()->setInsetPlacement(0, QCPLayoutInset::ipFree);
-    Graph_->axisRect()->insetLayout()->setInsetRect(0, QRectF(1.1,0,0.1,0.1));
-
-    // make left and bottom axes transfer their ranges to right and top axes:
-    connect(Graph_->xAxis, SIGNAL(rangeChanged(QCPRange)),
-            Graph_->xAxis2, SLOT(setRange(QCPRange)));
-    connect(Graph_->yAxis, SIGNAL(rangeChanged(QCPRange)),
-            Graph_->yAxis2, SLOT(setRange(QCPRange)));
-}
-
-void MainWindow::GraphInit_Flex(QCustomPlot* Graph_) {
-    Graph_->addGraph();
-    Graph_->graph(0)->setPen(QPen(QColor(255, 0, 0))); // Red line
-    Graph_->graph(0)->setName("Thumb");
-    Graph_->addGraph();
-    Graph_->graph(1)->setPen(QPen(QColor(0, 255, 0))); // Green line
-    Graph_->graph(1)->setName("Index");
-    Graph_->addGraph();
-    Graph_->graph(2)->setPen(QPen(QColor(0, 0, 255))); // Blue line
-    Graph_->graph(2)->setName("Middle");
-    Graph_->addGraph();
-    Graph_->graph(3)->setPen(QPen(QColor(255, 0, 255))); // Purple line
-    Graph_->graph(3)->setName("Ring");
-    Graph_->addGraph();
-    Graph_->graph(4)->setPen(QPen(QColor(255, 255, 0))); // Yellow line
-    Graph_->graph(4)->setName("Little");
-
-    QSharedPointer<QCPAxisTickerTime> timeTicker(new QCPAxisTickerTime);
-    timeTicker->setTimeFormat("%m:%s");
-    Graph_->xAxis->setTicker(timeTicker);
-    Graph_->axisRect()->setupFullAxesBox();
-    Graph_->yAxis->setRange(GRAPH_FLEX_MIN, GRAPH_FLEX_MAX);
-
-    Graph_->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-    Graph_->axisRect()->setRangeDrag(Qt::Vertical); // Only Y-directional drag is available.
-
-    Graph_->axisRect()->setAutoMargins(QCP::msLeft | QCP::msTop | QCP::msBottom);
-    Graph_->axisRect()->setMargins(QMargins(0,0,10,0));
-    Graph_->axisRect()->insetLayout()->setInsetPlacement(0, QCPLayoutInset::ipFree);
-    Graph_->axisRect()->insetLayout()->setInsetRect(0, QRectF(1.1,0,0.1,0.1));
-
-    // make left and bottom axes transfer their ranges to right and top axes:
-    connect(Graph_->xAxis, SIGNAL(rangeChanged(QCPRange)),
-            Graph_->xAxis2, SLOT(setRange(QCPRange)));
-    connect(Graph_->yAxis, SIGNAL(rangeChanged(QCPRange)),
-            Graph_->yAxis2, SLOT(setRange(QCPRange)));
-}
-
 void MainWindow::GraphInit_Label(QCustomPlot* Graph_, int Session) {
     if (Session == 0 || Session == 1) {
         Graph_->addGraph();
@@ -281,15 +211,6 @@ void MainWindow::Initialize_DAVariables() {
     stack_sEMG_WL = new std::vector<double>[N_EMG];
     stack_sEMG_SSC = new std::vector<double>[N_EMG];
     stack_sEMG_ZC = new std::vector<double>[N_EMG];
-
-    stack_IMU_ori = new std::vector<double>[N_IMU_CH];
-    stack_IMU_gyro = new std::vector<double>[N_IMU_CH];
-    stack_IMU_acc = new std::vector<double>[N_IMU_CH];
-    stack_IMU_mag = new std::vector<double>[N_IMU_CH];
-
-    stack_Flex_raw = new std::vector<double>[N_FLEX_CH];
-    stack_Flex_processed = new std::vector<double>[N_FLEX_CH];
-    stack_Flex_Angle = new std::vector<double>[N_FLEX_CH];
 
     sEMG_MAV = new float64[N_EMG];
     sEMG_MAV_norm = new float64[N_EMG];
@@ -359,15 +280,6 @@ void MainWindow::Initialize_DAVariables() {
     stack_Ball_Ctr_sEMG_SSC = new std::vector<double>**[N_TRIALS];
     stack_Ball_Ctr_sEMG_ZC = new std::vector<double>**[N_TRIALS];
 
-    stack_Ball_Ctr_IMU_ori = new std::vector<double>**[N_TRIALS];
-    stack_Ball_Ctr_IMU_gyro = new std::vector<double>**[N_TRIALS];
-    stack_Ball_Ctr_IMU_acc = new std::vector<double>**[N_TRIALS];
-    stack_Ball_Ctr_IMU_mag = new std::vector<double>**[N_TRIALS];
-
-    stack_Ball_Ctr_Flex_raw = new std::vector<double>**[N_TRIALS];
-    stack_Ball_Ctr_Flex_processed = new std::vector<double>**[N_TRIALS];
-    stack_Ball_Ctr_Flex_Angle = new std::vector<double>**[N_TRIALS];
-
     stack_Ball_Ctr_X = new std::vector<double>*[N_TRIALS];
     stack_Ball_Ctr_Y = new std::vector<double>*[N_TRIALS];
     stack_Ball_Ctr_Rot = new std::vector<double>*[N_TRIALS];
@@ -388,30 +300,12 @@ void MainWindow::Initialize_DAVariables() {
         stack_Ball_Ctr_sEMG_SSC[i] = new std::vector<double>*[N_TRAJECTORY];
         stack_Ball_Ctr_sEMG_ZC[i] = new std::vector<double>*[N_TRAJECTORY];
 
-        stack_Ball_Ctr_IMU_ori[i] = new std::vector<double>*[N_TRAJECTORY];
-        stack_Ball_Ctr_IMU_acc[i] = new std::vector<double>*[N_TRAJECTORY];
-        stack_Ball_Ctr_IMU_gyro[i] = new std::vector<double>*[N_TRAJECTORY];
-        stack_Ball_Ctr_IMU_mag[i] = new std::vector<double>*[N_TRAJECTORY];
-
-        stack_Ball_Ctr_Flex_raw[i] = new std::vector<double>*[N_TRAJECTORY];
-        stack_Ball_Ctr_Flex_processed[i] = new std::vector<double>*[N_TRAJECTORY];
-        stack_Ball_Ctr_Flex_Angle[i] = new std::vector<double>*[N_TRAJECTORY];
-
         for (int j = 0; j < N_TRAJECTORY; j++) {
             stack_Ball_Ctr_sEMG_raw[i][j] = new std::vector<double>[N_EMG];
             stack_Ball_Ctr_sEMG_MAV[i][j] = new std::vector<double>[N_EMG];
             stack_Ball_Ctr_sEMG_WL[i][j] = new std::vector<double>[N_EMG];
             stack_Ball_Ctr_sEMG_SSC[i][j] = new std::vector<double>[N_EMG];
             stack_Ball_Ctr_sEMG_ZC[i][j] = new std::vector<double>[N_EMG];
-
-            stack_Ball_Ctr_IMU_ori[i][j] = new std::vector<double>[N_IMU_CH];
-            stack_Ball_Ctr_IMU_acc[i][j] = new std::vector<double>[N_IMU_CH];
-            stack_Ball_Ctr_IMU_gyro[i][j] = new std::vector<double>[N_IMU_CH];
-            stack_Ball_Ctr_IMU_mag[i][j] = new std::vector<double>[N_IMU_CH];
-
-            stack_Ball_Ctr_Flex_raw[i][j] = new std::vector<double>[N_FLEX_CH];
-            stack_Ball_Ctr_Flex_processed[i][j] = new std::vector<double>[N_FLEX_CH];
-            stack_Ball_Ctr_Flex_Angle[i][j] = new std::vector<double>[N_FLEX_CH];
         }
 
         stack_Ball_Ctr_X[i] = new std::vector<double>[N_TRAJECTORY];
@@ -426,26 +320,6 @@ void MainWindow::Initialize_DAVariables() {
         stack_Ball_Ctr_Time_elapse_TensorRT[i] = new std::vector<double>[N_TRAJECTORY];
         stack_Ball_Ctr_isMotionExerted[i] = new std::vector<int>[N_TRAJECTORY];
         stack_Ball_Ctr_Motion_est_TensorRT_thread[i] = new std::vector<int>[N_TRAJECTORY];
-    }
-
-    IMU_Ori_Lower = new float64[N_IMU_CH];
-    IMU_Gyro_Lower = new float64[N_IMU_CH];
-    IMU_Acc_Lower = new float64[N_IMU_CH];
-    IMU_Mag_Lower = new float64[N_IMU_CH];
-    for (int i = 0; i < N_IMU_CH; i++) {
-        IMU_Ori_Lower[i] = 0.0;
-        IMU_Gyro_Lower[i] = 0.0;
-        IMU_Acc_Lower[i] = 0.0;
-        IMU_Mag_Lower[i] = 0.0;
-    }
-
-    Flex_raw_offset = new float64[N_FLEX_CH];
-    Flex_processed = new float64[N_FLEX_CH];
-    Flex_Angle = new float64[N_FLEX_CH];
-    for (int i = 0; i < N_FLEX_CH; i++) {
-        Flex_raw_offset[i] = 0.0;
-        Flex_processed[i] = 0.0;
-        Flex_Angle[i] = 0.0;
     }
 
     SuccessOrNot = new bool*[N_TRIALS];
@@ -469,26 +343,6 @@ void MainWindow::Initialize_NI() {
 
     AI_Flex = new NI_AI_Flex("Dev2/ai0:4", N_FLEX_CH);
     NI_AI_Flex::InitializeNI();
-}
-
-void MainWindow::Initialize_SerialComm() {
-    // Serial Connection
-    fillPortsInfo();
-    connect(m_serialPort, &QSerialPort::readyRead, this, &MainWindow::readSerialIMU);
-    connect(m_serialPort, &QSerialPort::errorOccurred, this, &MainWindow::handleError);
-
-    // Serial communication setup
-    if (portName != QString("No Port")) {
-        m_serialPort->setPortName(portName); // 포트 이름 지정
-        m_serialPort->setBaudRate(QSerialPort::Baud115200); // baud: 초당 신호(siganl) 요소의 수 , 예) 하나의 버드에 2bit 있다면 1Baud 동안 2bit 전송 됨
-        m_serialPort->setDataBits(QSerialPort::Data8); // dataBits
-        m_serialPort->setParity(QSerialPort::NoParity); // 정보 전달 과정에 오류가 생겼는지 검사하기 위한 것
-        m_serialPort->setStopBits(QSerialPort::OneStop); // 포트를 열기전에 set 또는 success 하면 return true로 반환된다.
-        m_serialPort->setFlowControl(QSerialPort::NoFlowControl); // 흐름제어
-        if (!m_serialPort->open(QIODevice::ReadWrite)) { //시리얼 장치 연 후 작업들
-            QMessageBox::critical(this, tr("Error"), m_serialPort->errorString());
-        }
-    }
 }
 
 void MainWindow::Initialize_GUI() {
@@ -612,22 +466,16 @@ void MainWindow::Initialize_Figures() {
 
 void MainWindow::Initialize_trnForm() {
     GraphInit_sEMG(trnForm.get_UI()->wdg_RTGraph_MAV);
-    GraphInit_IMU(trnForm.get_UI()->wdg_RTGraph_IMU);
-    GraphInit_Flex(trnForm.get_UI()->wdg_RTGraph_Flex);
     GraphInit_Label(trnForm.get_UI()->wdg_RTGraph_Label, 0);
 }
 
 void MainWindow::Initialize_unlabeledDAQForm() {
     GraphInit_sEMG(unlabeledDAQForm.get_UI()->wdg_RTGraph_MAV);
-    GraphInit_IMU(unlabeledDAQForm.get_UI()->wdg_RTGraph_IMU);
-    GraphInit_Flex(unlabeledDAQForm.get_UI()->wdg_RTGraph_Flex);
     GraphInit_Label(unlabeledDAQForm.get_UI()->wdg_RTGraph_Label, 1);
 }
 
 void MainWindow::Initialize_testOneForm() {
     GraphInit_sEMG(testOneForm.get_UI()->wdg_RTGraph_MAV);
-    GraphInit_IMU(testOneForm.get_UI()->wdg_RTGraph_IMU);
-    GraphInit_Flex(testOneForm.get_UI()->wdg_RTGraph_Flex);
     GraphInit_Label(testOneForm.get_UI()->wdg_RTGraph_Est, 2);
 }
 
@@ -649,22 +497,6 @@ void MainWindow::RealTimeDataPlot() {
         trnForm.get_UI()->wdg_RTGraph_MAV->xAxis->setRange(key, Width_X, Qt::AlignRight); // Size is set to [s] scale
         trnForm.get_UI()->wdg_RTGraph_MAV->replot();
 
-        // 2. IMU
-        trnForm.get_UI()->wdg_RTGraph_IMU->graph(0)->addData(key, IMU_Ori_Lower[0]);
-        trnForm.get_UI()->wdg_RTGraph_IMU->graph(1)->addData(key, IMU_Ori_Lower[1]);
-        trnForm.get_UI()->wdg_RTGraph_IMU->graph(2)->addData(key, IMU_Ori_Lower[2]);
-        trnForm.get_UI()->wdg_RTGraph_IMU->xAxis->setRange(key, Width_X, Qt::AlignRight); // Size is set to [s] scale
-        trnForm.get_UI()->wdg_RTGraph_IMU->replot();
-
-        // 3. Flex sensor
-        trnForm.get_UI()->wdg_RTGraph_Flex->graph(0)->addData(key, Flex_processed[0]);
-        trnForm.get_UI()->wdg_RTGraph_Flex->graph(1)->addData(key, Flex_processed[1]);
-        trnForm.get_UI()->wdg_RTGraph_Flex->graph(2)->addData(key, Flex_processed[2]);
-        trnForm.get_UI()->wdg_RTGraph_Flex->graph(3)->addData(key, Flex_processed[3]);
-        trnForm.get_UI()->wdg_RTGraph_Flex->graph(4)->addData(key, Flex_processed[4]);
-        trnForm.get_UI()->wdg_RTGraph_Flex->xAxis->setRange(key, Width_X, Qt::AlignRight); // Size is set to [s] scale
-        trnForm.get_UI()->wdg_RTGraph_Flex->replot();
-
         // 4. Motion label
         trnForm.get_UI()->wdg_RTGraph_Label->graph(0)->addData(key, Motion_label);
         trnForm.get_UI()->wdg_RTGraph_Label->xAxis->setRange(key, Width_X, Qt::AlignRight); // Size is set to [s] scale
@@ -682,22 +514,6 @@ void MainWindow::RealTimeDataPlot() {
         unlabeledDAQForm.get_UI()->wdg_RTGraph_MAV->xAxis->setRange(key, Width_X, Qt::AlignRight); // Size is set to [s] scale
         unlabeledDAQForm.get_UI()->wdg_RTGraph_MAV->replot();
 
-        // 2. IMU
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_IMU->graph(0)->addData(key, IMU_Ori_Lower[0]);
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_IMU->graph(1)->addData(key, IMU_Ori_Lower[1]);
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_IMU->graph(2)->addData(key, IMU_Ori_Lower[2]);
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_IMU->xAxis->setRange(key, Width_X, Qt::AlignRight); // Size is set to [s] scale
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_IMU->replot();
-
-        // 3. Flex sensor
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_Flex->graph(0)->addData(key, Flex_processed[0]);
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_Flex->graph(1)->addData(key, Flex_processed[1]);
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_Flex->graph(2)->addData(key, Flex_processed[2]);
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_Flex->graph(3)->addData(key, Flex_processed[3]);
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_Flex->graph(4)->addData(key, Flex_processed[4]);
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_Flex->xAxis->setRange(key, Width_X, Qt::AlignRight); // Size is set to [s] scale
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_Flex->replot();
-
         // 4. Motion label
         unlabeledDAQForm.get_UI()->wdg_RTGraph_Label->graph(0)->addData(key, Motion_label);
         unlabeledDAQForm.get_UI()->wdg_RTGraph_Label->xAxis->setRange(key, Width_X, Qt::AlignRight); // Size is set to [s] scale
@@ -714,22 +530,6 @@ void MainWindow::RealTimeDataPlot() {
         testOneForm.get_UI()->wdg_RTGraph_MAV->graph(6)->addData(key, sEMG_MAV[6]);
         testOneForm.get_UI()->wdg_RTGraph_MAV->xAxis->setRange(key, Width_X, Qt::AlignRight); // Size is set to [s] scale
         testOneForm.get_UI()->wdg_RTGraph_MAV->replot();
-
-        // 2. IMU
-        testOneForm.get_UI()->wdg_RTGraph_IMU->graph(0)->addData(key, IMU_Ori_Lower[0]);
-        testOneForm.get_UI()->wdg_RTGraph_IMU->graph(1)->addData(key, IMU_Ori_Lower[1]);
-        testOneForm.get_UI()->wdg_RTGraph_IMU->graph(2)->addData(key, IMU_Ori_Lower[2]);
-        testOneForm.get_UI()->wdg_RTGraph_IMU->xAxis->setRange(key, Width_X, Qt::AlignRight); // Size is set to [s] scale
-        testOneForm.get_UI()->wdg_RTGraph_IMU->replot();
-
-        // 3. Flex sensor
-        testOneForm.get_UI()->wdg_RTGraph_Flex->graph(0)->addData(key, Flex_processed[0]);
-        testOneForm.get_UI()->wdg_RTGraph_Flex->graph(1)->addData(key, Flex_processed[1]);
-        testOneForm.get_UI()->wdg_RTGraph_Flex->graph(2)->addData(key, Flex_processed[2]);
-        testOneForm.get_UI()->wdg_RTGraph_Flex->graph(3)->addData(key, Flex_processed[3]);
-        testOneForm.get_UI()->wdg_RTGraph_Flex->graph(4)->addData(key, Flex_processed[4]);
-        testOneForm.get_UI()->wdg_RTGraph_Flex->xAxis->setRange(key, Width_X, Qt::AlignRight); // Size is set to [s] scale
-        testOneForm.get_UI()->wdg_RTGraph_Flex->replot();
 
         // 4. Motion estimation
         testOneForm.get_UI()->wdg_RTGraph_Est->graph(0)->addData(key, Motion_est);
@@ -912,9 +712,6 @@ void MainWindow::Thread_TwinCAT_func() {
                 // Data processing - Offset calculation
                 Offset_Calculation();
 
-                // Data processing - Flex sensor angle conversion
-                Flex_Angle_Calculation();
-
                 // Data processing - Normalization
                 Normalize_Features();
 
@@ -947,17 +744,6 @@ void MainWindow::Thread_TwinCAT_func() {
                             emit setRingRotZ_Cue_Trn(trj_hand[m_time_cnt - m_time_last_cnt]);
                             emit setLittleRotZ_Cue_Trn(trj_hand[m_time_cnt - m_time_last_cnt]);
                         }
-
-                        // Motion capture
-                        emit setPalmRotX_MoCap_Trn(-IMU_Ori_Lower[1]);
-                        emit setLowerArmRotY_MoCap_Trn(IMU_Ori_Lower[0] + 90);
-                        emit setPalmRotZ_MoCap_Trn(IMU_Ori_Lower[2] - 40);
-
-                        emit setThumbRotZ_MoCap_Trn(Flex_Angle[0]);
-                        emit setIndexRotZ_MoCap_Trn(Flex_Angle[1]);
-                        emit setMiddleRotZ_MoCap_Trn(Flex_Angle[2]);
-                        emit setRingRotZ_MoCap_Trn(Flex_Angle[3]);
-                        emit setLittleRotZ_MoCap_Trn(Flex_Angle[4]);
                     }
                 }
                 else if (m_radioMode == 1) {
@@ -975,17 +761,6 @@ void MainWindow::Thread_TwinCAT_func() {
                             emit setRingRotZ_Cue_UnlabeledDAQ(trj_hand[m_time_cnt - m_time_last_cnt]);
                             emit setLittleRotZ_Cue_UnlabeledDAQ(trj_hand[m_time_cnt - m_time_last_cnt]);
                         }
-
-                        // Motion capture
-                        emit setPalmRotX_MoCap_UnlabeledDAQ(-IMU_Ori_Lower[1]);
-                        emit setLowerArmRotY_MoCap_UnlabeledDAQ(IMU_Ori_Lower[0] + 90);
-                        emit setPalmRotZ_MoCap_UnlabeledDAQ(IMU_Ori_Lower[2] - 40);
-
-                        emit setThumbRotZ_MoCap_UnlabeledDAQ(Flex_Angle[0]);
-                        emit setIndexRotZ_MoCap_UnlabeledDAQ(Flex_Angle[1]);
-                        emit setMiddleRotZ_MoCap_UnlabeledDAQ(Flex_Angle[2]);
-                        emit setRingRotZ_MoCap_UnlabeledDAQ(Flex_Angle[3]);
-                        emit setLittleRotZ_MoCap_UnlabeledDAQ(Flex_Angle[4]);
                     }
 
                     // Print the motion order
@@ -994,20 +769,6 @@ void MainWindow::Thread_TwinCAT_func() {
                             std::cout << n + 1 << "th motion complete" << std::endl;
                             break;
                         }
-                    }
-                }
-                else if (m_radioMode == 2) {
-                    if ((m_time_cnt - m_time_last_cnt) % 20 == 0) {
-                        // Motion capture
-                        emit setPalmRotX_MoCap_TestOne(-IMU_Ori_Lower[1]);
-                        emit setLowerArmRotY_MoCap_TestOne(IMU_Ori_Lower[0] + 90);
-                        emit setPalmRotZ_MoCap_TestOne(IMU_Ori_Lower[2] - 40);
-
-                        emit setThumbRotZ_MoCap_TestOne(Flex_Angle[0]);
-                        emit setIndexRotZ_MoCap_TestOne(Flex_Angle[1]);
-                        emit setMiddleRotZ_MoCap_TestOne(Flex_Angle[2]);
-                        emit setRingRotZ_MoCap_TestOne(Flex_Angle[3]);
-                        emit setLittleRotZ_MoCap_TestOne(Flex_Angle[4]);
                     }
                 }
             }
@@ -1307,148 +1068,6 @@ void MainWindow::fillPortsInfo() {
             portName = info.portName();
             break;
         }
-    }
-}
-
-void MainWindow::readSerialIMU() {
-    const QByteArray data = m_serialPort->readAll();
-    QString IMU_roll_tmp;
-    QString IMU_pitch_tmp;
-    QString IMU_yaw_tmp;
-
-    QString IMU_gyro_x_tmp;
-    QString IMU_gyro_y_tmp;
-    QString IMU_gyro_z_tmp;
-
-    QString IMU_acc_x_tmp;
-    QString IMU_acc_y_tmp;
-    QString IMU_acc_z_tmp;
-
-    QString IMU_mag_x_tmp;
-    QString IMU_mag_y_tmp;
-    QString IMU_mag_z_tmp;
-
-    int channel = 0;
-    int N_comma = 0;
-    int N_hyphen = 0;
-    int N_newline = 0;
-
-    for (int i = 0; i < data.size(); i++) {
-        if (data[i] == '-' && N_hyphen == 0) {
-            channel = data[i+1] - '0';
-            N_hyphen++;
-        }
-
-        if (N_hyphen == 1 && data[i] == ',') {
-            N_comma += 1;
-            continue;
-        }
-
-        if (N_hyphen == 1 && N_comma == 1) {
-            if (channel == IMU_CHANNEL)
-                IMU_roll_tmp += data[i];
-        }
-        else if (N_hyphen == 1 && N_comma == 2) {
-            if (channel == IMU_CHANNEL)
-                IMU_pitch_tmp += data[i];
-        }
-        else if (N_hyphen == 1 && N_comma == 3) {
-            if (channel == IMU_CHANNEL)
-                IMU_yaw_tmp += data[i];
-        }
-        else if (N_hyphen == 1 && N_comma == 4) {
-            if (channel == IMU_CHANNEL)
-                IMU_gyro_x_tmp += data[i];
-        }
-        else if (N_hyphen == 1 && N_comma == 5) {
-            if (channel == IMU_CHANNEL)
-                IMU_gyro_y_tmp += data[i];
-        }
-        else if (N_hyphen == 1 && N_comma == 6) {
-            if (channel == IMU_CHANNEL)
-                IMU_gyro_z_tmp += data[i];
-        }
-        else if (N_hyphen == 1 && N_comma == 7) {
-            if (channel == IMU_CHANNEL)
-                IMU_acc_x_tmp += data[i];
-        }
-        else if (N_hyphen == 1 && N_comma == 8) {
-            if (channel == IMU_CHANNEL)
-                IMU_acc_y_tmp += data[i];
-        }
-        else if (N_hyphen == 1 && N_comma == 9) {
-            if (channel == IMU_CHANNEL)
-                IMU_acc_z_tmp += data[i];
-        }
-        else if (N_hyphen == 1 && N_comma == 10) {
-            if (channel == IMU_CHANNEL)
-                IMU_mag_x_tmp += data[i];
-        }
-        else if (N_hyphen == 1 && N_comma == 11) {
-            if (channel == IMU_CHANNEL)
-                IMU_mag_y_tmp += data[i];
-        }
-        else if (N_hyphen == 1 && N_comma == 12) {
-            if (channel == IMU_CHANNEL)
-                IMU_mag_z_tmp += data[i];
-        }
-
-        if (data[i] == '\r') {
-            N_newline += 1;
-            if (channel == IMU_CHANNEL) {
-                if (IMU_roll_tmp.toDouble() != 0 ||
-                    IMU_pitch_tmp.toDouble() != 0 ||
-                    IMU_yaw_tmp.toDouble() != 0 ||
-                    IMU_gyro_x_tmp.toDouble() != 0 ||
-                    IMU_gyro_y_tmp.toDouble() != 0 ||
-                    IMU_gyro_z_tmp.toDouble() != 0 ||
-                    IMU_acc_x_tmp.toDouble() != 0 ||
-                    IMU_acc_y_tmp.toDouble() != 0 ||
-                    IMU_acc_z_tmp.toDouble() != 0 ||
-                    IMU_mag_x_tmp.toDouble() != 0 ||
-                    IMU_mag_y_tmp.toDouble() != 0 ||
-                    IMU_mag_z_tmp.toDouble() != 0) {
-                    IMU_Ori_Lower[0] = IMU_roll_tmp.toDouble();
-                    IMU_Ori_Lower[1] = IMU_pitch_tmp.toDouble();
-                    IMU_Ori_Lower[2] = IMU_yaw_tmp.toDouble();
-
-                    IMU_Gyro_Lower[0] = IMU_gyro_x_tmp.toDouble();
-                    IMU_Gyro_Lower[1] = IMU_gyro_y_tmp.toDouble();
-                    IMU_Gyro_Lower[2] = IMU_gyro_z_tmp.toDouble();
-
-                    IMU_Acc_Lower[0] = IMU_acc_x_tmp.toDouble();
-                    IMU_Acc_Lower[1] = IMU_acc_y_tmp.toDouble();
-                    IMU_Acc_Lower[2] = IMU_acc_z_tmp.toDouble();
-
-                    IMU_Mag_Lower[0] = IMU_mag_x_tmp.toDouble();
-                    IMU_Mag_Lower[1] = IMU_mag_y_tmp.toDouble();
-                    IMU_Mag_Lower[2] = IMU_mag_z_tmp.toDouble();
-                }
-
-//                std::cout << IMU_Ori_Lower[0] << " " << IMU_Ori_Lower[1] << " " << IMU_Ori_Lower[2] << " "
-//                          << IMU_Gyro_Lower[0] << " " << IMU_Gyro_Lower[1] << " " << IMU_Gyro_Lower[2] << " "
-//                          << IMU_Acc_Lower[0] << " " << IMU_Acc_Lower[1] << " " << IMU_Acc_Lower[2] << " "
-//                          << IMU_Mag_Lower[0] << " " << IMU_Mag_Lower[1] << " " << IMU_Mag_Lower[2] << std::endl;
-
-//                std::cout << IMU_Ori_Lower[0] << "     "
-//                          << IMU_Ori_Lower[1] << "     "
-//                          << IMU_Ori_Lower[2] << std::endl;
-            }
-
-            if (N_newline == N_IMU)
-                break;
-            else {
-                channel = 0;
-                N_comma = 0;
-                N_hyphen = 0;
-            }
-        }
-    }
-}
-
-void MainWindow::handleError(QSerialPort::SerialPortError error) {
-    if (error == QSerialPort::ResourceError) {
-        QMessageBox::critical(this, tr("Critical Error"), m_serialPort->errorString());
     }
 }
 
@@ -1778,21 +1397,12 @@ void MainWindow::Offset_Calculation() {
             sEMG_WL_offset[i] += sEMG_WL[i];
         }
 
-        for (int i = 0 ; i < N_FLEX_CH; i++) {
-            Flex_raw_offset[i] += Flex_raw[i];
-        }
-
         if ((m_time_cnt - m_time_last_cnt) == int(T_OFFSET_END_TRN * 1000) - 1) {
             for (int i = 0 ; i < N_EMG; i++) {
                 sEMG_MAV_offset[i] /= (double)(int(T_OFFSET_END_TRN * 1000) -
                                                 int(T_OFFSET_START_TRN * 1000));
                 sEMG_WL_offset[i] /= (double)(int(T_OFFSET_END_TRN * 1000) -
                                                 int(T_OFFSET_START_TRN * 1000));
-            }
-
-            for (int i = 0 ; i < N_FLEX_CH; i++) {
-                Flex_raw_offset[i] /= (double)(int(T_OFFSET_END_TRN * 1000) -
-                                               int(T_OFFSET_START_TRN * 1000));
             }
         }
     }
@@ -1802,10 +1412,6 @@ void MainWindow::Offset_Calculation() {
         for (int i = 0; i < N_EMG; i++) {
             sEMG_MAV[i] = std::abs(sEMG_MAV[i] - sEMG_MAV_offset[i]);
             sEMG_WL[i] = std::abs(sEMG_WL[i] - sEMG_WL_offset[i]);
-        }
-
-        for (int i = 0; i < N_FLEX_CH; i++) {
-            Flex_processed[i] = Flex_raw[i] - Flex_raw_offset[i];
         }
     }
 }
@@ -1887,21 +1493,6 @@ void MainWindow::Rest_mean_std_Calculation() {
     }
 }
 
-void MainWindow::Flex_Angle_Calculation() {
-    if (int(T_OFFSET_END_TRN * 1000) <= (m_time_cnt - m_time_last_cnt)) {
-        double thumb_amp = 0.8;
-        double index_amp = 1.0;
-        double middle_amp = 1.2;
-        double ring_amp = 1.0;
-        double little_amp = 1.2;
-
-        Flex_Angle[0] = Flex_processed[0] / thumb_amp * 70.0 - 10.0;
-        Flex_Angle[1] = Flex_processed[1] / index_amp * 80.0 - 10.0;
-        Flex_Angle[2] = Flex_processed[2] / middle_amp * 80.0 - 10.0;
-        Flex_Angle[3] = Flex_processed[3] / ring_amp * 80.0 - 10.0;
-        Flex_Angle[4] = Flex_processed[4] / little_amp * 80.0 - 10.0;
-    }
-}
 
 bool MainWindow::Rest_Mot_Classification() {
     if (sum_sEMG_MAV >= rest_thres) {
@@ -1951,21 +1542,6 @@ void MainWindow::StackData() {
             stack_sEMG_ZC[i].push_back(sEMG_ZC[i]);
         }
 
-        // 2. IMU sensor variables
-        for (int i = 0; i < N_IMU_CH; i++) {
-            stack_IMU_ori[i].push_back(IMU_Ori_Lower[i]);
-            stack_IMU_gyro[i].push_back(IMU_Gyro_Lower[i]);
-            stack_IMU_acc[i].push_back(IMU_Acc_Lower[i]);
-            stack_IMU_mag[i].push_back(IMU_Mag_Lower[i]);
-        }
-
-        // 3. Flex sensor variables
-        for (int i = 0; i < N_FLEX_CH; i++) {
-            stack_Flex_raw[i].push_back(Flex_raw[i]);
-            stack_Flex_processed[i].push_back(Flex_processed[i]);
-            stack_Flex_Angle[i].push_back(Flex_Angle[i]);
-        }
-
         // 4. Motion label
         stack_Motion_label.push_back(Motion_label);
 
@@ -1979,21 +1555,6 @@ void MainWindow::StackData() {
             stack_Ball_Ctr_sEMG_WL[Trial_idx - 1][Traj_idx - 1][i].push_back(sEMG_WL[i]);
             stack_Ball_Ctr_sEMG_SSC[Trial_idx - 1][Traj_idx - 1][i].push_back(sEMG_SSC[i]);
             stack_Ball_Ctr_sEMG_ZC[Trial_idx - 1][Traj_idx - 1][i].push_back(sEMG_ZC[i]);
-        }
-
-        // 2. IMU sensor variables
-        for (int i = 0; i < N_IMU_CH; i++) {
-            stack_Ball_Ctr_IMU_ori[Trial_idx - 1][Traj_idx - 1][i].push_back(IMU_Ori_Lower[i]);
-            stack_Ball_Ctr_IMU_gyro[Trial_idx - 1][Traj_idx - 1][i].push_back(IMU_Gyro_Lower[i]);
-            stack_Ball_Ctr_IMU_acc[Trial_idx - 1][Traj_idx - 1][i].push_back(IMU_Acc_Lower[i]);
-            stack_Ball_Ctr_IMU_mag[Trial_idx - 1][Traj_idx - 1][i].push_back(IMU_Mag_Lower[i]);
-        }
-
-        // 3. Flex sensor variables
-        for (int i = 0; i < N_FLEX_CH; i++) {
-            stack_Ball_Ctr_Flex_raw[Trial_idx - 1][Traj_idx - 1][i].push_back(Flex_raw[i]);
-            stack_Ball_Ctr_Flex_processed[Trial_idx - 1][Traj_idx - 1][i].push_back(Flex_processed[i]);
-            stack_Ball_Ctr_Flex_Angle[Trial_idx - 1][Traj_idx - 1][i].push_back(Flex_Angle[i]);
         }
 
         // 4. Ball control histories
@@ -2022,19 +1583,6 @@ void MainWindow::PopUpData(unsigned int N_delete) {
             stack_sEMG_WL[i].pop_back();
             stack_sEMG_SSC[i].pop_back();
             stack_sEMG_ZC[i].pop_back();
-        }
-
-        for (int i = 0; i < N_IMU_CH; i++) {
-            stack_IMU_ori[i].pop_back();
-            stack_IMU_gyro[i].pop_back();
-            stack_IMU_acc[i].pop_back();
-            stack_IMU_mag[i].pop_back();
-        }
-
-        for (int i = 0; i < N_FLEX_CH; i++) {
-            stack_Flex_raw[i].pop_back();
-            stack_Flex_processed[i].pop_back();
-            stack_Flex_Angle[i].pop_back();
         }
 
         stack_Motion_label.pop_back();
@@ -2123,111 +1671,6 @@ void MainWindow::SaveData_Training() {
         SaveOut << QString("\n");
     }
     std::cout << "5. sEMG ZC save complete" << std::endl;
-
-    // 6. IMU orientation
-    filename = "/IMU_Ori.txt";
-    QFile file_IMU_Ori(SaveFolderStr + filename);
-    file_IMU_Ori.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_IMU_Ori);
-    for (int i = 0; i < stack_IMU_ori[0].size(); i++) {
-        for (int j = 0; j < N_IMU_CH; j++) {
-            SaveOut << QString::number(stack_IMU_ori[j][i]);
-            if (j != N_IMU_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "6. IMU orientation save complete" << std::endl;
-
-    // 7. IMU gyroscope
-    filename = "/IMU_Gyro.txt";
-    QFile file_IMU_Gyro(SaveFolderStr + filename);
-    file_IMU_Gyro.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_IMU_Gyro);
-    for (int i = 0; i < stack_IMU_gyro[0].size(); i++) {
-        for (int j = 0; j < N_IMU_CH; j++) {
-            SaveOut << QString::number(stack_IMU_gyro[j][i]);
-            if (j != N_IMU_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "7. IMU gyroscope save complete" << std::endl;
-
-    // 8. IMU accelerometer
-    filename = "/IMU_Acc.txt";
-    QFile file_IMU_Acc(SaveFolderStr + filename);
-    file_IMU_Acc.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_IMU_Acc);
-    for (int i = 0; i < stack_IMU_acc[0].size(); i++) {
-        for (int j = 0; j < N_IMU_CH; j++) {
-            SaveOut << QString::number(stack_IMU_acc[j][i]);
-            if (j != N_IMU_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "8. IMU accelerometer save complete" << std::endl;
-
-    // 9. IMU magnetometer
-    filename = "/IMU_Mag.txt";
-    QFile file_IMU_Mag(SaveFolderStr + filename);
-    file_IMU_Mag.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_IMU_Mag);
-    for (int i = 0; i < stack_IMU_mag[0].size(); i++) {
-        for (int j = 0; j < N_IMU_CH; j++) {
-            SaveOut << QString::number(stack_IMU_mag[j][i]);
-            if (j != N_IMU_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "9. IMU magnetometer save complete" << std::endl;
-
-    // 10. Raw flex sensor.txt
-    filename = "/Flex_raw.txt";
-    QFile file_Flex_raw(SaveFolderStr + filename);
-    file_Flex_raw.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Flex_raw);
-    for (int i = 0; i < stack_Flex_raw[0].size(); i++) {
-        for (int j = 0; j < N_FLEX_CH; j++) {
-            SaveOut << QString::number(stack_Flex_raw[j][i]);
-            if (j != N_FLEX_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "10. Raw flex sensor save complete" << std::endl;
-
-    // 11. Offset-processed flex sensor.txt
-    filename = "/Flex_processed.txt";
-    QFile file_Flex_processed(SaveFolderStr + filename);
-    file_Flex_processed.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Flex_processed);
-    for (int i = 0; i < stack_Flex_raw[0].size(); i++) {
-        for (int j = 0; j < N_FLEX_CH; j++) {
-            SaveOut << QString::number(stack_Flex_processed[j][i]);
-            if (j != N_FLEX_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "11. Processed flex sensor save complete" << std::endl;
-
-    // 12. Angle flex sensor.txt
-    filename = "/Flex_angle.txt";
-    QFile file_Flex_angle(SaveFolderStr + filename);
-    file_Flex_angle.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Flex_angle);
-    for (int i = 0; i < stack_Flex_Angle[0].size(); i++) {
-        for (int j = 0; j < N_FLEX_CH; j++) {
-            SaveOut << QString::number(stack_Flex_Angle[j][i]);
-            if (j != N_FLEX_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "12. Angle flex sensor save complete" << std::endl;
 
     // 13. Motion label.txt
     filename = "/Motion_label.txt";
@@ -2335,111 +1778,6 @@ void MainWindow::SaveData_UnlabeledDAQ() {
         SaveOut << QString("\n");
     }
     std::cout << "5. sEMG ZC save complete" << std::endl;
-
-    // 6. IMU orientation
-    filename = "/IMU_Ori.txt";
-    QFile file_IMU_Ori(SaveFolderStr + filename);
-    file_IMU_Ori.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_IMU_Ori);
-    for (int i = 0; i < stack_IMU_ori[0].size(); i++) {
-        for (int j = 0; j < N_IMU_CH; j++) {
-            SaveOut << QString::number(stack_IMU_ori[j][i]);
-            if (j != N_IMU_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "6. IMU orientation save complete" << std::endl;
-
-    // 7. IMU gyroscope
-    filename = "/IMU_Gyro.txt";
-    QFile file_IMU_Gyro(SaveFolderStr + filename);
-    file_IMU_Gyro.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_IMU_Gyro);
-    for (int i = 0; i < stack_IMU_gyro[0].size(); i++) {
-        for (int j = 0; j < N_IMU_CH; j++) {
-            SaveOut << QString::number(stack_IMU_gyro[j][i]);
-            if (j != N_IMU_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "7. IMU gyroscope save complete" << std::endl;
-
-    // 8. IMU accelerometer
-    filename = "/IMU_Acc.txt";
-    QFile file_IMU_Acc(SaveFolderStr + filename);
-    file_IMU_Acc.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_IMU_Acc);
-    for (int i = 0; i < stack_IMU_acc[0].size(); i++) {
-        for (int j = 0; j < N_IMU_CH; j++) {
-            SaveOut << QString::number(stack_IMU_acc[j][i]);
-            if (j != N_IMU_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "8. IMU accelerometer save complete" << std::endl;
-
-    // 9. IMU magnetometer
-    filename = "/IMU_Mag.txt";
-    QFile file_IMU_Mag(SaveFolderStr + filename);
-    file_IMU_Mag.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_IMU_Mag);
-    for (int i = 0; i < stack_IMU_mag[0].size(); i++) {
-        for (int j = 0; j < N_IMU_CH; j++) {
-            SaveOut << QString::number(stack_IMU_mag[j][i]);
-            if (j != N_IMU_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "9. IMU magnetometer save complete" << std::endl;
-
-    // 10. Raw flex sensor.txt
-    filename = "/Flex_raw.txt";
-    QFile file_Flex_raw(SaveFolderStr + filename);
-    file_Flex_raw.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Flex_raw);
-    for (int i = 0; i < stack_Flex_raw[0].size(); i++) {
-        for (int j = 0; j < N_FLEX_CH; j++) {
-            SaveOut << QString::number(stack_Flex_raw[j][i]);
-            if (j != N_FLEX_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "10. Raw flex sensor save complete" << std::endl;
-
-    // 11. Offset-processed flex sensor.txt
-    filename = "/Flex_processed.txt";
-    QFile file_Flex_processed(SaveFolderStr + filename);
-    file_Flex_processed.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Flex_processed);
-    for (int i = 0; i < stack_Flex_raw[0].size(); i++) {
-        for (int j = 0; j < N_FLEX_CH; j++) {
-            SaveOut << QString::number(stack_Flex_processed[j][i]);
-            if (j != N_FLEX_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "11. Processed flex sensor save complete" << std::endl;
-
-    // 12. Angle flex sensor.txt
-    filename = "/Flex_angle.txt";
-    QFile file_Flex_angle(SaveFolderStr + filename);
-    file_Flex_angle.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Flex_angle);
-    for (int i = 0; i < stack_Flex_Angle[0].size(); i++) {
-        for (int j = 0; j < N_FLEX_CH; j++) {
-            SaveOut << QString::number(stack_Flex_Angle[j][i]);
-            if (j != N_FLEX_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "12. Angle flex sensor save complete" << std::endl;
 
     // 13. Motion label.txt
     filename = "/Motion_label.txt";
@@ -2574,111 +1912,6 @@ void MainWindow::SaveData_BallControl(int trial_idx, int traj_idx) {
     }
     std::cout << "7. sEMG ZC save complete" << std::endl;
 
-    // 8. IMU orientation
-    filename = "/IMU_Ori.txt";
-    QFile file_Ball_Ctr_IMU_Ori(SaveFolderStr + filename);
-    file_Ball_Ctr_IMU_Ori.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Ball_Ctr_IMU_Ori);
-    for (int i = 0; i < stack_Ball_Ctr_IMU_ori[trial_idx - 1][traj_idx - 1][0].size(); i++) {
-        for (int j = 0; j < N_IMU_CH; j++) {
-            SaveOut << QString::number(stack_Ball_Ctr_IMU_ori[trial_idx - 1][traj_idx - 1][j][i]);
-            if (j != N_IMU_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "8. IMU orientation save complete" << std::endl;
-
-    // 9. IMU gyroscope
-    filename = "/IMU_Gyro.txt";
-    QFile file_Ball_Ctr_IMU_Gyro(SaveFolderStr + filename);
-    file_Ball_Ctr_IMU_Gyro.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Ball_Ctr_IMU_Gyro);
-    for (int i = 0; i < stack_Ball_Ctr_IMU_gyro[trial_idx - 1][traj_idx - 1][0].size(); i++) {
-        for (int j = 0; j < N_IMU_CH; j++) {
-            SaveOut << QString::number(stack_Ball_Ctr_IMU_gyro[trial_idx - 1][traj_idx - 1][j][i]);
-            if (j != N_IMU_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "9. IMU gyroscope save complete" << std::endl;
-
-    // 10. IMU accelerometer
-    filename = "/IMU_Acc.txt";
-    QFile file_Ball_Ctr_IMU_Acc(SaveFolderStr + filename);
-    file_Ball_Ctr_IMU_Acc.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Ball_Ctr_IMU_Acc);
-    for (int i = 0; i < stack_Ball_Ctr_IMU_acc[trial_idx - 1][traj_idx - 1][0].size(); i++) {
-        for (int j = 0; j < N_IMU_CH; j++) {
-            SaveOut << QString::number(stack_Ball_Ctr_IMU_acc[trial_idx - 1][traj_idx - 1][j][i]);
-            if (j != N_IMU_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "10. IMU accelerometer save complete" << std::endl;
-
-    // 11. IMU magnetometer
-    filename = "/IMU_Mag.txt";
-    QFile file_Ball_Ctr_IMU_Mag(SaveFolderStr + filename);
-    file_Ball_Ctr_IMU_Mag.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Ball_Ctr_IMU_Mag);
-    for (int i = 0; i < stack_Ball_Ctr_IMU_mag[trial_idx - 1][traj_idx - 1][0].size(); i++) {
-        for (int j = 0; j < N_IMU_CH; j++) {
-            SaveOut << QString::number(stack_Ball_Ctr_IMU_mag[trial_idx - 1][traj_idx - 1][j][i]);
-            if (j != N_IMU_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "11. IMU magnetometer save complete" << std::endl;
-
-    // 12. Raw flex sensor.txt
-    filename = "/Flex_raw.txt";
-    QFile file_Ball_Ctr_Flex_raw(SaveFolderStr + filename);
-    file_Ball_Ctr_Flex_raw.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Ball_Ctr_Flex_raw);
-    for (int i = 0; i < stack_Ball_Ctr_Flex_raw[trial_idx - 1][traj_idx - 1][0].size(); i++) {
-        for (int j = 0; j < N_FLEX_CH; j++) {
-            SaveOut << QString::number(stack_Ball_Ctr_Flex_raw[trial_idx - 1][traj_idx - 1][j][i]);
-            if (j != N_FLEX_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "12. Raw flex sensor save complete" << std::endl;
-
-    // 13. Offset-processed flex sensor.txt
-    filename = "/Flex_processed.txt";
-    QFile file_Ball_Ctr_Flex_processed(SaveFolderStr + filename);
-    file_Ball_Ctr_Flex_processed.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Ball_Ctr_Flex_processed);
-    for (int i = 0; i < stack_Ball_Ctr_Flex_raw[trial_idx - 1][traj_idx - 1][0].size(); i++) {
-        for (int j = 0; j < N_FLEX_CH; j++) {
-            SaveOut << QString::number(stack_Ball_Ctr_Flex_processed[trial_idx - 1][traj_idx - 1][j][i]);
-            if (j != N_FLEX_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "13. Processed flex sensor save complete" << std::endl;
-
-    // 14. Angle flex sensor.txt
-    filename = "/Flex_angle.txt";
-    QFile file_Ball_Ctr_Flex_angle(SaveFolderStr + filename);
-    file_Ball_Ctr_Flex_angle.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Ball_Ctr_Flex_angle);
-    for (int i = 0; i < stack_Ball_Ctr_Flex_Angle[trial_idx - 1][traj_idx - 1][0].size(); i++) {
-        for (int j = 0; j < N_FLEX_CH; j++) {
-            SaveOut << QString::number(stack_Ball_Ctr_Flex_Angle[trial_idx - 1][traj_idx - 1][j][i]);
-            if (j != N_FLEX_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "14. Angle flex sensor save complete" << std::endl;
-
     // 15. Motion estimation from TwinCAT Thread
     filename = "/Motion_est_TwinCAT.txt";
     QFile file_Ball_Ctr_Motion_est(SaveFolderStr + filename);
@@ -2812,12 +2045,6 @@ void MainWindow::ClearData_Training() {
         stack_sEMG_ZC[i].clear();
     }
 
-    for (int i = 0; i < N_FLEX_CH; i++) {
-        stack_Flex_raw[i].clear();
-        stack_Flex_processed[i].clear();
-        stack_Flex_Angle[i].clear();
-    }
-
     stack_Motion_label.clear();
     stack_Time_elapse_Processing.clear();
 }
@@ -2829,12 +2056,6 @@ void MainWindow::ClearData_UnlabeledDAQ() {
         stack_sEMG_WL[i].clear();
         stack_sEMG_SSC[i].clear();
         stack_sEMG_ZC[i].clear();
-    }
-
-    for (int i = 0; i < N_FLEX_CH; i++) {
-        stack_Flex_raw[i].clear();
-        stack_Flex_processed[i].clear();
-        stack_Flex_Angle[i].clear();
     }
 
     stack_Motion_label.clear();
@@ -2850,12 +2071,6 @@ void MainWindow::ClearData_BallControl(int trial_idx, int traj_idx) {
         stack_Ball_Ctr_sEMG_ZC[trial_idx - 1][traj_idx - 1][i].clear();
     }
     stack_Ball_Ctr_sEMG_MAV_amp[trial_idx - 1][traj_idx - 1].clear();
-
-    for (int i = 0; i < N_FLEX_CH; i++) {
-        stack_Ball_Ctr_Flex_raw[trial_idx - 1][traj_idx - 1][i].clear();
-        stack_Ball_Ctr_Flex_processed[trial_idx - 1][traj_idx - 1][i].clear();
-        stack_Ball_Ctr_Flex_Angle[trial_idx - 1][traj_idx - 1][i].clear();
-    }
 
     stack_Ball_Ctr_Motion_est[trial_idx - 1][traj_idx - 1].clear();
     stack_Ball_Ctr_Motion_est_TensorRT_thread[trial_idx - 1][traj_idx - 1].clear();
@@ -2873,8 +2088,6 @@ void MainWindow::ClearData_BallControl(int trial_idx, int traj_idx) {
 void MainWindow::on_BtnSwitch_clicked() {
     if (!m_flag_Switch) { //Turn OFF -> Turn ON
         if (!isTwinCATStarted) {
-            Initialize_SerialComm();
-
             connect(&m_pTimer_ControlTime, SIGNAL(timeout()), this, SLOT(OnTimerControlTimeCallbackFunc()));
             m_pTimer_ControlTime.start(20);
 
