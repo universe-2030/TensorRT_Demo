@@ -131,7 +131,8 @@ TrainingUserForm::TrainingUserForm(QWidget *parent) :
                               QImage::Format_ARGB32);
     qpix_motion = QPixmap::fromImage(*qimg_motion);
 
-    m_MotionImg->setPixmap(qpix_motion.scaled(PIXMAP_WIDTH, PIXMAP_HEIGHT,
+    m_MotionImg->setPixmap(qpix_motion.scaled(PIXMAP_WIDTH_TRAINING,
+                                              PIXMAP_HEIGHT_TRAINING,
                                               Qt::IgnoreAspectRatio));
     delete qimg_motion;
 

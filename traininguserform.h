@@ -28,8 +28,8 @@
 #include "scenemodifier.h"
 
 #define N_MOTIONS 8
-#define PIXMAP_WIDTH 400
-#define PIXMAP_HEIGHT 400
+#define PIXMAP_WIDTH_TRAINING 400
+#define PIXMAP_HEIGHT_TRAINING 400
 
 QT_BEGIN_NAMESPACE
 class QAbstractItemView;
