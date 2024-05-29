@@ -86,20 +86,11 @@
 #define N_FEATURES 4
 #define N_EMG 6
 #define WIN_SIZE 150
-#define N_MOTIONS 8
+#define N_MOTIONS 6
 #define N_REPEAT 40
-
-// Flexor sensor macros
-# define N_FLEX_CH 5
 
 // Maximal sum of MAV
 #define MAV_MAX_AMP 10.0
-
-// Minimal & maximal sampling probability
-#define PROB_MIN 0.45
-#define PROB_MAX 0.7
-#define N_MOTION_MIN 3
-#define N_MOTION_MAX 8
 
 // Thresholds for distinguishing 'rest' and 'motions'
 #define STD_THRES_SCALE 5.0
@@ -140,8 +131,6 @@
 #define WE_ROM 60.0
 #define RD_ROM 35.0
 #define UD_ROM 35.0
-#define WP_ROM 70.0
-#define WS_ROM 70.0
 #define HC_ROM 80.0
 #define HO_ROM 10.0
 
@@ -342,12 +331,6 @@ private:
     int*    Target_motion_N;
     int*    Target_motion_list;
 
-    // Flexor sensor variables
-    double* Flex_raw;
-    double* Flex_raw_offset;
-    double* Flex_processed;
-    double* Flex_Angle;
-
     // Label & Estimation variables
     int Motion_label = 0;
     int State_indicator = 0;
@@ -449,7 +432,6 @@ private:
 
     // NI_DAQ variables
     NI_AI_sEMG* AI_sEMG;
-    NI_AI_Flex* AI_Flex;
 
     // TensorRT module
     bool isEstimated = true;
