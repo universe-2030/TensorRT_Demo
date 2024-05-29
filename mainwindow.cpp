@@ -68,15 +68,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::setRingRotZ_Cue_Trn, player_Training->get_Model(), &SceneModifier::set_Ring_RotZ);
     connect(this, &MainWindow::setLittleRotZ_Cue_Trn, player_Training->get_Model(), &SceneModifier::set_Little_RotZ);
 
-    connect(this, &MainWindow::setPalmRotX_MoCap_Trn, trnForm.get_Model(), &SceneModifier::set_Palm_RotX);
-    connect(this, &MainWindow::setLowerArmRotY_MoCap_Trn, trnForm.get_Model(), &SceneModifier::set_Lower_arm_RotY);
-    connect(this, &MainWindow::setPalmRotZ_MoCap_Trn, trnForm.get_Model(), &SceneModifier::set_Palm_RotZ);
-    connect(this, &MainWindow::setThumbRotZ_MoCap_Trn, trnForm.get_Model(), &SceneModifier::set_Thumb_RotZ);
-    connect(this, &MainWindow::setIndexRotZ_MoCap_Trn, trnForm.get_Model(), &SceneModifier::set_Index_RotZ);
-    connect(this, &MainWindow::setMiddleRotZ_MoCap_Trn, trnForm.get_Model(), &SceneModifier::set_Middle_RotZ);
-    connect(this, &MainWindow::setRingRotZ_MoCap_Trn, trnForm.get_Model(), &SceneModifier::set_Ring_RotZ);
-    connect(this, &MainWindow::setLittleRotZ_MoCap_Trn, trnForm.get_Model(), &SceneModifier::set_Little_RotZ);
-
     connect(this, &MainWindow::setPalmRotX_Cue_UnlabeledDAQ, player_UnlabeledDAQ->get_Model(), &SceneModifier::set_Palm_RotX);
     connect(this, &MainWindow::setLowerArmRotY_Cue_UnlabeledDAQ, player_UnlabeledDAQ->get_Model(), &SceneModifier::set_Lower_arm_RotY);
     connect(this, &MainWindow::setPalmRotZ_Cue_UnlabeledDAQ, player_UnlabeledDAQ->get_Model(), &SceneModifier::set_Palm_RotZ);
