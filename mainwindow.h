@@ -78,8 +78,6 @@
 // Real-time graph macros
 #define GRAPH_MAV_Y_MIN 0.0
 #define GRAPH_MAV_Y_MAX 0.3
-#define GRAPH_IMU_MIN -180.0
-#define GRAPH_IMU_MAX 180.0
 #define GRAPH_FLEX_MIN -1.45
 #define GRAPH_FLEX_MAX 0.45
 
@@ -245,7 +243,6 @@ public:
 
     // Individual Initialization
     void Initialize_NI();
-    void Initialize_SerialComm();
     void Initialize_GUI();
     void Initialize_Variables();
     void Initialize_DAVariables();
@@ -315,10 +312,6 @@ public:
     void Set_TimeStr();
 
 private slots:
-    // Serial Connection
-    void readSerialIMU();
-    void handleError(QSerialPort::SerialPortError error);
-
     // GUI slots
     void OnTimerControlTimeCallbackFunc();
     void OnTimerRTPlotCallbackFunc();
@@ -409,12 +402,6 @@ private:
     int*    Target_motion_N;
     int*    Target_motion_list;
 
-    // IMU variables
-    double* IMU_Ori_Lower;
-    double* IMU_Gyro_Lower;
-    double* IMU_Acc_Lower;
-    double* IMU_Mag_Lower;
-
     // Flexor sensor variables
     double* Flex_raw;
     double* Flex_raw_offset;
@@ -443,11 +430,6 @@ private:
     std::vector<double>* stack_sEMG_WL;
     std::vector<double>* stack_sEMG_SSC;
     std::vector<double>* stack_sEMG_ZC;
-
-    std::vector<double>* stack_IMU_ori;
-    std::vector<double>* stack_IMU_gyro;
-    std::vector<double>* stack_IMU_acc;
-    std::vector<double>* stack_IMU_mag;
 
     std::vector<double>* stack_Flex_raw;
     std::vector<double>* stack_Flex_processed;
