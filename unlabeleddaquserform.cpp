@@ -11,56 +11,10 @@ UnlabeledDAQUserForm::UnlabeledDAQUserForm(QWidget *parent) :
     ui->setupUi(this);
 
     // Figure container assignment
-    Figures_motion = new cv::Mat[N_MOTIONS + 1];
+    Figures_motion = new cv::Mat();
     Figures_motion[0] = cv::imread("../TRT_demo/Figures/Motions/Rest.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[1] = cv::imread("../TRT_demo/Figures/Motions/Wrist Flexion.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[2] = cv::imread("../TRT_demo/Figures/Motions/Wrist Extension.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[3] = cv::imread("../TRT_demo/Figures/Motions/Radial Deviation.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[4] = cv::imread("../TRT_demo/Figures/Motions/Ulnar Deviation.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[5] = cv::imread("../TRT_demo/Figures/Motions/Wrist Pronation.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[6] = cv::imread("../TRT_demo/Figures/Motions/Wrist Supination.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[7] = cv::imread("../TRT_demo/Figures/Motions/Hand Close.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[8] = cv::imread("../TRT_demo/Figures/Motions/Hand Open.png", cv::IMREAD_UNCHANGED);
 
-    /////////////////////////////////// OpenGL widget ///////////////////////////////////
-    Qt3DExtras::Qt3DWindow *view = new Qt3DExtras::Qt3DWindow();
-    view->defaultFrameGraph()->setClearColor(QColor(QRgb(0x000000))); // Background Color
-    Container_hand = QWidget::createWindowContainer(view,
-                                                    ui->wdg_Upper_limb,
-                                                    Qt::Widget);
-
-    // Root entity
-    Qt3DCore::QEntity *rootEntity = new Qt3DCore::QEntity();
-
-    // Camera setup
-    Qt3DRender::QCamera *cameraEntity = view->camera();
-    cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
-    cameraEntity->setPosition(QVector3D(12.5f, 6.25f, 6.0f));      // Position (12.5, 6.25, 6.0)
-    cameraEntity->setUpVector(QVector3D(0.5f, 2.2f, 0.3f));        // Up Vector (0.5, 2.2, 0.3)
-    cameraEntity->setViewCenter(QVector3D(0.5f, 0.0f, -1.5f));    // View Center (0.5, 0.0, -1.5)
-
-    // Light setup
-    Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity(rootEntity);
-    Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight(lightEntity);
-    light->setColor("white");
-    light->setIntensity(1.5);
-    lightEntity->addComponent(light);
-    Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform(lightEntity);
-    lightTransform->setTranslation(cameraEntity->position());
-    lightEntity->addComponent(lightTransform);
-
-    // Interactive camera control
-    Qt3DExtras::QFirstPersonCameraController *camController =
-                    new Qt3DExtras::QFirstPersonCameraController(rootEntity);
-    camController->setCamera(cameraEntity);
-
-    // Scenemodifier
-    modifier = new SceneModifier(rootEntity);
-
-    // Set root object of the scene
-    view->setRootEntity(rootEntity);
-
-    /////////////////////////////////// Image widget ///////////////////////////////////
+    /////////////////////////////////// Image & Video widget ///////////////////////////////////
     m_MotionImg = new QLabel(this);
 
     /////////////////////////////////// Video widget ///////////////////////////////////
@@ -89,38 +43,19 @@ UnlabeledDAQUserForm::UnlabeledDAQUserForm(QWidget *parent) :
     m_playlistModel = new PlaylistModel(this);
     m_playlistModel->setPlaylist(m_playlist);
 
-    // Arm - layout
-    QBoxLayout *armlayout = new QHBoxLayout;
-    armlayout->addWidget(Container_hand);
-
     QFont TextFont("Times", 15, QFont::Bold);
 
-    // Video - layout
-    QBoxLayout *videolayout = new QVBoxLayout;
-    QLabel *videolabel = new QLabel(this);
-    videolabel->setText("Timer");
-    videolabel->setAlignment(Qt::AlignHCenter);
-    videolabel->setFont(TextFont);
-    videolayout->addWidget(m_videoWidget, 10);
-    videolayout->addWidget(videolabel, 1);
-
     // Image - layout
-    QBoxLayout *imagelayout = new QVBoxLayout;
-    QLabel *imagelabel = new QLabel(this);
-    imagelabel->setText("Motion");
-    imagelabel->setAlignment(Qt::AlignHCenter);
-    imagelabel->setFont(TextFont);
-    imagelayout->addWidget(m_MotionImg, 10);
-    imagelayout->addWidget(imagelabel, 1);
-    imagelayout->setAlignment(Qt::AlignHCenter);
+    QBoxLayout *imagelayout = new QHBoxLayout;
+    imagelayout->addWidget(m_MotionImg);
 
-    QBoxLayout *ImageVideoLayout = new QVBoxLayout;
-    ImageVideoLayout->addLayout(videolayout, 1);
-    ImageVideoLayout->addLayout(imagelayout, 1);
+    // Video - layout
+    QBoxLayout *videolayout = new QHBoxLayout;
+    videolayout->addWidget(m_videoWidget);
 
     QBoxLayout *layout = new QHBoxLayout;
-    layout->addLayout(armlayout, 3);
-    layout->addLayout(ImageVideoLayout, 1);
+    layout->addLayout(imagelayout, 6);
+    layout->addLayout(videolayout, 4);
     setLayout(layout);
 
     // Motion image setup
@@ -149,10 +84,6 @@ UnlabeledDAQUserForm::UnlabeledDAQUserForm(QWidget *parent) :
 
 UnlabeledDAQUserForm::~UnlabeledDAQUserForm() {
     delete ui;
-}
-
-SceneModifier* UnlabeledDAQUserForm::get_Model() {
-    return modifier;
 }
 
 QMediaPlayer* UnlabeledDAQUserForm::get_QMediaPlayer() {
