@@ -158,44 +158,6 @@ void MainWindow::GraphInit_sEMG(QCustomPlot* Graph_) {
             Graph_->yAxis2, SLOT(setRange(QCPRange)));
 }
 
-void MainWindow::GraphInit_Flex(QCustomPlot* Graph_) {
-    Graph_->addGraph();
-    Graph_->graph(0)->setPen(QPen(QColor(255, 0, 0))); // Red line
-    Graph_->graph(0)->setName("Thumb");
-    Graph_->addGraph();
-    Graph_->graph(1)->setPen(QPen(QColor(0, 255, 0))); // Green line
-    Graph_->graph(1)->setName("Index");
-    Graph_->addGraph();
-    Graph_->graph(2)->setPen(QPen(QColor(0, 0, 255))); // Blue line
-    Graph_->graph(2)->setName("Middle");
-    Graph_->addGraph();
-    Graph_->graph(3)->setPen(QPen(QColor(255, 0, 255))); // Purple line
-    Graph_->graph(3)->setName("Ring");
-    Graph_->addGraph();
-    Graph_->graph(4)->setPen(QPen(QColor(255, 255, 0))); // Yellow line
-    Graph_->graph(4)->setName("Little");
-
-    QSharedPointer<QCPAxisTickerTime> timeTicker(new QCPAxisTickerTime);
-    timeTicker->setTimeFormat("%m:%s");
-    Graph_->xAxis->setTicker(timeTicker);
-    Graph_->axisRect()->setupFullAxesBox();
-    Graph_->yAxis->setRange(GRAPH_FLEX_MIN, GRAPH_FLEX_MAX);
-
-    Graph_->setInteractions(QCP::iRangeDrag | QCP::iRangeZoom);
-    Graph_->axisRect()->setRangeDrag(Qt::Vertical); // Only Y-directional drag is available.
-
-    Graph_->axisRect()->setAutoMargins(QCP::msLeft | QCP::msTop | QCP::msBottom);
-    Graph_->axisRect()->setMargins(QMargins(0,0,10,0));
-    Graph_->axisRect()->insetLayout()->setInsetPlacement(0, QCPLayoutInset::ipFree);
-    Graph_->axisRect()->insetLayout()->setInsetRect(0, QRectF(1.1,0,0.1,0.1));
-
-    // make left and bottom axes transfer their ranges to right and top axes:
-    connect(Graph_->xAxis, SIGNAL(rangeChanged(QCPRange)),
-            Graph_->xAxis2, SLOT(setRange(QCPRange)));
-    connect(Graph_->yAxis, SIGNAL(rangeChanged(QCPRange)),
-            Graph_->yAxis2, SLOT(setRange(QCPRange)));
-}
-
 void MainWindow::GraphInit_Label(QCustomPlot* Graph_, int Session) {
     if (Session == 0 || Session == 1) {
         Graph_->addGraph();
@@ -504,19 +466,16 @@ void MainWindow::Initialize_Figures() {
 
 void MainWindow::Initialize_trnForm() {
     GraphInit_sEMG(trnForm.get_UI()->wdg_RTGraph_MAV);
-    GraphInit_Flex(trnForm.get_UI()->wdg_RTGraph_Flex);
     GraphInit_Label(trnForm.get_UI()->wdg_RTGraph_Label, 0);
 }
 
 void MainWindow::Initialize_unlabeledDAQForm() {
     GraphInit_sEMG(unlabeledDAQForm.get_UI()->wdg_RTGraph_MAV);
-    GraphInit_Flex(unlabeledDAQForm.get_UI()->wdg_RTGraph_Flex);
     GraphInit_Label(unlabeledDAQForm.get_UI()->wdg_RTGraph_Label, 1);
 }
 
 void MainWindow::Initialize_testOneForm() {
     GraphInit_sEMG(testOneForm.get_UI()->wdg_RTGraph_MAV);
-    GraphInit_Flex(testOneForm.get_UI()->wdg_RTGraph_Flex);
     GraphInit_Label(testOneForm.get_UI()->wdg_RTGraph_Est, 2);
 }
 

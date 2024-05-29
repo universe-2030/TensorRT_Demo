@@ -234,7 +234,6 @@ public:
 
     // Real-time graph initialization
     void GraphInit_sEMG(QCustomPlot* Graph_);
-    void GraphInit_Flex(QCustomPlot* Graph_);
     void GraphInit_Label(QCustomPlot* Graph_, int Session);
 
     // Real-time graph plot

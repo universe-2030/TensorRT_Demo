@@ -119,35 +119,6 @@
     </rect>
    </property>
   </widget>
-  <widget class="QCustomPlot" name="wdg_RTGraph_Flex" native="true">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>420</y>
-     <width>1240</width>
-     <height>170</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="Txt_Flex">
-   <property name="geometry">
-    <rect>
-     <x>5</x>
-     <y>400</y>
-     <width>100</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <property name="font">
-    <font>
-     <pointsize>10</pointsize>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>Flex sensor</string>
-   </property>
-  </widget>
  </widget>
  <customwidgets>
   <customwidget>
