@@ -185,46 +185,6 @@ signals:
     void setRingRotZ_Cue_Trn(double value);
     void setLittleRotZ_Cue_Trn(double value);
 
-    // (Training) Motion capture
-    void setPalmRotX_MoCap_Trn(double value);
-    void setLowerArmRotY_MoCap_Trn(double value);
-    void setPalmRotZ_MoCap_Trn(double value);
-    void setThumbRotZ_MoCap_Trn(double value);
-    void setIndexRotZ_MoCap_Trn(double value);
-    void setMiddleRotZ_MoCap_Trn(double value);
-    void setRingRotZ_MoCap_Trn(double value);
-    void setLittleRotZ_MoCap_Trn(double value);
-
-    // (Unlabeled DAQ) Visual cue
-    void setPalmRotX_Cue_UnlabeledDAQ(double value);
-    void setLowerArmRotY_Cue_UnlabeledDAQ(double value);
-    void setPalmRotZ_Cue_UnlabeledDAQ(double value);
-    void setThumbRotZ_Cue_UnlabeledDAQ(double value);
-    void setIndexRotZ_Cue_UnlabeledDAQ(double value);
-    void setMiddleRotZ_Cue_UnlabeledDAQ(double value);
-    void setRingRotZ_Cue_UnlabeledDAQ(double value);
-    void setLittleRotZ_Cue_UnlabeledDAQ(double value);
-
-    // (Unlabeled DAQ) Motion capture
-    void setPalmRotX_MoCap_UnlabeledDAQ (double value);
-    void setLowerArmRotY_MoCap_UnlabeledDAQ(double value);
-    void setPalmRotZ_MoCap_UnlabeledDAQ(double value);
-    void setThumbRotZ_MoCap_UnlabeledDAQ(double value);
-    void setIndexRotZ_MoCap_UnlabeledDAQ(double value);
-    void setMiddleRotZ_MoCap_UnlabeledDAQ(double value);
-    void setRingRotZ_MoCap_UnlabeledDAQ(double value);
-    void setLittleRotZ_MoCap_UnlabeledDAQ(double value);
-
-    // (Test One) Motion capture
-    void setPalmRotX_MoCap_TestOne (double value);
-    void setLowerArmRotY_MoCap_TestOne(double value);
-    void setPalmRotZ_MoCap_TestOne(double value);
-    void setThumbRotZ_MoCap_TestOne(double value);
-    void setIndexRotZ_MoCap_TestOne(double value);
-    void setMiddleRotZ_MoCap_TestOne(double value);
-    void setRingRotZ_MoCap_TestOne(double value);
-    void setLittleRotZ_MoCap_TestOne(double value);
-
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

@@ -251,7 +251,7 @@
          </font>
         </property>
         <property name="text">
-         <string>Pseudo-labeling</string>
+         <string>Unlabeled DAQ</string>
         </property>
        </widget>
       </item>
@@ -264,18 +264,6 @@
         </property>
         <property name="text">
          <string>Ball Control</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="radioBtn_Mode_4">
-        <property name="font">
-         <font>
-          <pointsize>9</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>(Reserved)</string>
         </property>
        </widget>
       </item>
