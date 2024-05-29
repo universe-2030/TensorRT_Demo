@@ -51,29 +51,24 @@ public:
 
     // 'Get' Functions
     double Get_time();
-    double Get_Cur_Rot();
     double Get_Cur_Scale();
     double Get_Cur_X();
     double Get_Cur_Y();
 
-    double Get_Start_Rot_Practice();
     double Get_Start_Scale_Practice();
     double Get_Start_X_Practice();
     double Get_Start_Y_Practice();
 
-    double Get_Start_Rot(int trial_idx);
     double Get_Start_Scale(int trial_idx);
     double Get_Start_X(int trial_idx);
     double Get_Start_Y(int trial_idx);
 
-    double Get_End_Rot(int trial_idx);
     double Get_End_Scale(int trial_idx);
     double Get_End_X(int trial_idx);
     double Get_End_Y(int trial_idx);
 
     // 'Set' Functions
     void Set_time(double m_time);
-    void Set_Cur_Rot(double Cur_Rot);
     void Set_Cur_Scale(double Cur_Scale);
     void Set_Cur_X(double Cur_X);
     void Set_Cur_Y(double Cur_Y);
@@ -129,12 +124,10 @@ private:
     QPen timeoverPen;
 
     // Trajectory variables
-    double Start_Rot_Practice;
     double Start_Scale_Practice;
     double Start_X_Practice;
     double Start_Y_Practice;
 
-    double* Start_Rot;
     double* Start_Scale;
     double* Start_X;
     double* Start_Y;
@@ -166,7 +159,6 @@ private:
     double* End_Y;
 
     // Current state variables
-    double Cur_Rot;
     double Cur_Scale;
     double Cur_X;
     double Cur_Y;

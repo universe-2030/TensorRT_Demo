@@ -734,16 +734,6 @@ void MainWindow::Thread_TwinCAT_func() {
                         T_trial_start = m_time;
                         player_TestOne.Get_PaintTestOne()->Set_T_Trial_Start(T_trial_start);
                     }
-                    else {
-                        // Success determination
-                        player_TestOne.Get_PaintTestOne()->Set_isSuccess(Determine_Success(0));
-
-                        // Time over determination
-                        if ((m_time - T_trial_start) >= (T_READY_BALL_CTR + T_MAX_BALL_CTR_PRACTICE)) {
-                            isTimeOver = true;
-                            player_TestOne.Get_PaintTestOne()->Set_isTimeOver(isTimeOver);
-                        }
-                    }
                 }
                 else {
                     if (!isRun) {
@@ -752,17 +742,9 @@ void MainWindow::Thread_TwinCAT_func() {
                         player_TestOne.Get_PaintTestOne()->Set_T_Trial_Start(T_trial_start);
                     }
                     else {
-                        if ((m_time - T_trial_start) < T_READY_BALL_CTR) {
-                            player_TestOne.Get_PaintTestOne()->Set_isSuccess(false);
-                        }
-                        else if (T_READY_BALL_CTR <= (m_time - T_trial_start) &&
+                        if (T_READY_BALL_CTR <= (m_time - T_trial_start) &&
                                 (m_time - T_trial_start) < (T_READY_BALL_CTR + T_MAX_BALL_CTR)) {
-                            isTimeOver = false;
-                            player_TestOne.Get_PaintTestOne()->Set_isTimeOver(isTimeOver);
-
                             // Success determination
-                            isSuccess = Determine_Success(Traj_idx);
-                            player_TestOne.Get_PaintTestOne()->Set_isSuccess(isSuccess);
                             if (isSuccess) {
                                 if (!isSuccess_time_flag) {
                                     isSuccess_time_flag = true;
@@ -776,9 +758,6 @@ void MainWindow::Thread_TwinCAT_func() {
                             }
                         }
                         else if ((m_time - T_trial_start) >= (T_READY_BALL_CTR + T_MAX_BALL_CTR) && !isSuccess) {
-                            isTimeOver = true;
-                            player_TestOne.Get_PaintTestOne()->Set_isTimeOver(isTimeOver);
-
                             if (!isTimeOver_time_flag) {
                                 isTimeOver_time_flag = true;
                                 T_trial_end = m_time;
@@ -897,21 +876,11 @@ void MainWindow::Thread_TensorRT_func() {
                                         player_TestOne.Get_PaintTestOne()->Set_Cur_Y(Y_val + Y_val_inc);
                                 }
                                 else if (Motion_est == 5) {
-                                    double Rot_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Rot();
-                                    if (Rot_val + Rot_val_inc <= 150)
-                                        player_TestOne.Get_PaintTestOne()->Set_Cur_Rot(Rot_val + Rot_val_inc);
-                                }
-                                else if (Motion_est == 6) {
-                                    double Rot_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Rot();
-                                    if (Rot_val - Rot_val_inc >= -150)
-                                        player_TestOne.Get_PaintTestOne()->Set_Cur_Rot(Rot_val - Rot_val_inc);
-                                }
-                                else if (Motion_est == 7) {
                                     double Scale_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Scale();
                                     if (Scale_val - Scale_val_inc >= 0.3)
                                         player_TestOne.Get_PaintTestOne()->Set_Cur_Scale(Scale_val - Scale_val_inc);
                                 }
-                                else if (Motion_est == 8) {
+                                else if (Motion_est == 6) {
                                     double Scale_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Scale();
                                     if (Scale_val + Scale_val_inc <= 2.5)
                                         player_TestOne.Get_PaintTestOne()->Set_Cur_Scale(Scale_val + Scale_val_inc);
@@ -946,21 +915,11 @@ void MainWindow::Thread_TensorRT_func() {
                                             player_TestOne.Get_PaintTestOne()->Set_Cur_Y(Y_val + Y_val_inc);
                                     }
                                     else if (Motion_est == 5) {
-                                        double Rot_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Rot();
-                                        if (Rot_val + Rot_val_inc <= 150)
-                                            player_TestOne.Get_PaintTestOne()->Set_Cur_Rot(Rot_val + Rot_val_inc);
-                                    }
-                                    else if (Motion_est == 6) {
-                                        double Rot_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Rot();
-                                        if (Rot_val - Rot_val_inc >= -150)
-                                            player_TestOne.Get_PaintTestOne()->Set_Cur_Rot(Rot_val - Rot_val_inc);
-                                    }
-                                    else if (Motion_est == 7) {
                                         double Scale_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Scale();
                                         if (Scale_val - Scale_val_inc >= 0.3)
                                             player_TestOne.Get_PaintTestOne()->Set_Cur_Scale(Scale_val - Scale_val_inc);
                                     }
-                                    else if (Motion_est == 8) {
+                                    else if (Motion_est == 6) {
                                         double Scale_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Scale();
                                         if (Scale_val + Scale_val_inc <= 2.5)
                                             player_TestOne.Get_PaintTestOne()->Set_Cur_Scale(Scale_val + Scale_val_inc);
@@ -1430,25 +1389,22 @@ bool MainWindow::Rest_Mot_Classification() {
 }
 
 bool MainWindow::Determine_Success(int traj_idx) {
-    double End_X, End_Y, End_Rot, End_Scale;
-    double cur_X, cur_Y, cur_Rot, cur_Scale;
+    double End_X, End_Y, End_Scale;
+    double cur_X, cur_Y, cur_Scale;
     if (traj_idx == 0) {
 
     }
     else {
         End_X = player_TestOne.Get_PaintTestOne()->Get_End_X(traj_idx);
         End_Y = player_TestOne.Get_PaintTestOne()->Get_End_Y(traj_idx);
-        End_Rot = player_TestOne.Get_PaintTestOne()->Get_End_Rot(traj_idx);
         End_Scale = player_TestOne.Get_PaintTestOne()->Get_End_Scale(traj_idx);
     }
     cur_X = player_TestOne.Get_PaintTestOne()->Get_Cur_X();
     cur_Y = player_TestOne.Get_PaintTestOne()->Get_Cur_Y();
-    cur_Rot = player_TestOne.Get_PaintTestOne()->Get_Cur_Rot();
     cur_Scale = player_TestOne.Get_PaintTestOne()->Get_Cur_Scale();
 
     if ((std::fabs(cur_X - End_X) <= THRES_POS) &&
         (std::fabs(cur_Y - End_Y) <= THRES_POS) &&
-        (std::fabs(cur_Rot - End_Rot) <= THRES_ANG) &&
         (std::fabs(cur_Scale - End_Scale) <= THRES_SCALE))
         return true;
     else
@@ -1485,8 +1441,6 @@ void MainWindow::StackData() {
                 push_back(player_TestOne.Get_PaintTestOne()->Get_Cur_X());
         stack_Ball_Ctr_Y[Trial_idx - 1][Traj_idx - 1].
                 push_back(player_TestOne.Get_PaintTestOne()->Get_Cur_Y());
-        stack_Ball_Ctr_Rot[Trial_idx - 1][Traj_idx - 1].
-                push_back(player_TestOne.Get_PaintTestOne()->Get_Cur_Rot());
         stack_Ball_Ctr_Scale[Trial_idx - 1][Traj_idx - 1].
                 push_back(player_TestOne.Get_PaintTestOne()->Get_Cur_Scale());
 
@@ -2199,12 +2153,10 @@ void MainWindow::on_BtnStackSave_clicked() {
     if (m_radioMode == 2) {
         isSuccess_time_flag = false;
         isSuccess = false;
-        player_TestOne.Get_PaintTestOne()->Set_isSuccess(isSuccess);
 
         isRun = false;
         isTimeOver_time_flag = false;
         isTimeOver = false;
-        player_TestOne.Get_PaintTestOne()->Set_isTimeOver(isTimeOver);
 
         T_trial_start = m_time;
         player_TestOne.Get_PaintTestOne()->Set_T_Trial_Start(T_trial_start);
@@ -2238,7 +2190,6 @@ void MainWindow::on_BtnStackSave_clicked() {
 
         player_TestOne.Get_PaintTestOne()->Set_Cur_X(player_TestOne.Get_PaintTestOne()->Get_Start_X(Traj_idx));
         player_TestOne.Get_PaintTestOne()->Set_Cur_Y(player_TestOne.Get_PaintTestOne()->Get_Start_Y(Traj_idx));
-        player_TestOne.Get_PaintTestOne()->Set_Cur_Rot(player_TestOne.Get_PaintTestOne()->Get_Start_Rot(Traj_idx));
         player_TestOne.Get_PaintTestOne()->Set_Cur_Scale(player_TestOne.Get_PaintTestOne()->Get_Start_Scale(Traj_idx));
 
         ui->lineEdit_Trial_Idx->setEnabled(true);
@@ -2283,7 +2234,6 @@ void MainWindow::on_BtnSkipPractice_clicked() {
 
     player_TestOne.Get_PaintTestOne()->Set_Cur_X(player_TestOne.Get_PaintTestOne()->Get_Start_X(Traj_idx));
     player_TestOne.Get_PaintTestOne()->Set_Cur_Y(player_TestOne.Get_PaintTestOne()->Get_Start_Y(Traj_idx));
-    player_TestOne.Get_PaintTestOne()->Set_Cur_Rot(player_TestOne.Get_PaintTestOne()->Get_Start_Rot(Traj_idx));
     player_TestOne.Get_PaintTestOne()->Set_Cur_Scale(player_TestOne.Get_PaintTestOne()->Get_Start_Scale(Traj_idx));
 
     T_trial_start = m_time;
@@ -2299,7 +2249,6 @@ void MainWindow::on_BtnSkipPractice_clicked() {
 
     isRun = false;
     isTimeOver = false;
-    player_TestOne.Get_PaintTestOne()->Set_isTimeOver(isTimeOver);
 
     TimeStr = QDateTime::currentDateTime().toString("yyMMdd_hhmmss_");
     SaveFolderStr = PathStr + TimeStr + NameStr + ModeStr + NetworkStr
@@ -2428,7 +2377,6 @@ void MainWindow::on_lineEdit_Traj_Idx_textEdited(const QString &arg1) {
         player_TestOne.Get_PaintTestOne()->Set_Traj_idx(Traj_idx);
         player_TestOne.Get_PaintTestOne()->Set_Cur_X(player_TestOne.Get_PaintTestOne()->Get_Start_X(Traj_idx));
         player_TestOne.Get_PaintTestOne()->Set_Cur_Y(player_TestOne.Get_PaintTestOne()->Get_Start_Y(Traj_idx));
-        player_TestOne.Get_PaintTestOne()->Set_Cur_Rot(player_TestOne.Get_PaintTestOne()->Get_Start_Rot(Traj_idx));
         player_TestOne.Get_PaintTestOne()->Set_Cur_Scale(player_TestOne.Get_PaintTestOne()->Get_Start_Scale(Traj_idx));
     }
 }

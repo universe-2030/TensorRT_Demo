@@ -32,16 +32,6 @@ void TestOneUserForm::keyPressEvent(QKeyEvent* event) {
             Get_PaintTestOne()->Set_Cur_Y(Y_val + Y_val_inc);
 //            std::cout << Get_PaintTestOne()->Get_Cur_Y() << std::endl;
             break;
-        case Qt::Key_A:
-            Rot_val = Get_PaintTestOne()->Get_Cur_Rot();
-            Get_PaintTestOne()->Set_Cur_Rot(Rot_val + Rot_val_inc);
-//            std::cout << Get_PaintTestOne()->Get_Cur_Rot() << std::endl;
-            break;
-        case Qt::Key_D:
-            Rot_val = Get_PaintTestOne()->Get_Cur_Rot();
-            Get_PaintTestOne()->Set_Cur_Rot(Rot_val - Rot_val_inc);
-//            std::cout << Get_PaintTestOne()->Get_Cur_Rot() << std::endl;
-            break;
         case Qt::Key_W:
             Scale_val = Get_PaintTestOne()->Get_Cur_Scale();
             Get_PaintTestOne()->Set_Cur_Scale(Scale_val + Scale_val_inc);
