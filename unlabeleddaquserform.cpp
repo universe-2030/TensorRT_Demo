@@ -66,7 +66,8 @@ UnlabeledDAQUserForm::UnlabeledDAQUserForm(QWidget *parent) :
                               QImage::Format_ARGB32);
     qpix_motion = QPixmap::fromImage(*qimg_motion);
 
-    m_MotionImg->setPixmap(qpix_motion.scaled(PIXMAP_WIDTH, PIXMAP_HEIGHT,
+    m_MotionImg->setPixmap(qpix_motion.scaled(PIXMAP_WIDTH_UNLABELED_DAQ,
+                                              PIXMAP_HEIGHT_UNLABELED_DAQ,
                                               Qt::IgnoreAspectRatio));
     delete qimg_motion;
 

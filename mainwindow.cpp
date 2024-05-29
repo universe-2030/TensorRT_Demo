@@ -458,31 +458,10 @@ void MainWindow::OnTimerFigCallbackFunc() {
                                   QImage::Format_ARGB32);
         qpix_motion = QPixmap::fromImage(*qimg_motion);
 
-        get_VideoPlayer_Training()->get_m_MotionImg()->setPixmap(qpix_motion.scaled(PIXMAP_WIDTH, PIXMAP_HEIGHT,
+        get_VideoPlayer_Training()->get_m_MotionImg()->setPixmap(qpix_motion.scaled(PIXMAP_WIDTH_TRAINING,
+                                                                                    PIXMAP_HEIGHT_TRAINING,
                                                                                     Qt::IgnoreAspectRatio));
         delete qimg_motion;
-    }
-    else if (m_radioMode == 1) {
-//        // (Labeling) Figures - Truth motion
-//        qimg_motion = new QImage((unsigned char *)Figures_motion[Motion_label].data,
-//                                  Figures_motion[Motion_label].cols, Figures_motion[Motion_label].rows,
-//                                  QImage::Format_ARGB32);
-//        qpix_motion = QPixmap::fromImage(*qimg_motion);
-
-//        unlabeledDAQForm.get_UI()->Img_Truth->setPixmap(qpix_motion.scaled(unlabeledDAQForm.get_UI()->Img_Truth->width(),
-//                                  unlabeledDAQForm.get_UI()->Img_Truth->height(),
-//                                  Qt::IgnoreAspectRatio));
-//        delete qimg_motion;
-
-//        // (UnlabeledDAQUserForm) Figures - State indicator
-//        qimg_motion = new QImage((unsigned char *)Figures_motion[State_indicator].data,
-//                                  Figures_motion[State_indicator].cols, Figures_motion[State_indicator].rows,
-//                                  QImage::Format_ARGB32);
-//        qpix_motion = QPixmap::fromImage(*qimg_motion);
-
-//        get_VideoPlayer_UnlabeledDAQ()->get_m_MotionImg()->setPixmap(qpix_motion.scaled(PIXMAP_WIDTH, PIXMAP_HEIGHT,
-//                                                                                    Qt::IgnoreAspectRatio));
-//        delete qimg_motion;
     }
     else if (m_radioMode == 2) {
         // (Labeling) Figures - Estimation
