@@ -51,12 +51,15 @@ MainWindow::MainWindow(QWidget *parent)
     player_UnlabeledDAQ->move((width - 1600) / 2 + 1920,
                               (height - 900) / 2 - 30);
 
-//    if (m_radioMode == 0) { // Training mode
-//        player_Training->show();
-//    }
-//    else if (m_radioMode == 1) { // Unlabeled dataset acquisition mode
-//        player_UnlabeledDAQ->show();
-//    }
+    if (m_radioMode == 0) { // Training mode
+        player_Training->show();
+    }
+    else if (m_radioMode == 1) { // Unlabeled dataset acquisition mode
+        player_UnlabeledDAQ->show();
+    }
+    else if (m_radioMode == 2) { // Unlabeled dataset acquisition mode
+        player_TestOne.show();
+    }
 
     // 3D model) signal connection
     connect(this, &MainWindow::setPalmRotX_Cue_Trn, player_Training->get_Model(), &SceneModifier::set_Palm_RotX);
@@ -159,13 +162,7 @@ void MainWindow::Initialize_Variables() {
     Win_size = WIN_SIZE;
     Graph_MAV_max = GRAPH_MAV_Y_MAX;
     N_delete = 0;
-
-    if (m_radioNetwork == 0)
-        NetworkStr = "_Fine_Tune";
-    else if (m_radioNetwork == 1)
-        NetworkStr = "_STM";
-    else if (m_radioNetwork == 2)
-        NetworkStr = "_Proposed";
+    NetworkStr = "_Proposed";
 }
 
 void MainWindow::Initialize_DAVariables() {
@@ -238,67 +235,11 @@ void MainWindow::Initialize_DAVariables() {
     }
 
     /////////////////////////////////// Ball control vector ///////////////////////////////////
-    stack_Ball_Ctr_sEMG_raw = new std::vector<double>**[N_TRIALS];
-    stack_Ball_Ctr_sEMG_MAV = new std::vector<double>**[N_TRIALS];
-    stack_Ball_Ctr_sEMG_WL = new std::vector<double>**[N_TRIALS];
-    stack_Ball_Ctr_sEMG_SSC = new std::vector<double>**[N_TRIALS];
-    stack_Ball_Ctr_sEMG_ZC = new std::vector<double>**[N_TRIALS];
-
-    stack_Ball_Ctr_X = new std::vector<double>*[N_TRIALS];
-    stack_Ball_Ctr_Y = new std::vector<double>*[N_TRIALS];
-    stack_Ball_Ctr_Rot = new std::vector<double>*[N_TRIALS];
-    stack_Ball_Ctr_Scale = new std::vector<double>*[N_TRIALS];
-
-    stack_Ball_Ctr_Time_elapse_Processing = new std::vector<double>*[N_TRIALS];
-    stack_Ball_Ctr_Motion_est = new std::vector<int>*[N_TRIALS];
-
-    stack_Ball_Ctr_sEMG_MAV_amp = new std::vector<double>*[N_TRIALS];
-    stack_Ball_Ctr_Time_elapse_TensorRT = new std::vector<double>*[N_TRIALS];
-    stack_Ball_Ctr_isMotionExerted = new std::vector<int>*[N_TRIALS];
-    stack_Ball_Ctr_Motion_est_TensorRT_thread = new std::vector<int>*[N_TRIALS];
-
-    for (int i = 0; i < N_TRIALS; i++) {
-        stack_Ball_Ctr_sEMG_raw[i] = new std::vector<double>*[N_TRAJECTORY];
-        stack_Ball_Ctr_sEMG_MAV[i] = new std::vector<double>*[N_TRAJECTORY];
-        stack_Ball_Ctr_sEMG_WL[i] = new std::vector<double>*[N_TRAJECTORY];
-        stack_Ball_Ctr_sEMG_SSC[i] = new std::vector<double>*[N_TRAJECTORY];
-        stack_Ball_Ctr_sEMG_ZC[i] = new std::vector<double>*[N_TRAJECTORY];
-
-        for (int j = 0; j < N_TRAJECTORY; j++) {
-            stack_Ball_Ctr_sEMG_raw[i][j] = new std::vector<double>[N_EMG];
-            stack_Ball_Ctr_sEMG_MAV[i][j] = new std::vector<double>[N_EMG];
-            stack_Ball_Ctr_sEMG_WL[i][j] = new std::vector<double>[N_EMG];
-            stack_Ball_Ctr_sEMG_SSC[i][j] = new std::vector<double>[N_EMG];
-            stack_Ball_Ctr_sEMG_ZC[i][j] = new std::vector<double>[N_EMG];
-        }
-
-        stack_Ball_Ctr_X[i] = new std::vector<double>[N_TRAJECTORY];
-        stack_Ball_Ctr_Y[i] = new std::vector<double>[N_TRAJECTORY];
-        stack_Ball_Ctr_Rot[i] = new std::vector<double>[N_TRAJECTORY];
-        stack_Ball_Ctr_Scale[i] = new std::vector<double>[N_TRAJECTORY];
-
-        stack_Ball_Ctr_Time_elapse_Processing[i] = new std::vector<double>[N_TRAJECTORY];
-        stack_Ball_Ctr_Motion_est[i] = new std::vector<int>[N_TRAJECTORY];
-
-        stack_Ball_Ctr_sEMG_MAV_amp[i] = new std::vector<double>[N_TRAJECTORY];
-        stack_Ball_Ctr_Time_elapse_TensorRT[i] = new std::vector<double>[N_TRAJECTORY];
-        stack_Ball_Ctr_isMotionExerted[i] = new std::vector<int>[N_TRAJECTORY];
-        stack_Ball_Ctr_Motion_est_TensorRT_thread[i] = new std::vector<int>[N_TRAJECTORY];
-    }
-
-    SuccessOrNot = new bool*[N_TRIALS];
-    BallCtrElapsedTime = new double*[N_TRIALS];
-    for (int i = 0; i < N_TRIALS; i++) {
-        SuccessOrNot[i] = new bool[N_TRAJECTORY];
-        BallCtrElapsedTime[i] = new double[N_TRAJECTORY];
-    }
-
-    for (int i = 0; i < N_TRIALS; i++) {
-        for (int j = 0; j < N_TRAJECTORY; j++) {
-            SuccessOrNot[i][j] = false;
-            BallCtrElapsedTime[i][j] = 0.0;
-        }
-    }
+    stack_Ball_Ctr_sEMG_raw = new std::vector<double>[N_EMG];
+    stack_Ball_Ctr_sEMG_MAV = new std::vector<double>[N_EMG];
+    stack_Ball_Ctr_sEMG_WL = new std::vector<double>[N_EMG];
+    stack_Ball_Ctr_sEMG_SSC = new std::vector<double>[N_EMG];
+    stack_Ball_Ctr_sEMG_ZC = new std::vector<double>[N_EMG];
 }
 
 void MainWindow::Initialize_NI() {
@@ -314,12 +255,8 @@ void MainWindow::Initialize_GUI() {
     ui->lineEdit_WinSize->setText(QString::number(WIN_SIZE));
     ui->lineEdit_MAVMax->setText(QString::number(GRAPH_MAV_Y_MAX));
     ui->lineEdit_Sbj_Name->setText(NameStr);
-    ui->lineEdit_Trial_Idx->setText(QString::number(Trial_idx));
-    ui->lineEdit_Traj_Idx->setText(QString::number(Traj_idx));
 
     ui->lineEdit_Sbj_Name->setEnabled(false);
-    ui->lineEdit_Trial_Idx->setEnabled(false);
-    ui->lineEdit_Traj_Idx->setEnabled(false);
     ui->lineEdit_WinSize->setEnabled(false);
     ui->lineEdit_MAVMax->setEnabled(false);
 
@@ -330,10 +267,8 @@ void MainWindow::Initialize_GUI() {
     ui->radioBtn_Mode_3->setEnabled(true);
 
     ui->radioBtn_Network_1->setEnabled(false);
-    ui->radioBtn_Network_2->setEnabled(false);
-    ui->radioBtn_Network_3->setEnabled(false);
 
-    PathStr = QString("D:/STDAN_TensorRT/Data/");
+    PathStr = QString("D:/TensorRT_demo/Data/");
     TimeStr = QDateTime::currentDateTime().toString("yyMMdd_hhmmss_");
     if (m_radioMode == 0)
         ModeStr = QString("_Training");
@@ -370,8 +305,6 @@ void MainWindow::Initialize_GUI() {
     connect(ui->radioBtn_Mode_3, SIGNAL(clicked()), this, SLOT(RadioCtrl_Mode()));
 
     connect(ui->radioBtn_Network_1, SIGNAL(clicked()), this, SLOT(RadioCtrl_Network()));
-    connect(ui->radioBtn_Network_2, SIGNAL(clicked()), this, SLOT(RadioCtrl_Network()));
-    connect(ui->radioBtn_Network_3, SIGNAL(clicked()), this, SLOT(RadioCtrl_Network()));
 
     connect(ui->radioBtn_SaveOption_1, SIGNAL(clicked()), this, SLOT(RadioCtrl_SaveOpt()));
     connect(ui->radioBtn_SaveOption_2, SIGNAL(clicked()), this, SLOT(RadioCtrl_SaveOpt()));
@@ -392,17 +325,13 @@ void MainWindow::Initialize_MenuBar() {
     menuBar()->addMenu(file)->setText(tr("&Dialogs"));
 
     QAction *action2;
-    action2 = new QAction(tr("&2. Prediction"), this);
+    action2 = new QAction(tr("&2. UnlabeledDAQ"), this);
     file->addAction(action2);
     menuBar()->addMenu(file)->setText(tr("&Dialogs"));
 
     QAction *action3;
     action3 = new QAction(tr("&3. Ball Control"), this);
     file->addAction(action3);
-    menuBar()->addMenu(file)->setText(tr("&Dialogs"));
-
-    QAction *action4;
-    action4 = new QAction(tr("&4. (Reserved)"), this);
     menuBar()->addMenu(file)->setText(tr("&Dialogs"));
 }
 
@@ -732,69 +661,10 @@ void MainWindow::Thread_TwinCAT_func() {
 
             // Ball Control
             if (m_radioMode == 2) {
-                if (PracticeOrNot) {
-                    player_TestOne.Get_PaintTestOne()->Set_Traj_idx(0);
-                    if (!isRun) {
-                        isRun = true;
-                        T_trial_start = m_time;
-                        player_TestOne.Get_PaintTestOne()->Set_T_Trial_Start(T_trial_start);
-                    }
-                    else {
-                        // Success determination
-                        player_TestOne.Get_PaintTestOne()->Set_isSuccess(Determine_Success(0));
-
-                        // Time over determination
-                        if ((m_time - T_trial_start) >= (T_READY_BALL_CTR + T_MAX_BALL_CTR_PRACTICE)) {
-                            isTimeOver = true;
-                            player_TestOne.Get_PaintTestOne()->Set_isTimeOver(isTimeOver);
-                        }
-                    }
-                }
-                else {
-                    if (!isRun) {
-                        isRun = true;
-                        T_trial_start = m_time;
-                        player_TestOne.Get_PaintTestOne()->Set_T_Trial_Start(T_trial_start);
-                    }
-                    else {
-                        if ((m_time - T_trial_start) < T_READY_BALL_CTR) {
-                            player_TestOne.Get_PaintTestOne()->Set_isSuccess(false);
-                        }
-                        else if (T_READY_BALL_CTR <= (m_time - T_trial_start) &&
-                                (m_time - T_trial_start) < (T_READY_BALL_CTR + T_MAX_BALL_CTR)) {
-                            isTimeOver = false;
-                            player_TestOne.Get_PaintTestOne()->Set_isTimeOver(isTimeOver);
-
-                            // Success determination
-                            isSuccess = Determine_Success(Traj_idx);
-                            player_TestOne.Get_PaintTestOne()->Set_isSuccess(isSuccess);
-                            if (isSuccess) {
-                                if (!isSuccess_time_flag) {
-                                    isSuccess_time_flag = true;
-                                    T_trial_end = m_time;
-                                    player_TestOne.Get_PaintTestOne()->Set_T_Trial_End(T_trial_end);
-
-                                    SuccessOrNot[Trial_idx - 1][Traj_idx - 1] = true;
-                                    BallCtrElapsedTime[Trial_idx - 1][Traj_idx - 1] = T_trial_end - T_trial_start - T_READY_BALL_CTR;
-                                    std::cout << "Ball Control Elapsed time : " << BallCtrElapsedTime[Trial_idx - 1][Traj_idx - 1] << std::endl;
-                                }
-                            }
-                        }
-                        else if ((m_time - T_trial_start) >= (T_READY_BALL_CTR + T_MAX_BALL_CTR) && !isSuccess) {
-                            isTimeOver = true;
-                            player_TestOne.Get_PaintTestOne()->Set_isTimeOver(isTimeOver);
-
-                            if (!isTimeOver_time_flag) {
-                                isTimeOver_time_flag = true;
-                                T_trial_end = m_time;
-                                player_TestOne.Get_PaintTestOne()->Set_T_Trial_End(T_trial_end);
-
-                                SuccessOrNot[Trial_idx - 1][Traj_idx - 1] = false;
-                                BallCtrElapsedTime[Trial_idx - 1][Traj_idx - 1] = T_MAX_BALL_CTR;
-                                std::cout << "Ball Control Elapsed time : " << BallCtrElapsedTime[Trial_idx - 1][Traj_idx - 1] << std::endl;
-                            }
-                        }
-                    }
+                if (!isRun) {
+                    isRun = true;
+                    T_trial_start = m_time;
+                    player_TestOne.Get_PaintTestOne()->Set_T_Trial_Start(T_trial_start);
                 }
             }
 
@@ -804,7 +674,7 @@ void MainWindow::Thread_TwinCAT_func() {
                     StackData();
             }
             else if (m_radioMode == 2) {
-                if (!PracticeOrNot && !isSuccess && !isTimeOver && (m_time - T_trial_start) >= T_READY_BALL_CTR) {
+                if (!PracticeOrNot && (m_time - T_trial_start) >= T_READY_BALL_CTR) {
                     StackData();
                 }
             }
@@ -830,7 +700,6 @@ void MainWindow::Thread_TensorRT_func() {
     cv::Mat image_TRT = cv::Mat::ones(4, N_EMG, CV_32F);
     int X_val_inc = INC_MAX_X;
     int Y_val_inc = INC_MAX_Y;
-    double Rot_val_inc = INC_MAX_ROT;
     double Scale_val_inc = INC_MAX_SCALE;
 
     while (!pShared_Data->bProcessEnd) {
@@ -847,14 +716,13 @@ void MainWindow::Thread_TensorRT_func() {
             // 2. Inference
             if (!isEstimated) {
                 // Stack the sEMG MAV amplitude
-                if (!PracticeOrNot && T_READY < (m_time - T_trial_start)
-                    && (m_time - T_trial_start) < (T_READY_BALL_CTR + T_MAX_BALL_CTR)) {
-                    stack_Ball_Ctr_sEMG_MAV_amp[Trial_idx - 1][Traj_idx - 1].push_back(sum_sEMG_MAV);
+                if (!PracticeOrNot && T_READY < (m_time - T_trial_start)) {
+                    stack_Ball_Ctr_sEMG_MAV_amp.push_back(sum_sEMG_MAV);
                 }
 
                 if (Rest_Mot_Classification() && T_READY < (m_time - T_trial_start)) { // Motion exerted
-                    if (!PracticeOrNot && (m_time - T_trial_start) < (T_READY_BALL_CTR + T_MAX_BALL_CTR)) {
-                        stack_Ball_Ctr_isMotionExerted[Trial_idx - 1][Traj_idx - 1].push_back(1);
+                    if (!PracticeOrNot) {
+                        stack_Ball_Ctr_isMotionExerted.push_back(1);
                     }
 
                     if (m_radioNetwork == 0) {
@@ -870,122 +738,58 @@ void MainWindow::Thread_TensorRT_func() {
                             Motion_est = TRT_Proposed->get_estimation();
                     }
 
-                    if (!PracticeOrNot && (m_time - T_trial_start) < (T_READY_BALL_CTR + T_MAX_BALL_CTR)) {
+                    if (!PracticeOrNot) {
                         std::chrono::system_clock::time_point end = std::chrono::system_clock::now();
                         Time_elapse_TensorRT = (double)((double)std::chrono::duration_cast
                                                          <std::chrono::nanoseconds>(end - start).count() / (double)1000000.0);
-                        stack_Ball_Ctr_Time_elapse_TensorRT[Trial_idx - 1][Traj_idx - 1].push_back(Time_elapse_TensorRT);
+                        stack_Ball_Ctr_Time_elapse_TensorRT.push_back(Time_elapse_TensorRT);
                     }
 
-                    if (PracticeOrNot) {
-                        if (isRun) {
-                            if (T_READY_BALL_CTR <= (m_time - T_trial_start)) {
-                                // Move the cursor corresponding to the motion estimation
-                                if (Motion_est == 1) {
-                                    double X_val = player_TestOne.Get_PaintTestOne()->Get_Cur_X();
-                                    if (X_val - X_val_inc >= 0)
-                                        player_TestOne.Get_PaintTestOne()->Set_Cur_X(X_val - X_val_inc);
-                                }
-                                else if (Motion_est == 2) {
-                                    double X_val = player_TestOne.Get_PaintTestOne()->Get_Cur_X();
-                                    if (X_val + X_val_inc <= 1150)
-                                        player_TestOne.Get_PaintTestOne()->Set_Cur_X(X_val + X_val_inc);
-                                }
-                                else if (Motion_est == 3) {
-                                    double Y_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Y();
-                                    if (Y_val - Y_val_inc >= 0)
-                                        player_TestOne.Get_PaintTestOne()->Set_Cur_Y(Y_val - Y_val_inc);
-                                }
-                                else if (Motion_est == 4) {
-                                    double Y_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Y();
-                                    if (Y_val + Y_val_inc <= SCREEN_HEIGHT)
-                                        player_TestOne.Get_PaintTestOne()->Set_Cur_Y(Y_val + Y_val_inc);
-                                }
-                                else if (Motion_est == 5) {
-                                    double Rot_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Rot();
-                                    if (Rot_val + Rot_val_inc <= 150)
-                                        player_TestOne.Get_PaintTestOne()->Set_Cur_Rot(Rot_val + Rot_val_inc);
-                                }
-                                else if (Motion_est == 6) {
-                                    double Rot_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Rot();
-                                    if (Rot_val - Rot_val_inc >= -150)
-                                        player_TestOne.Get_PaintTestOne()->Set_Cur_Rot(Rot_val - Rot_val_inc);
-                                }
-                                else if (Motion_est == 7) {
-                                    double Scale_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Scale();
-                                    if (Scale_val - Scale_val_inc >= 0.3)
-                                        player_TestOne.Get_PaintTestOne()->Set_Cur_Scale(Scale_val - Scale_val_inc);
-                                }
-                                else if (Motion_est == 8) {
-                                    double Scale_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Scale();
-                                    if (Scale_val + Scale_val_inc <= 2.5)
-                                        player_TestOne.Get_PaintTestOne()->Set_Cur_Scale(Scale_val + Scale_val_inc);
-                                }
+                    if (isRun) {
+                        if (T_READY_BALL_CTR <= (m_time - T_trial_start)) {
+                            // Move the cursor corresponding to the motion estimation
+                            if (Motion_est == 1) {
+                                double X_val = player_TestOne.Get_PaintTestOne()->Get_Cur_X();
+                                if (X_val - X_val_inc >= 0)
+                                    player_TestOne.Get_PaintTestOne()->Set_Cur_X(X_val - X_val_inc);
                             }
-                        }
-                    }
-                    else {
-                        if (isRun) {
-                            if (T_READY_BALL_CTR <= (m_time - T_trial_start) &&
-                                    (m_time - T_trial_start) < (T_READY_BALL_CTR + T_MAX_BALL_CTR)) {
-                                if (!isSuccess) {
-                                    // Move the cursor corresponding to the motion estimation
-                                    if (Motion_est == 1) {
-                                        double X_val = player_TestOne.Get_PaintTestOne()->Get_Cur_X();
-                                        if (X_val - X_val_inc >= 0)
-                                            player_TestOne.Get_PaintTestOne()->Set_Cur_X(X_val - X_val_inc);
-                                    }
-                                    else if (Motion_est == 2) {
-                                        double X_val = player_TestOne.Get_PaintTestOne()->Get_Cur_X();
-                                        if (X_val + X_val_inc <= 1150)
-                                            player_TestOne.Get_PaintTestOne()->Set_Cur_X(X_val + X_val_inc);
-                                    }
-                                    else if (Motion_est == 3) {
-                                        double Y_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Y();
-                                        if (Y_val - Y_val_inc >= 0)
-                                            player_TestOne.Get_PaintTestOne()->Set_Cur_Y(Y_val - Y_val_inc);
-                                    }
-                                    else if (Motion_est == 4) {
-                                        double Y_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Y();
-                                        if (Y_val + Y_val_inc <= SCREEN_HEIGHT)
-                                            player_TestOne.Get_PaintTestOne()->Set_Cur_Y(Y_val + Y_val_inc);
-                                    }
-                                    else if (Motion_est == 5) {
-                                        double Rot_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Rot();
-                                        if (Rot_val + Rot_val_inc <= 150)
-                                            player_TestOne.Get_PaintTestOne()->Set_Cur_Rot(Rot_val + Rot_val_inc);
-                                    }
-                                    else if (Motion_est == 6) {
-                                        double Rot_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Rot();
-                                        if (Rot_val - Rot_val_inc >= -150)
-                                            player_TestOne.Get_PaintTestOne()->Set_Cur_Rot(Rot_val - Rot_val_inc);
-                                    }
-                                    else if (Motion_est == 7) {
-                                        double Scale_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Scale();
-                                        if (Scale_val - Scale_val_inc >= 0.3)
-                                            player_TestOne.Get_PaintTestOne()->Set_Cur_Scale(Scale_val - Scale_val_inc);
-                                    }
-                                    else if (Motion_est == 8) {
-                                        double Scale_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Scale();
-                                        if (Scale_val + Scale_val_inc <= 2.5)
-                                            player_TestOne.Get_PaintTestOne()->Set_Cur_Scale(Scale_val + Scale_val_inc);
-                                    }
-                                }
+                            else if (Motion_est == 2) {
+                                double X_val = player_TestOne.Get_PaintTestOne()->Get_Cur_X();
+                                if (X_val + X_val_inc <= SCREEN_WIDTH)
+                                    player_TestOne.Get_PaintTestOne()->Set_Cur_X(X_val + X_val_inc);
+                            }
+                            else if (Motion_est == 3) {
+                                double Y_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Y();
+                                if (Y_val - Y_val_inc >= 0)
+                                    player_TestOne.Get_PaintTestOne()->Set_Cur_Y(Y_val - Y_val_inc);
+                            }
+                            else if (Motion_est == 4) {
+                                double Y_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Y();
+                                if (Y_val + Y_val_inc <= SCREEN_HEIGHT)
+                                    player_TestOne.Get_PaintTestOne()->Set_Cur_Y(Y_val + Y_val_inc);
+                            }
+                            else if (Motion_est == 5) {
+                                double Scale_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Scale();
+                                if (Scale_val - Scale_val_inc >= 0.3)
+                                    player_TestOne.Get_PaintTestOne()->Set_Cur_Scale(Scale_val - Scale_val_inc);
+                            }
+                            else if (Motion_est == 6) {
+                                double Scale_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Scale();
+                                if (Scale_val + Scale_val_inc <= 2.5)
+                                    player_TestOne.Get_PaintTestOne()->Set_Cur_Scale(Scale_val + Scale_val_inc);
                             }
                         }
                     }
                 }
                 else { // Rest state
-                    if (!PracticeOrNot && T_READY < (m_time - T_trial_start)
-                        && (m_time - T_trial_start) < (T_READY_BALL_CTR + T_MAX_BALL_CTR))
-                        stack_Ball_Ctr_isMotionExerted[Trial_idx - 1][Traj_idx - 1].push_back(0);
+                    if (!PracticeOrNot && T_READY < (m_time - T_trial_start))
+                        stack_Ball_Ctr_isMotionExerted.push_back(0);
                     Motion_est = 0;
                 }
 
                 isEstimated = true;
-                if (!PracticeOrNot && T_READY < (m_time - T_trial_start)
-                    && (m_time - T_trial_start) < (T_READY_BALL_CTR + T_MAX_BALL_CTR))
-                    stack_Ball_Ctr_Motion_est_TensorRT_thread[Trial_idx - 1][Traj_idx - 1].push_back(Motion_est);
+                if (!PracticeOrNot && T_READY < (m_time - T_trial_start))
+                    stack_Ball_Ctr_Motion_est_TensorRT_thread.push_back(Motion_est);
             }
         }
     }
@@ -1027,21 +831,21 @@ void MainWindow::Calculate_MAV() {
         }
     }
     else if (m_radioMode == 2) {
-        if (stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][0].size() <= Win_size) {
+        if (stack_Ball_Ctr_sEMG_raw[0].size() <= Win_size) {
             for (int i = 0; i < N_EMG; i++) {
                 sEMG_MAV_tmp = 0.0;
-                for (int j = 0; j < stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][0].size(); j++)
-                    sEMG_MAV_tmp += abs(stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][j]);
+                for (int j = 0; j < stack_Ball_Ctr_sEMG_raw[0].size(); j++)
+                    sEMG_MAV_tmp += abs(stack_Ball_Ctr_sEMG_raw[i][j]);
 
                 sEMG_MAV[i] = sEMG_MAV_tmp / (double)Win_size;
             }
         }
         else {
-            int idx_size = stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][0].size();
+            int idx_size = stack_Ball_Ctr_sEMG_raw[0].size();
             for (int i = 0; i < N_EMG; i++) {
                 sEMG_MAV_tmp = 0.0;
                 for (int j = idx_size - Win_size; j < idx_size; j++)
-                    sEMG_MAV_tmp += abs(stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][j]);
+                    sEMG_MAV_tmp += abs(stack_Ball_Ctr_sEMG_raw[i][j]);
 
                 sEMG_MAV[i] = sEMG_MAV_tmp / (double)Win_size;
             }
@@ -1079,29 +883,29 @@ void MainWindow::Calculate_WL() {
         }
     }
     else if (m_radioMode == 2) {
-        if (stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][0].size() == 1) {
+        if (stack_Ball_Ctr_sEMG_raw[0].size() == 1) {
             for (int i = 0; i < N_EMG; i++)
                 sEMG_WL[i] = 0.0;
         }
-        else if (1 < stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][0].size() &&
-                 stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][0].size() <= Win_size) {
-            int idx_size = stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][0].size();
+        else if (1 < stack_Ball_Ctr_sEMG_raw[0].size() &&
+                 stack_Ball_Ctr_sEMG_raw[0].size() <= Win_size) {
+            int idx_size = stack_Ball_Ctr_sEMG_raw[0].size();
             for (int i = 0; i < N_EMG; i++) {
                 sEMG_WL_tmp = 0.0;
                 for (int j = 1; j < idx_size; j++) {
-                    sEMG_WL_tmp += abs(stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][j] -
-                                       stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][j - 1]);
+                    sEMG_WL_tmp += abs(stack_Ball_Ctr_sEMG_raw[i][j] -
+                                       stack_Ball_Ctr_sEMG_raw[i][j - 1]);
                 }
                 sEMG_WL[i] = sEMG_WL_tmp;
             }
         }
         else {
-            int idx_size = stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][0].size();
+            int idx_size = stack_Ball_Ctr_sEMG_raw[0].size();
             for (int i = 0; i < N_EMG; i++) {
                 sEMG_WL_tmp = 0.0;
                 for (int j = idx_size - Win_size + 1; j < idx_size; j++) {
-                    sEMG_WL_tmp += abs(stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][j] -
-                                       stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][j - 1]);
+                    sEMG_WL_tmp += abs(stack_Ball_Ctr_sEMG_raw[i][j] -
+                                       stack_Ball_Ctr_sEMG_raw[i][j - 1]);
                 }
                 sEMG_WL[i] = sEMG_WL_tmp;
             }
@@ -1144,38 +948,32 @@ void MainWindow::Calculate_SSC() {
         }
     }
     else if (m_radioMode == 2) {
-        if (stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][0].size() == 1 ||
-            stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][0].size() == 2) {
+        if (stack_Ball_Ctr_sEMG_raw[0].size() == 1 || stack_Ball_Ctr_sEMG_raw[0].size() == 2) {
             for (int i = 0; i < N_EMG; i++)
                 sEMG_SSC[i] = 0.0;
         }
-        else if (2 < stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][0].size() &&
-                 stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][0].size() <= Win_size) {
-            int idx_cur =  stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][0].size() - 1;
+        else if (2 < stack_Ball_Ctr_sEMG_raw[0].size() && stack_Ball_Ctr_sEMG_raw[0].size() <= Win_size) {
+            int idx_cur =  stack_Ball_Ctr_sEMG_raw[0].size() - 1;
             for (int i = 0; i < N_EMG; i++) {
-                sEMG_Slope_1 = stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][idx_cur] -
-                               stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][idx_cur - 1];
-                sEMG_Slope_2 = stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][idx_cur - 1] -
-                               stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][idx_cur - 2];
+                sEMG_Slope_1 = stack_Ball_Ctr_sEMG_raw[i][idx_cur] -
+                               stack_Ball_Ctr_sEMG_raw[i][idx_cur - 1];
+                sEMG_Slope_2 = stack_Ball_Ctr_sEMG_raw[i][idx_cur - 1] -
+                               stack_Ball_Ctr_sEMG_raw[i][idx_cur - 2];
                 if (sEMG_Slope_1 * sEMG_Slope_2 < 0)
                     sEMG_SSC[i] += 1;
             }
         }
         else {
-            int idx_cur = stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][0].size() - 1;
+            int idx_cur = stack_Ball_Ctr_sEMG_raw[0].size() - 1;
             for (int i = 0; i < N_EMG; i++) {
-                sEMG_Slope_1 = stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][idx_cur - Win_size + 2] -
-                               stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][idx_cur - Win_size + 1];
-                sEMG_Slope_2 = stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][idx_cur - Win_size + 1] -
-                               stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][idx_cur - Win_size];
+                sEMG_Slope_1 = stack_Ball_Ctr_sEMG_raw[i][idx_cur - Win_size + 2] - stack_Ball_Ctr_sEMG_raw[i][idx_cur - Win_size + 1];
+                sEMG_Slope_2 = stack_Ball_Ctr_sEMG_raw[i][idx_cur - Win_size + 1] - stack_Ball_Ctr_sEMG_raw[i][idx_cur - Win_size];
                 if (sEMG_Slope_1 * sEMG_Slope_2 < 0)
                     if (sEMG_SSC[i] > 0)
                         sEMG_SSC[i] -= 1;
 
-                sEMG_Slope_1 = stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][idx_cur] -
-                               stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][idx_cur - 1];
-                sEMG_Slope_2 = stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][idx_cur - 1] -
-                               stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][idx_cur - 2];
+                sEMG_Slope_1 = stack_Ball_Ctr_sEMG_raw[i][idx_cur] - stack_Ball_Ctr_sEMG_raw[i][idx_cur - 1];
+                sEMG_Slope_2 = stack_Ball_Ctr_sEMG_raw[i][idx_cur - 1] - stack_Ball_Ctr_sEMG_raw[i][idx_cur - 2];
                 if (sEMG_Slope_1 * sEMG_Slope_2 < 0)
                     sEMG_SSC[i] += 1;
             }
@@ -1209,29 +1007,26 @@ void MainWindow::Calculate_ZC() {
         }
     }
     else if (m_radioMode == 2) {
-        if (stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][0].size() == 1) {
+        if (stack_Ball_Ctr_sEMG_raw[0].size() == 1) {
             for (int i = 0; i < N_EMG; i++)
                 sEMG_ZC[i] = 0.0;
         }
-        else if (1 < stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][0].size() &&
-                 stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][0].size() <= Win_size) {
-            int idx_cur = stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][0].size() - 1;
+        else if (1 < stack_Ball_Ctr_sEMG_raw[0].size() && stack_Ball_Ctr_sEMG_raw[0].size() <= Win_size) {
+            int idx_cur = stack_Ball_Ctr_sEMG_raw[0].size() - 1;
             for (int i = 0; i < N_EMG; i++) {
-                if (stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][idx_cur] *
-                        stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][idx_cur - 1] < 0)
+                if (stack_Ball_Ctr_sEMG_raw[i][idx_cur] * stack_Ball_Ctr_sEMG_raw[i][idx_cur - 1] < 0)
                     sEMG_ZC[i] += 1;
             }
         }
         else {
-            int idx_cur = stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][0].size() - 1;
+            int idx_cur = stack_Ball_Ctr_sEMG_raw[0].size() - 1;
             for (int i = 0; i < N_EMG; i++) {
-                if (stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][idx_cur - Win_size + 1] *
-                        stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][idx_cur - Win_size] < 0)
+                if (stack_Ball_Ctr_sEMG_raw[i][idx_cur - Win_size + 1] *
+                        stack_Ball_Ctr_sEMG_raw[i][idx_cur - Win_size] < 0)
                     if (sEMG_ZC[i] > 0)
                         sEMG_ZC[i] -= 1;
 
-                if (stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][idx_cur] *
-                        stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i][idx_cur - 1] < 0)
+                if (stack_Ball_Ctr_sEMG_raw[i][idx_cur] * stack_Ball_Ctr_sEMG_raw[i][idx_cur - 1] < 0)
                     sEMG_ZC[i] += 1;
             }
         }
@@ -1282,7 +1077,7 @@ void MainWindow::DAQ_Online() {
         if (m_radioMode == 0 || m_radioMode == 1)
             stack_sEMG_raw[i].push_back(sEMG_raw[sEMG_CH[i]]);
         else if (m_radioMode == 2)
-            stack_Ball_Ctr_sEMG_raw[Trial_idx - 1][Traj_idx - 1][i].push_back(sEMG_raw[sEMG_CH[i]]);
+            stack_Ball_Ctr_sEMG_raw[i].push_back(sEMG_raw[sEMG_CH[i]]);
     }
 
     AI_Flex->ReadOneStep();
@@ -1434,35 +1229,6 @@ bool MainWindow::Rest_Mot_Classification() {
     }
 }
 
-bool MainWindow::Determine_Success(int traj_idx) {
-    double End_X, End_Y, End_Rot, End_Scale;
-    double cur_X, cur_Y, cur_Rot, cur_Scale;
-    if (traj_idx == 0) {
-        End_X = player_TestOne.Get_PaintTestOne()->Get_End_X_Practice();
-        End_Y = player_TestOne.Get_PaintTestOne()->Get_End_Y_Practice();
-        End_Rot = player_TestOne.Get_PaintTestOne()->Get_End_Rot_Practice();
-        End_Scale = player_TestOne.Get_PaintTestOne()->Get_End_Scale_Practice();
-    }
-    else {
-        End_X = player_TestOne.Get_PaintTestOne()->Get_End_X(traj_idx);
-        End_Y = player_TestOne.Get_PaintTestOne()->Get_End_Y(traj_idx);
-        End_Rot = player_TestOne.Get_PaintTestOne()->Get_End_Rot(traj_idx);
-        End_Scale = player_TestOne.Get_PaintTestOne()->Get_End_Scale(traj_idx);
-    }
-    cur_X = player_TestOne.Get_PaintTestOne()->Get_Cur_X();
-    cur_Y = player_TestOne.Get_PaintTestOne()->Get_Cur_Y();
-    cur_Rot = player_TestOne.Get_PaintTestOne()->Get_Cur_Rot();
-    cur_Scale = player_TestOne.Get_PaintTestOne()->Get_Cur_Scale();
-
-    if ((std::fabs(cur_X - End_X) <= THRES_POS) &&
-        (std::fabs(cur_Y - End_Y) <= THRES_POS) &&
-        (std::fabs(cur_Rot - End_Rot) <= THRES_ANG) &&
-        (std::fabs(cur_Scale - End_Scale) <= THRES_SCALE))
-        return true;
-    else
-        return false;
-}
-
 void MainWindow::StackData() {
     if (m_radioMode == 0 || m_radioMode == 1) {
         // 1. sEMG variables
@@ -1482,27 +1248,22 @@ void MainWindow::StackData() {
     else if (m_radioMode == 2) {
         // 1. sEMG variables
         for (int i = 0; i < N_EMG; i++) {
-            stack_Ball_Ctr_sEMG_MAV[Trial_idx - 1][Traj_idx - 1][i].push_back(sEMG_MAV[i]);
-            stack_Ball_Ctr_sEMG_WL[Trial_idx - 1][Traj_idx - 1][i].push_back(sEMG_WL[i]);
-            stack_Ball_Ctr_sEMG_SSC[Trial_idx - 1][Traj_idx - 1][i].push_back(sEMG_SSC[i]);
-            stack_Ball_Ctr_sEMG_ZC[Trial_idx - 1][Traj_idx - 1][i].push_back(sEMG_ZC[i]);
+            stack_Ball_Ctr_sEMG_MAV[i].push_back(sEMG_MAV[i]);
+            stack_Ball_Ctr_sEMG_WL[i].push_back(sEMG_WL[i]);
+            stack_Ball_Ctr_sEMG_SSC[i].push_back(sEMG_SSC[i]);
+            stack_Ball_Ctr_sEMG_ZC[i].push_back(sEMG_ZC[i]);
         }
 
         // 4. Ball control histories
-        stack_Ball_Ctr_X[Trial_idx - 1][Traj_idx - 1].
-                push_back(player_TestOne.Get_PaintTestOne()->Get_Cur_X());
-        stack_Ball_Ctr_Y[Trial_idx - 1][Traj_idx - 1].
-                push_back(player_TestOne.Get_PaintTestOne()->Get_Cur_Y());
-        stack_Ball_Ctr_Rot[Trial_idx - 1][Traj_idx - 1].
-                push_back(player_TestOne.Get_PaintTestOne()->Get_Cur_Rot());
-        stack_Ball_Ctr_Scale[Trial_idx - 1][Traj_idx - 1].
-                push_back(player_TestOne.Get_PaintTestOne()->Get_Cur_Scale());
+        stack_Ball_Ctr_X.push_back(player_TestOne.Get_PaintTestOne()->Get_Cur_X());
+        stack_Ball_Ctr_Y.push_back(player_TestOne.Get_PaintTestOne()->Get_Cur_Y());
+        stack_Ball_Ctr_Scale.push_back(player_TestOne.Get_PaintTestOne()->Get_Cur_Scale());
 
         // 5. Time elapse for processing
-        stack_Ball_Ctr_Time_elapse_Processing[Trial_idx - 1][Traj_idx - 1].push_back(Time_elapse_Processing);
+        stack_Ball_Ctr_Time_elapse_Processing.push_back(Time_elapse_Processing);
 
         // 6. Motion estimation
-        stack_Ball_Ctr_Motion_est[Trial_idx - 1][Traj_idx - 1].push_back(Motion_est);
+        stack_Ball_Ctr_Motion_est.push_back(Motion_est);
     }
 }
 
@@ -1735,10 +1496,8 @@ void MainWindow::SaveData_UnlabeledDAQ() {
     std::cout << "################ save complete ################" << std::endl;
 }
 
-void MainWindow::SaveData_BallControl(int trial_idx, int traj_idx) {
-    std::cout << QString::number(trial_idx).toStdString() << "th trial, "
-              << QString::number(traj_idx).toStdString() << "th trajectory) "
-              << "Save Start!" << std::endl;
+void MainWindow::SaveData_BallControl() {
+    std::cout << "Ball Control save start!" << std::endl;
 
     // 0. Make Save Folder
     if (!PracticeOrNot) {
@@ -1751,9 +1510,9 @@ void MainWindow::SaveData_BallControl(int trial_idx, int traj_idx) {
     QFile file_Ball_Ctr_sEMG_raw(SaveFolderStr + filename);
     file_Ball_Ctr_sEMG_raw.open(QIODevice::WriteOnly | QIODevice::Text);
     SaveOut.setDevice(&file_Ball_Ctr_sEMG_raw);
-    for (int i = 0; i < stack_Ball_Ctr_sEMG_raw[trial_idx - 1][traj_idx - 1][0].size(); i++) {
+    for (int i = 0; i < stack_Ball_Ctr_sEMG_raw[0].size(); i++) {
         for (int j = 0; j < N_EMG; j++) {
-            SaveOut << QString::number(stack_Ball_Ctr_sEMG_raw[trial_idx - 1][traj_idx - 1][j][i]);
+            SaveOut << QString::number(stack_Ball_Ctr_sEMG_raw[j][i]);
             if (j != N_EMG - 1)
                 SaveOut << QString(" ");
         }
@@ -1766,9 +1525,9 @@ void MainWindow::SaveData_BallControl(int trial_idx, int traj_idx) {
     QFile file_Ball_Ctr_sEMG_MAV(SaveFolderStr + filename);
     file_Ball_Ctr_sEMG_MAV.open(QIODevice::WriteOnly | QIODevice::Text);
     SaveOut.setDevice(&file_Ball_Ctr_sEMG_MAV);
-    for (int i = 0; i < stack_Ball_Ctr_sEMG_MAV[trial_idx - 1][traj_idx - 1][0].size(); i++) {
+    for (int i = 0; i < stack_Ball_Ctr_sEMG_MAV[0].size(); i++) {
         for (int j = 0; j < N_EMG; j++) {
-            SaveOut << QString::number(stack_Ball_Ctr_sEMG_MAV[trial_idx - 1][traj_idx - 1][j][i]);
+            SaveOut << QString::number(stack_Ball_Ctr_sEMG_MAV[j][i]);
             if (j != N_EMG - 1)
                 SaveOut << QString(" ");
         }
@@ -1781,8 +1540,8 @@ void MainWindow::SaveData_BallControl(int trial_idx, int traj_idx) {
     QFile file_sEMG_MAV_amp(SaveFolderStr + filename);
     file_sEMG_MAV_amp.open(QIODevice::WriteOnly | QIODevice::Text);
     SaveOut.setDevice(&file_sEMG_MAV_amp);
-    for (int i = 0; i < stack_Ball_Ctr_sEMG_MAV_amp[trial_idx - 1][traj_idx - 1].size(); i++) {
-        SaveOut << QString::number(stack_Ball_Ctr_sEMG_MAV_amp[trial_idx - 1][traj_idx - 1][i]);
+    for (int i = 0; i < stack_Ball_Ctr_sEMG_MAV_amp.size(); i++) {
+        SaveOut << QString::number(stack_Ball_Ctr_sEMG_MAV_amp[i]);
         SaveOut << QString("\n");
     }
     std::cout << "3. sEMG MAV amplitude save complete" << std::endl;
@@ -1792,8 +1551,8 @@ void MainWindow::SaveData_BallControl(int trial_idx, int traj_idx) {
     QFile file_isMotionExerted(SaveFolderStr + filename);
     file_isMotionExerted.open(QIODevice::WriteOnly | QIODevice::Text);
     SaveOut.setDevice(&file_isMotionExerted);
-    for (int i = 0; i < stack_Ball_Ctr_isMotionExerted[trial_idx - 1][traj_idx - 1].size(); i++) {
-        SaveOut << QString::number(stack_Ball_Ctr_isMotionExerted[trial_idx - 1][traj_idx - 1][i]);
+    for (int i = 0; i < stack_Ball_Ctr_isMotionExerted.size(); i++) {
+        SaveOut << QString::number(stack_Ball_Ctr_isMotionExerted[i]);
         SaveOut << QString("\n");
     }
     std::cout << "4. Flags for motion exertion save complete" << std::endl;
@@ -1803,9 +1562,9 @@ void MainWindow::SaveData_BallControl(int trial_idx, int traj_idx) {
     QFile file_Ball_Ctr_sEMG_WL(SaveFolderStr + filename);
     file_Ball_Ctr_sEMG_WL.open(QIODevice::WriteOnly | QIODevice::Text);
     SaveOut.setDevice(&file_Ball_Ctr_sEMG_WL);
-    for (int i = 0; i < stack_Ball_Ctr_sEMG_WL[trial_idx - 1][traj_idx - 1][0].size(); i++) {
+    for (int i = 0; i < stack_Ball_Ctr_sEMG_WL[0].size(); i++) {
         for (int j = 0; j < N_EMG; j++) {
-            SaveOut << QString::number(stack_Ball_Ctr_sEMG_WL[trial_idx - 1][traj_idx - 1][j][i]);
+            SaveOut << QString::number(stack_Ball_Ctr_sEMG_WL[j][i]);
             if (j != N_EMG - 1)
                 SaveOut << QString(" ");
         }
@@ -1818,9 +1577,9 @@ void MainWindow::SaveData_BallControl(int trial_idx, int traj_idx) {
     QFile file_Ball_Ctr_sEMG_SSC(SaveFolderStr + filename);
     file_Ball_Ctr_sEMG_SSC.open(QIODevice::WriteOnly | QIODevice::Text);
     SaveOut.setDevice(&file_Ball_Ctr_sEMG_SSC);
-    for (int i = 0; i < stack_Ball_Ctr_sEMG_SSC[trial_idx - 1][traj_idx - 1][0].size(); i++) {
+    for (int i = 0; i < stack_Ball_Ctr_sEMG_SSC[0].size(); i++) {
         for (int j = 0; j < N_EMG; j++) {
-            SaveOut << QString::number(stack_Ball_Ctr_sEMG_SSC[trial_idx - 1][traj_idx - 1][j][i]);
+            SaveOut << QString::number(stack_Ball_Ctr_sEMG_SSC[j][i]);
             if (j != N_EMG - 1)
                 SaveOut << QString(" ");
         }
@@ -1833,9 +1592,9 @@ void MainWindow::SaveData_BallControl(int trial_idx, int traj_idx) {
     QFile file_Ball_Ctr_sEMG_ZC(SaveFolderStr + filename);
     file_Ball_Ctr_sEMG_ZC.open(QIODevice::WriteOnly | QIODevice::Text);
     SaveOut.setDevice(&file_Ball_Ctr_sEMG_ZC);
-    for (int i = 0; i < stack_Ball_Ctr_sEMG_ZC[trial_idx - 1][traj_idx - 1][0].size(); i++) {
+    for (int i = 0; i < stack_Ball_Ctr_sEMG_ZC[0].size(); i++) {
         for (int j = 0; j < N_EMG; j++) {
-            SaveOut << QString::number(stack_Ball_Ctr_sEMG_ZC[trial_idx - 1][traj_idx - 1][j][i]);
+            SaveOut << QString::number(stack_Ball_Ctr_sEMG_ZC[j][i]);
             if (j != N_EMG - 1)
                 SaveOut << QString(" ");
         }
@@ -1843,109 +1602,84 @@ void MainWindow::SaveData_BallControl(int trial_idx, int traj_idx) {
     }
     std::cout << "7. sEMG ZC save complete" << std::endl;
 
-    // 15. Motion estimation from TwinCAT Thread
+    // 8. Motion estimation from TwinCAT Thread
     filename = "/Motion_est_TwinCAT.txt";
     QFile file_Ball_Ctr_Motion_est(SaveFolderStr + filename);
     file_Ball_Ctr_Motion_est.open(QIODevice::WriteOnly | QIODevice::Text);
     SaveOut.setDevice(&file_Ball_Ctr_Motion_est);
-    for (int i = 0; i < stack_Ball_Ctr_Motion_est[trial_idx - 1][traj_idx - 1].size(); i++) {
-        SaveOut << QString::number(stack_Ball_Ctr_Motion_est[trial_idx - 1][traj_idx - 1][i]);
+    for (int i = 0; i < stack_Ball_Ctr_Motion_est.size(); i++) {
+        SaveOut << QString::number(stack_Ball_Ctr_Motion_est[i]);
         SaveOut << QString("\n");
     }
-    std::cout << "15. Motion estimation (in TwinCAT thread) save complete" << std::endl;
+    std::cout << "8. Motion estimation (in TwinCAT thread) save complete" << std::endl;
 
-    // 16. Motion estimation from TensorRT Thread
+    // 9. Motion estimation from TensorRT Thread
     filename = "/Motion_est_TensorRT.txt";
     QFile file_Ball_Ctr_Motion_est_TensorRT_thread(SaveFolderStr + filename);
     file_Ball_Ctr_Motion_est_TensorRT_thread.open(QIODevice::WriteOnly | QIODevice::Text);
     SaveOut.setDevice(&file_Ball_Ctr_Motion_est_TensorRT_thread);
-    for (int i = 0; i < stack_Ball_Ctr_Motion_est_TensorRT_thread[trial_idx - 1][traj_idx - 1].size(); i++) {
-        SaveOut << QString::number(stack_Ball_Ctr_Motion_est_TensorRT_thread[trial_idx - 1][traj_idx - 1][i]);
+    for (int i = 0; i < stack_Ball_Ctr_Motion_est_TensorRT_thread.size(); i++) {
+        SaveOut << QString::number(stack_Ball_Ctr_Motion_est_TensorRT_thread[i]);
         SaveOut << QString("\n");
     }
-    std::cout << "16. Motion estimation (in TensorRT thread) save complete" << std::endl;
+    std::cout << "9. Motion estimation (in TensorRT thread) save complete" << std::endl;
 
-    // 17. Preprocessing time elapse
+    // 10. Preprocessing time elapse
     filename = "/Time_elapse_Processing.txt";
     QFile file_Ball_Ctr_Time_elapse_processing(SaveFolderStr + filename);
     file_Ball_Ctr_Time_elapse_processing.open(QIODevice::WriteOnly | QIODevice::Text);
     SaveOut.setDevice(&file_Ball_Ctr_Time_elapse_processing);
-    for (int i = 0; i < stack_Ball_Ctr_Time_elapse_Processing[trial_idx - 1][traj_idx - 1].size(); i++) {
-        SaveOut << QString::number(stack_Ball_Ctr_Time_elapse_Processing[trial_idx - 1][traj_idx - 1][i]);
+    for (int i = 0; i < stack_Ball_Ctr_Time_elapse_Processing.size(); i++) {
+        SaveOut << QString::number(stack_Ball_Ctr_Time_elapse_Processing[i]);
         SaveOut << QString("\n");
     }
-    std::cout << "17. Time elapse for TwinCAT save complete" << std::endl;
+    std::cout << "10. Time elapse for TwinCAT save complete" << std::endl;
 
-    // 18. TensorRT time elapse
+    // 11. TensorRT time elapse
     filename = "/Time_elapse_TensorRT.txt";
     QFile file_Ball_Ctr_Time_elapse_TensorRT(SaveFolderStr + filename);
     file_Ball_Ctr_Time_elapse_TensorRT.open(QIODevice::WriteOnly | QIODevice::Text);
     SaveOut.setDevice(&file_Ball_Ctr_Time_elapse_TensorRT);
-    for (int i = 0; i < stack_Ball_Ctr_Time_elapse_TensorRT[trial_idx - 1][traj_idx - 1].size(); i++) {
-        SaveOut << QString::number(stack_Ball_Ctr_Time_elapse_TensorRT[trial_idx - 1][traj_idx - 1][i]);
+    for (int i = 0; i < stack_Ball_Ctr_Time_elapse_TensorRT.size(); i++) {
+        SaveOut << QString::number(stack_Ball_Ctr_Time_elapse_TensorRT[i]);
         SaveOut << QString("\n");
     }
-    std::cout << "18. Time elapse for TensorRT save complete" << std::endl;
+    std::cout << "11. Time elapse for TensorRT save complete" << std::endl;
 
-    // 19. Ball Control - X pos.
+    // 12. Ball Control - X pos.
     filename = "/Ball_X.txt";
     QFile file_Ball_Ctr_X(SaveFolderStr + filename);
     file_Ball_Ctr_X.open(QIODevice::WriteOnly | QIODevice::Text);
     SaveOut.setDevice(&file_Ball_Ctr_X);
-    for (int i = 0; i < stack_Ball_Ctr_X[trial_idx - 1][traj_idx - 1].size(); i++) {
-        SaveOut << QString::number(stack_Ball_Ctr_X[trial_idx - 1][traj_idx - 1][i]);
+    for (int i = 0; i < stack_Ball_Ctr_X.size(); i++) {
+        SaveOut << QString::number(stack_Ball_Ctr_X[i]);
         SaveOut << QString("\n");
     }
-    std::cout << "19. Ball control X history save complete" << std::endl;
+    std::cout << "12. Ball control X history save complete" << std::endl;
 
-    // 20. Ball Control - Y pos.
+    // 13. Ball Control - Y pos.
     filename = "/Ball_Y.txt";
     QFile file_Ball_Ctr_Y(SaveFolderStr + filename);
     file_Ball_Ctr_Y.open(QIODevice::WriteOnly | QIODevice::Text);
     SaveOut.setDevice(&file_Ball_Ctr_Y);
-    for (int i = 0; i < stack_Ball_Ctr_Y[trial_idx - 1][traj_idx - 1].size(); i++) {
-        SaveOut << QString::number(stack_Ball_Ctr_Y[trial_idx - 1][traj_idx - 1][i]);
+    for (int i = 0; i < stack_Ball_Ctr_Y.size(); i++) {
+        SaveOut << QString::number(stack_Ball_Ctr_Y[i]);
         SaveOut << QString("\n");
     }
-    std::cout << "20. Ball control Y history save complete" << std::endl;
+    std::cout << "13. Ball control Y history save complete" << std::endl;
 
-    // 21. Ball Control - Rotation
-    filename = "/Ball_Rot.txt";
-    QFile file_Ball_Ctr_Rot(SaveFolderStr + filename);
-    file_Ball_Ctr_Rot.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Ball_Ctr_Rot);
-    for (int i = 0; i < stack_Ball_Ctr_Rot[trial_idx - 1][traj_idx - 1].size(); i++) {
-        SaveOut << QString::number(stack_Ball_Ctr_Rot[trial_idx - 1][traj_idx - 1][i]);
-        SaveOut << QString("\n");
-    }
-    std::cout << "21. Ball control Rot history save complete" << std::endl;
-
-    // 22. Ball Control - Scale
+    // 14. Ball Control - Scale
     filename = "/Ball_Scale.txt";
     QFile file_Ball_Ctr_Scale(SaveFolderStr + filename);
     file_Ball_Ctr_Scale.open(QIODevice::WriteOnly | QIODevice::Text);
     SaveOut.setDevice(&file_Ball_Ctr_Scale);
-    for (int i = 0; i < stack_Ball_Ctr_Scale[trial_idx - 1][traj_idx - 1].size(); i++) {
-        SaveOut << QString::number(stack_Ball_Ctr_Scale[trial_idx - 1][traj_idx - 1][i]);
+    for (int i = 0; i < stack_Ball_Ctr_Scale.size(); i++) {
+        SaveOut << QString::number(stack_Ball_Ctr_Scale[i]);
         SaveOut << QString("\n");
     }
-    std::cout << "22. Ball control Scale history save complete" << std::endl;
+    std::cout << "14. Ball control Scale history save complete" << std::endl;
 
-    // 23. Save success and elapsed time
-    filename = "/Ball_Success_Time_pos.txt";
-    QFile file_Ball_Ctr_Success_Time(SaveFolderStr + filename);
-    file_Ball_Ctr_Success_Time.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Ball_Ctr_Success_Time);
-    if (SuccessOrNot[trial_idx - 1][traj_idx - 1])
-        SaveOut << "1";
-    else
-        SaveOut << "0";
-
-    SaveOut << QString("\n");
-    SaveOut << QString::number(BallCtrElapsedTime[trial_idx - 1][traj_idx - 1]);
-    std::cout << "23. Ball control success and elapsed time save complete" << std::endl;
-
-    // 24. MAV - Rest threshold
+    // 15. MAV - Rest threshold
     filename = "/sEMG_MAV_thres_info.txt";
     QFile file_sEMG_MAV_thres_info(SaveFolderStr + filename);
     file_sEMG_MAV_thres_info.open(QIODevice::WriteOnly | QIODevice::Text);
@@ -1962,7 +1696,7 @@ void MainWindow::SaveData_BallControl(int trial_idx, int traj_idx) {
     SaveOut << QString("4) sEMG MAV threshold ((1) + (2) * (3)): ");
     SaveOut << QString::number(rest_thres);
     SaveOut << QString("\n");
-    std::cout << "24. sEMG MAV rest threshold information save complete" << std::endl;
+    std::cout << "15. sEMG MAV rest threshold information save complete" << std::endl;
 
     std::cout << "################ save complete ################" << std::endl;
 }
@@ -1974,10 +1708,19 @@ void MainWindow::ClearData_Training() {
         stack_sEMG_WL[i].clear();
         stack_sEMG_SSC[i].clear();
         stack_sEMG_ZC[i].clear();
+
+        stack_sEMG_raw[i].shrink_to_fit();
+        stack_sEMG_MAV[i].shrink_to_fit();
+        stack_sEMG_WL[i].shrink_to_fit();
+        stack_sEMG_SSC[i].shrink_to_fit();
+        stack_sEMG_ZC[i].shrink_to_fit();
     }
 
     stack_Motion_label.clear();
     stack_Time_elapse_Processing.clear();
+
+    stack_Motion_label.shrink_to_fit();
+    stack_Time_elapse_Processing.shrink_to_fit();
 }
 
 void MainWindow::ClearData_UnlabeledDAQ() {
@@ -1987,33 +1730,41 @@ void MainWindow::ClearData_UnlabeledDAQ() {
         stack_sEMG_WL[i].clear();
         stack_sEMG_SSC[i].clear();
         stack_sEMG_ZC[i].clear();
+
+        stack_sEMG_raw[i].shrink_to_fit();
+        stack_sEMG_MAV[i].shrink_to_fit();
+        stack_sEMG_WL[i].shrink_to_fit();
+        stack_sEMG_SSC[i].shrink_to_fit();
+        stack_sEMG_ZC[i].shrink_to_fit();
     }
 
     stack_Motion_label.clear();
     stack_Time_elapse_Processing.clear();
+
+    stack_Motion_label.shrink_to_fit();
+    stack_Time_elapse_Processing.shrink_to_fit();
 }
 
-void MainWindow::ClearData_BallControl(int trial_idx, int traj_idx) {
+void MainWindow::ClearData_BallControl() {
     for (int i = 0; i < N_EMG; i++) {
-        stack_Ball_Ctr_sEMG_raw[trial_idx - 1][traj_idx - 1][i].clear();
-        stack_Ball_Ctr_sEMG_MAV[trial_idx - 1][traj_idx - 1][i].clear();
-        stack_Ball_Ctr_sEMG_WL[trial_idx - 1][traj_idx - 1][i].clear();
-        stack_Ball_Ctr_sEMG_SSC[trial_idx - 1][traj_idx - 1][i].clear();
-        stack_Ball_Ctr_sEMG_ZC[trial_idx - 1][traj_idx - 1][i].clear();
+        stack_Ball_Ctr_sEMG_raw[i].clear();
+        stack_Ball_Ctr_sEMG_MAV[i].clear();
+        stack_Ball_Ctr_sEMG_WL[i].clear();
+        stack_Ball_Ctr_sEMG_SSC[i].clear();
+        stack_Ball_Ctr_sEMG_ZC[i].clear();
     }
-    stack_Ball_Ctr_sEMG_MAV_amp[trial_idx - 1][traj_idx - 1].clear();
+    stack_Ball_Ctr_sEMG_MAV_amp.clear();
 
-    stack_Ball_Ctr_Motion_est[trial_idx - 1][traj_idx - 1].clear();
-    stack_Ball_Ctr_Motion_est_TensorRT_thread[trial_idx - 1][traj_idx - 1].clear();
-    stack_Ball_Ctr_Time_elapse_Processing[trial_idx - 1][traj_idx - 1].clear();
-    stack_Ball_Ctr_Time_elapse_TensorRT[trial_idx - 1][traj_idx - 1].clear();
+    stack_Ball_Ctr_Motion_est.clear();
+    stack_Ball_Ctr_Motion_est_TensorRT_thread.clear();
+    stack_Ball_Ctr_Time_elapse_Processing.clear();
+    stack_Ball_Ctr_Time_elapse_TensorRT.clear();
 
-    stack_Ball_Ctr_X[trial_idx - 1][traj_idx - 1].clear();
-    stack_Ball_Ctr_Y[trial_idx - 1][traj_idx - 1].clear();
-    stack_Ball_Ctr_Rot[trial_idx - 1][traj_idx - 1].clear();
-    stack_Ball_Ctr_Scale[trial_idx - 1][traj_idx - 1].clear();
+    stack_Ball_Ctr_X.clear();
+    stack_Ball_Ctr_Y.clear();
+    stack_Ball_Ctr_Scale.clear();
 
-    stack_Ball_Ctr_isMotionExerted[trial_idx - 1][traj_idx - 1].clear();
+    stack_Ball_Ctr_isMotionExerted.clear();
 }
 
 void MainWindow::on_BtnSwitch_clicked() {
@@ -2058,9 +1809,6 @@ void MainWindow::on_BtnSwitch_clicked() {
         ui->BtnSwitch->setText("Stop");
         m_flag_Switch = true;
 
-        ui->lineEdit_Trial_Idx->setEnabled(false);
-        ui->lineEdit_Traj_Idx->setEnabled(false);
-
         ui->BtnDelete->setEnabled(false);
         ui->BtnStackSave->setEnabled(false);
 
@@ -2069,8 +1817,6 @@ void MainWindow::on_BtnSwitch_clicked() {
         ui->radioBtn_Mode_3->setEnabled(false);
 
         ui->radioBtn_Network_1->setEnabled(false);
-        ui->radioBtn_Network_2->setEnabled(false);
-        ui->radioBtn_Network_3->setEnabled(false);
 
         ui->radioBtn_SaveOption_1->setEnabled(false);
         ui->radioBtn_SaveOption_2->setEnabled(false);
@@ -2112,7 +1858,7 @@ void MainWindow::on_BtnSwitch_clicked() {
             else if (m_radioMode == 1)
                 SaveData_UnlabeledDAQ();
             else if (m_radioMode == 2)
-                SaveData_BallControl(Trial_idx, Traj_idx);
+                SaveData_BallControl();
 
             // Clear existing data (Only for immediate quit)
             if (m_radioSaveOpt == 1) {
@@ -2121,7 +1867,7 @@ void MainWindow::on_BtnSwitch_clicked() {
                 else if (m_radioMode == 1)
                     ClearData_UnlabeledDAQ();
                 else if (m_radioMode == 2)
-                    ClearData_BallControl(Trial_idx, Traj_idx);
+                    ClearData_BallControl();
             }
         }
 
@@ -2203,56 +1949,27 @@ void MainWindow::on_BtnStackSave_clicked() {
     else if (m_radioMode == 1)
         SaveData_UnlabeledDAQ();
     else if (m_radioMode == 2)
-        SaveData_BallControl(Trial_idx, Traj_idx);
+        SaveData_BallControl();
 
     // 1. Next ball control trajectory & corresponding save folder setup
     if (m_radioMode == 2) {
         isSuccess_time_flag = false;
         isSuccess = false;
-        player_TestOne.Get_PaintTestOne()->Set_isSuccess(isSuccess);
 
         isRun = false;
         isTimeOver_time_flag = false;
         isTimeOver = false;
-        player_TestOne.Get_PaintTestOne()->Set_isTimeOver(isTimeOver);
 
         T_trial_start = m_time;
         player_TestOne.Get_PaintTestOne()->Set_T_Trial_Start(T_trial_start);
 
-        if (Trial_idx < N_TRIALS) {
-            if (Traj_idx < N_TRAJECTORY) {
-                Traj_idx++;
-                player_TestOne.Get_PaintTestOne()->Set_Traj_idx(Traj_idx);
-                ui->lineEdit_Traj_Idx->setText(QString::number(Traj_idx));
-            }
-            else {
-                Trial_idx++;
-                player_TestOne.Get_PaintTestOne()->Set_Trial_idx(Trial_idx);
-                ui->lineEdit_Trial_Idx->setText(QString::number(Trial_idx));
-
-                Traj_idx = 1;
-                player_TestOne.Get_PaintTestOne()->Set_Traj_idx(Traj_idx);
-                ui->lineEdit_Traj_Idx->setText(QString::number(Traj_idx));
-            }
-        }
-        else if (Trial_idx == N_TRIALS && Traj_idx < N_TRAJECTORY){
-            Traj_idx++;
-            player_TestOne.Get_PaintTestOne()->Set_Traj_idx(Traj_idx);
-            ui->lineEdit_Traj_Idx->setText(QString::number(Traj_idx));
-        }
-
         TimeStr = QDateTime::currentDateTime().toString("yyMMdd_hhmmss_");
-        SaveFolderStr = PathStr + TimeStr + NameStr + ModeStr + NetworkStr +
-                            "_Trial" + QString::number(Trial_idx) + "_Traj" + QString::number(Traj_idx);
+        SaveFolderStr = PathStr + TimeStr + NameStr + ModeStr + NetworkStr;
         ui->lineEdit_SaveFolder->setText(SaveFolderStr);
 
-        player_TestOne.Get_PaintTestOne()->Set_Cur_X(player_TestOne.Get_PaintTestOne()->Get_Start_X(Traj_idx));
-        player_TestOne.Get_PaintTestOne()->Set_Cur_Y(player_TestOne.Get_PaintTestOne()->Get_Start_Y(Traj_idx));
-        player_TestOne.Get_PaintTestOne()->Set_Cur_Rot(player_TestOne.Get_PaintTestOne()->Get_Start_Rot(Traj_idx));
-        player_TestOne.Get_PaintTestOne()->Set_Cur_Scale(player_TestOne.Get_PaintTestOne()->Get_Start_Scale(Traj_idx));
-
-        ui->lineEdit_Trial_Idx->setEnabled(true);
-        ui->lineEdit_Traj_Idx->setEnabled(true);
+        player_TestOne.Get_PaintTestOne()->Set_Cur_X(player_TestOne.Get_PaintTestOne()->Get_Start_X());
+        player_TestOne.Get_PaintTestOne()->Set_Cur_Y(player_TestOne.Get_PaintTestOne()->Get_Start_Y());
+        player_TestOne.Get_PaintTestOne()->Set_Cur_Scale(player_TestOne.Get_PaintTestOne()->Get_Start_Scale());
 
         m_time_last = m_time;
         m_time_last_cnt = m_time_cnt;
@@ -2276,44 +1993,36 @@ void MainWindow::on_BtnStackSave_clicked() {
     else if (m_radioMode == 1)
         ClearData_UnlabeledDAQ();
     else if (m_radioMode == 2)
-        ClearData_BallControl(Trial_idx, Traj_idx);
+        ClearData_BallControl();
 
     // 4. Enable / Disable Button
     ui->BtnStackSave->setEnabled(false);
 }
 
 void MainWindow::on_BtnSkipPractice_clicked() {
-    if (PracticeOrNot)
-        ui->BtnSwitch->setEnabled(true);
+    ui->BtnSwitch->setEnabled(true);
 
     PracticeOrNot = false;
     player_TestOne.Get_PaintTestOne()->Set_PracticeOrNot(PracticeOrNot);
-    player_TestOne.Get_PaintTestOne()->Set_Trial_idx(Trial_idx);
-    player_TestOne.Get_PaintTestOne()->Set_Traj_idx(Traj_idx);
-
-    player_TestOne.Get_PaintTestOne()->Set_Cur_X(player_TestOne.Get_PaintTestOne()->Get_Start_X(Traj_idx));
-    player_TestOne.Get_PaintTestOne()->Set_Cur_Y(player_TestOne.Get_PaintTestOne()->Get_Start_Y(Traj_idx));
-    player_TestOne.Get_PaintTestOne()->Set_Cur_Rot(player_TestOne.Get_PaintTestOne()->Get_Start_Rot(Traj_idx));
-    player_TestOne.Get_PaintTestOne()->Set_Cur_Scale(player_TestOne.Get_PaintTestOne()->Get_Start_Scale(Traj_idx));
 
     T_trial_start = m_time;
     m_time_last = m_time;
     m_time_last_cnt = m_time_cnt;
     player_TestOne.Get_PaintTestOne()->Set_T_Trial_Start(T_trial_start);
 
+    player_TestOne.Get_PaintTestOne()->Set_Cur_X(player_TestOne.Get_PaintTestOne()->Get_Start_X());
+    player_TestOne.Get_PaintTestOne()->Set_Cur_Y(player_TestOne.Get_PaintTestOne()->Get_Start_Y());
+    player_TestOne.Get_PaintTestOne()->Set_Cur_Scale(player_TestOne.Get_PaintTestOne()->Get_Start_Scale());
+
     if (isTwinCATStarted)
         on_BtnSwitch_clicked();
     ui->BtnSkipPractice->setEnabled(false);
-    ui->lineEdit_Trial_Idx->setEnabled(true);
-    ui->lineEdit_Traj_Idx->setEnabled(true);
 
     isRun = false;
     isTimeOver = false;
-    player_TestOne.Get_PaintTestOne()->Set_isTimeOver(isTimeOver);
 
     TimeStr = QDateTime::currentDateTime().toString("yyMMdd_hhmmss_");
-    SaveFolderStr = PathStr + TimeStr + NameStr + ModeStr + NetworkStr
-                        + "_Trial" + QString::number(Trial_idx) + "_Traj" + QString::number(Traj_idx);
+    SaveFolderStr = PathStr + TimeStr + NameStr + ModeStr + NetworkStr;
     ui->lineEdit_SaveFolder->setText(SaveFolderStr);
 }
 
@@ -2419,30 +2128,6 @@ void MainWindow::on_lineEdit_Sbj_Name_textEdited(const QString &arg1) {
     ui->lineEdit_SaveFolder->setText(SaveFolderStr);
 }
 
-void MainWindow::on_lineEdit_Trial_Idx_textEdited(const QString &arg1) {
-    Trial_idx = arg1.toInt();
-    TimeStr = QDateTime::currentDateTime().toString("yyMMdd_hhmmss_");
-    SaveFolderStr = PathStr + TimeStr + NameStr + ModeStr + NetworkStr
-                        + "_Trial" + QString::number(Trial_idx) + "_Traj" + QString::number(Traj_idx);
-    ui->lineEdit_SaveFolder->setText(SaveFolderStr);
-}
-
-void MainWindow::on_lineEdit_Traj_Idx_textEdited(const QString &arg1) {
-    Traj_idx = arg1.toInt();
-    TimeStr = QDateTime::currentDateTime().toString("yyMMdd_hhmmss_");
-    SaveFolderStr = PathStr + TimeStr + NameStr + ModeStr + NetworkStr
-                        + "_Trial" + QString::number(Trial_idx) + "_Traj" + QString::number(Traj_idx);
-    ui->lineEdit_SaveFolder->setText(SaveFolderStr);
-
-    if (m_radioMode == 2 && !PracticeOrNot) {
-        player_TestOne.Get_PaintTestOne()->Set_Traj_idx(Traj_idx);
-        player_TestOne.Get_PaintTestOne()->Set_Cur_X(player_TestOne.Get_PaintTestOne()->Get_Start_X(Traj_idx));
-        player_TestOne.Get_PaintTestOne()->Set_Cur_Y(player_TestOne.Get_PaintTestOne()->Get_Start_Y(Traj_idx));
-        player_TestOne.Get_PaintTestOne()->Set_Cur_Rot(player_TestOne.Get_PaintTestOne()->Get_Start_Rot(Traj_idx));
-        player_TestOne.Get_PaintTestOne()->Set_Cur_Scale(player_TestOne.Get_PaintTestOne()->Get_Start_Scale(Traj_idx));
-    }
-}
-
 void MainWindow::on_lineEdit_WinSize_textEdited(const QString &arg1) {
     Win_size = arg1.toInt();
 }
@@ -2458,12 +2143,8 @@ void MainWindow::RadioCtrl_Mode() {
         m_radioMode = 0;
 
         ui->stackedWdg->setCurrentIndex(m_radioMode);
-        ui->lineEdit_Trial_Idx->setEnabled(false);
-        ui->lineEdit_Traj_Idx->setEnabled(false);
 
         ui->radioBtn_Network_1->setEnabled(false);
-        ui->radioBtn_Network_2->setEnabled(false);
-        ui->radioBtn_Network_3->setEnabled(false);
 
         ui->radioBtn_DataStream_1->setEnabled(true);
         ui->radioBtn_DataStream_2->setEnabled(false);
@@ -2485,12 +2166,8 @@ void MainWindow::RadioCtrl_Mode() {
         m_radioMode = 1;
 
         ui->stackedWdg->setCurrentIndex(m_radioMode);
-        ui->lineEdit_Trial_Idx->setEnabled(false);
-        ui->lineEdit_Traj_Idx->setEnabled(false);
 
         ui->radioBtn_Network_1->setEnabled(false);
-        ui->radioBtn_Network_2->setEnabled(false);
-        ui->radioBtn_Network_3->setEnabled(false);
 
         ui->radioBtn_DataStream_1->setEnabled(true);
         ui->radioBtn_DataStream_2->setEnabled(false);
@@ -2510,31 +2187,21 @@ void MainWindow::RadioCtrl_Mode() {
         m_radioMode = 2;
 
         ui->stackedWdg->setCurrentIndex(m_radioMode);
-        ui->lineEdit_Trial_Idx->setEnabled(false);
-        ui->lineEdit_Traj_Idx->setEnabled(false);
 
         ui->radioBtn_Network_1->setEnabled(true);
-        ui->radioBtn_Network_2->setEnabled(true);
-        ui->radioBtn_Network_3->setEnabled(true);
 
-        if (!ui->radioBtn_Network_1->isChecked() &&
-            !ui->radioBtn_Network_2->isChecked() &&
-            !ui->radioBtn_Network_3->isChecked()) {
+        if (!ui->radioBtn_Network_1->isChecked()) {
+            ui->BtnSwitch->setEnabled(false);
             ui->radioBtn_DataStream_1->setEnabled(false);
             ui->radioBtn_DataStream_2->setEnabled(false);
         }
 
-        if (!ui->radioBtn_Network_1->isChecked() &&
-            !ui->radioBtn_Network_2->isChecked() &&
-            !ui->radioBtn_Network_3->isChecked())
-            ui->BtnSwitch->setEnabled(false);
         ui->BtnDelete->setEnabled(false);
         ui->BtnSkipPractice->setEnabled(true);
 
         TimeStr = QDateTime::currentDateTime().toString("yyMMdd_hhmmss_");
         ModeStr = "_Ball_Control";
-        SaveFolderStr = PathStr + TimeStr + NameStr + ModeStr + NetworkStr
-                            + "_Trial" + QString::number(Trial_idx) + "_Traj" + QString::number(Traj_idx);
+        SaveFolderStr = PathStr + TimeStr + NameStr + ModeStr + NetworkStr;
         ui->lineEdit_SaveFolder->setText(SaveFolderStr);
     }
 }
@@ -2542,21 +2209,15 @@ void MainWindow::RadioCtrl_Mode() {
 void MainWindow::RadioCtrl_Network() {
     if (ui->radioBtn_Network_1->isChecked()) { // No network loaded
         m_radioNetwork = 0;
-        NetworkStr = "_Fine_Tune";
-        if (TRT_Fine_Tune == nullptr)
-            TRT_Fine_Tune = new TensorRT_module("FT_C_sbj_T12_sbj_S3_iter50.uff");    // For CNN comparison
-    }
-    else if (ui->radioBtn_Network_2->isChecked()) { // No network loaded
-        m_radioNetwork = 1;
-        NetworkStr = "_STM";
-        if (TRT_STM == nullptr)
-            TRT_STM = new TensorRT_module("STM_C_sbj_T12_sbj_S3_beta_0.20_gamma_0.00_iter50.uff");  // For WDGRL comparison
-    }
-    else if (ui->radioBtn_Network_3->isChecked()) { // No network loaded
-        m_radioNetwork = 2;
         NetworkStr = "_Proposed";
-        if (TRT_Proposed == nullptr)
-            TRT_Proposed = new TensorRT_module("STDAN_C_sbj_T12_sbj_S3_acpt_thres_0.4_iter10.uff");  // For WDGRL comparison
+        if (TRT_Fine_Tune == nullptr)
+            TRT_Fine_Tune = new TensorRT_module("Proposed_C_sbj_T12_sbj_S3_iter50.uff");    // For CNN comparison
+
+        ui->radioBtn_Mode_1->setEnabled(false);
+        ui->radioBtn_Mode_2->setEnabled(false);
+        ui->radioBtn_Mode_3->setEnabled(false);
+
+        ui->radioBtn_Network_1->setEnabled(false);
     }
 
     ui->BtnSwitch->setEnabled(true);
@@ -2564,8 +2225,7 @@ void MainWindow::RadioCtrl_Network() {
     ui->radioBtn_DataStream_2->setEnabled(true);
 
     TimeStr = QDateTime::currentDateTime().toString("yyMMdd_hhmmss_");
-    SaveFolderStr = PathStr + TimeStr + NameStr + ModeStr + NetworkStr
-                            + "_Trial" + QString::number(Trial_idx) + "_Traj" + QString::number(Traj_idx);
+    SaveFolderStr = PathStr + TimeStr + NameStr + ModeStr + NetworkStr;
     ui->lineEdit_SaveFolder->setText(SaveFolderStr);
 }
 

@@ -240,7 +240,7 @@ void TensorRT_module::initializeSampleParams() {
     classes.push_back("Hand Close");        // 6
     classes.push_back("Hand Open");         // 7
 
-    mParams.dataDirs.push_back("../STDAN_TRT/tensorRT/"); // release directory
+    mParams.dataDirs.push_back("../TRT_demo/tensorRT/"); // release directory
     mParams.uffFileName = "Classifier.uff";
     mParams.labelsFileName = "Classes.txt";
     mParams.inputTensorNames.push_back("inputs"); // Input tensor(layer) name

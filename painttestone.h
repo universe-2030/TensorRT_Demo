@@ -18,15 +18,9 @@
 #define TRIANGLE_HEIGHT 20
 
 #define N_TRAJ_PRACTICE 1
-#define N_TRAJ_TEST 2
+#define N_TRAJ_TEST 1
 
 #define T_READY_BALL_CTR 5.0
-#define T_MAX_BALL_CTR_PRACTICE 75.0
-#define T_MAX_BALL_CTR 75.0
-#define T_DURATION_SUCCESS 5.0
-
-#define N_POS 5
-#define N_TRAJECTORY 2
 
 class PaintTestOne : public QObject{
     Q_OBJECT
@@ -43,53 +37,32 @@ public:
     void Initialize_DAVariables();
 
     // Template
-    void CountDown(QPainter *painter); // Count down
-    void Traj_practice(QPainter *painter); // Trajectory for practice
-    void Traj_test1(QPainter *painter); // Trajectory - test 1
-    void Traj_test2(QPainter *painter); // Trajectory - test 2
+    void CountDown(QPainter *painter); // Countdown for 5 seconds
+    void Traj_test(QPainter *painter); // Trajectory - test
 
     // Current state
     void Current(QPainter *painter);
 
-    // Timer
-    void Timer(QPainter *painter);
-
-    // Success
-    void Success(QPainter *painter);
-
-    // Time Over
-    void TimeOver(QPainter *painter);
-
     // 'Get' Functions
     double Get_time();
-    double Get_Cur_Rot();
     double Get_Cur_Scale();
     double Get_Cur_X();
     double Get_Cur_Y();
 
-    double Get_Start_Rot_Practice();
     double Get_Start_Scale_Practice();
     double Get_Start_X_Practice();
     double Get_Start_Y_Practice();
 
-    double Get_End_Rot_Practice();
-    double Get_End_Scale_Practice();
-    double Get_End_X_Practice();
-    double Get_End_Y_Practice();
+    double Get_Start_Scale();
+    double Get_Start_X();
+    double Get_Start_Y();
 
-    double Get_Start_Rot(int trial_idx);
-    double Get_Start_Scale(int trial_idx);
-    double Get_Start_X(int trial_idx);
-    double Get_Start_Y(int trial_idx);
-
-    double Get_End_Rot(int trial_idx);
-    double Get_End_Scale(int trial_idx);
-    double Get_End_X(int trial_idx);
-    double Get_End_Y(int trial_idx);
+    double Get_End_Scale();
+    double Get_End_X();
+    double Get_End_Y();
 
     // 'Set' Functions
     void Set_time(double m_time);
-    void Set_Cur_Rot(double Cur_Rot);
     void Set_Cur_Scale(double Cur_Scale);
     void Set_Cur_X(double Cur_X);
     void Set_Cur_Y(double Cur_Y);
@@ -102,7 +75,6 @@ public:
     void Set_isRun(bool _isRun);
 
     void Set_T_Trial_Start(double m_time);
-    void Set_T_Trial_End(double m_time);
 
 private:
     // Limb pos & Trial idx
@@ -145,12 +117,10 @@ private:
     QPen timeoverPen;
 
     // Trajectory variables
-    double Start_Rot_Practice;
     double Start_Scale_Practice;
     double Start_X_Practice;
     double Start_Y_Practice;
 
-    double* Start_Rot;
     double* Start_Scale;
     double* Start_X;
     double* Start_Y;
@@ -181,13 +151,7 @@ private:
     double* End_X;
     double* End_Y;
 
-    double End_Rot_Practice;
-    double End_Scale_Practice;
-    double End_X_Practice;
-    double End_Y_Practice;
-
     // Current state variables
-    double Cur_Rot;
     double Cur_Scale;
     double Cur_X;
     double Cur_Y;
