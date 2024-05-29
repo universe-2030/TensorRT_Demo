@@ -250,10 +250,6 @@ void MainWindow::Initialize_DAVariables() {
     stack_sEMG_SSC = new std::vector<double>[N_EMG];
     stack_sEMG_ZC = new std::vector<double>[N_EMG];
 
-    stack_Flex_raw = new std::vector<double>[N_FLEX_CH];
-    stack_Flex_processed = new std::vector<double>[N_FLEX_CH];
-    stack_Flex_Angle = new std::vector<double>[N_FLEX_CH];
-
     sEMG_MAV = new float64[N_EMG];
     sEMG_MAV_norm = new float64[N_EMG];
     sEMG_WL = new float64[N_EMG];
@@ -322,15 +318,6 @@ void MainWindow::Initialize_DAVariables() {
     stack_Ball_Ctr_sEMG_SSC = new std::vector<double>**[N_TRIALS];
     stack_Ball_Ctr_sEMG_ZC = new std::vector<double>**[N_TRIALS];
 
-    stack_Ball_Ctr_IMU_ori = new std::vector<double>**[N_TRIALS];
-    stack_Ball_Ctr_IMU_gyro = new std::vector<double>**[N_TRIALS];
-    stack_Ball_Ctr_IMU_acc = new std::vector<double>**[N_TRIALS];
-    stack_Ball_Ctr_IMU_mag = new std::vector<double>**[N_TRIALS];
-
-    stack_Ball_Ctr_Flex_raw = new std::vector<double>**[N_TRIALS];
-    stack_Ball_Ctr_Flex_processed = new std::vector<double>**[N_TRIALS];
-    stack_Ball_Ctr_Flex_Angle = new std::vector<double>**[N_TRIALS];
-
     stack_Ball_Ctr_X = new std::vector<double>*[N_TRIALS];
     stack_Ball_Ctr_Y = new std::vector<double>*[N_TRIALS];
     stack_Ball_Ctr_Rot = new std::vector<double>*[N_TRIALS];
@@ -351,30 +338,12 @@ void MainWindow::Initialize_DAVariables() {
         stack_Ball_Ctr_sEMG_SSC[i] = new std::vector<double>*[N_TRAJECTORY];
         stack_Ball_Ctr_sEMG_ZC[i] = new std::vector<double>*[N_TRAJECTORY];
 
-        stack_Ball_Ctr_IMU_ori[i] = new std::vector<double>*[N_TRAJECTORY];
-        stack_Ball_Ctr_IMU_acc[i] = new std::vector<double>*[N_TRAJECTORY];
-        stack_Ball_Ctr_IMU_gyro[i] = new std::vector<double>*[N_TRAJECTORY];
-        stack_Ball_Ctr_IMU_mag[i] = new std::vector<double>*[N_TRAJECTORY];
-
-        stack_Ball_Ctr_Flex_raw[i] = new std::vector<double>*[N_TRAJECTORY];
-        stack_Ball_Ctr_Flex_processed[i] = new std::vector<double>*[N_TRAJECTORY];
-        stack_Ball_Ctr_Flex_Angle[i] = new std::vector<double>*[N_TRAJECTORY];
-
         for (int j = 0; j < N_TRAJECTORY; j++) {
             stack_Ball_Ctr_sEMG_raw[i][j] = new std::vector<double>[N_EMG];
             stack_Ball_Ctr_sEMG_MAV[i][j] = new std::vector<double>[N_EMG];
             stack_Ball_Ctr_sEMG_WL[i][j] = new std::vector<double>[N_EMG];
             stack_Ball_Ctr_sEMG_SSC[i][j] = new std::vector<double>[N_EMG];
             stack_Ball_Ctr_sEMG_ZC[i][j] = new std::vector<double>[N_EMG];
-
-            stack_Ball_Ctr_IMU_ori[i][j] = new std::vector<double>[N_IMU_CH];
-            stack_Ball_Ctr_IMU_acc[i][j] = new std::vector<double>[N_IMU_CH];
-            stack_Ball_Ctr_IMU_gyro[i][j] = new std::vector<double>[N_IMU_CH];
-            stack_Ball_Ctr_IMU_mag[i][j] = new std::vector<double>[N_IMU_CH];
-
-            stack_Ball_Ctr_Flex_raw[i][j] = new std::vector<double>[N_FLEX_CH];
-            stack_Ball_Ctr_Flex_processed[i][j] = new std::vector<double>[N_FLEX_CH];
-            stack_Ball_Ctr_Flex_Angle[i][j] = new std::vector<double>[N_FLEX_CH];
         }
 
         stack_Ball_Ctr_X[i] = new std::vector<double>[N_TRAJECTORY];
@@ -389,15 +358,6 @@ void MainWindow::Initialize_DAVariables() {
         stack_Ball_Ctr_Time_elapse_TensorRT[i] = new std::vector<double>[N_TRAJECTORY];
         stack_Ball_Ctr_isMotionExerted[i] = new std::vector<int>[N_TRAJECTORY];
         stack_Ball_Ctr_Motion_est_TensorRT_thread[i] = new std::vector<int>[N_TRAJECTORY];
-    }
-
-    Flex_raw_offset = new float64[N_FLEX_CH];
-    Flex_processed = new float64[N_FLEX_CH];
-    Flex_Angle = new float64[N_FLEX_CH];
-    for (int i = 0; i < N_FLEX_CH; i++) {
-        Flex_raw_offset[i] = 0.0;
-        Flex_processed[i] = 0.0;
-        Flex_Angle[i] = 0.0;
     }
 
     SuccessOrNot = new bool*[N_TRIALS];
@@ -578,15 +538,6 @@ void MainWindow::RealTimeDataPlot() {
         trnForm.get_UI()->wdg_RTGraph_MAV->xAxis->setRange(key, Width_X, Qt::AlignRight); // Size is set to [s] scale
         trnForm.get_UI()->wdg_RTGraph_MAV->replot();
 
-        // 3. Flex sensor
-        trnForm.get_UI()->wdg_RTGraph_Flex->graph(0)->addData(key, Flex_processed[0]);
-        trnForm.get_UI()->wdg_RTGraph_Flex->graph(1)->addData(key, Flex_processed[1]);
-        trnForm.get_UI()->wdg_RTGraph_Flex->graph(2)->addData(key, Flex_processed[2]);
-        trnForm.get_UI()->wdg_RTGraph_Flex->graph(3)->addData(key, Flex_processed[3]);
-        trnForm.get_UI()->wdg_RTGraph_Flex->graph(4)->addData(key, Flex_processed[4]);
-        trnForm.get_UI()->wdg_RTGraph_Flex->xAxis->setRange(key, Width_X, Qt::AlignRight); // Size is set to [s] scale
-        trnForm.get_UI()->wdg_RTGraph_Flex->replot();
-
         // 4. Motion label
         trnForm.get_UI()->wdg_RTGraph_Label->graph(0)->addData(key, Motion_label);
         trnForm.get_UI()->wdg_RTGraph_Label->xAxis->setRange(key, Width_X, Qt::AlignRight); // Size is set to [s] scale
@@ -604,15 +555,6 @@ void MainWindow::RealTimeDataPlot() {
         unlabeledDAQForm.get_UI()->wdg_RTGraph_MAV->xAxis->setRange(key, Width_X, Qt::AlignRight); // Size is set to [s] scale
         unlabeledDAQForm.get_UI()->wdg_RTGraph_MAV->replot();
 
-        // 3. Flex sensor
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_Flex->graph(0)->addData(key, Flex_processed[0]);
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_Flex->graph(1)->addData(key, Flex_processed[1]);
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_Flex->graph(2)->addData(key, Flex_processed[2]);
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_Flex->graph(3)->addData(key, Flex_processed[3]);
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_Flex->graph(4)->addData(key, Flex_processed[4]);
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_Flex->xAxis->setRange(key, Width_X, Qt::AlignRight); // Size is set to [s] scale
-        unlabeledDAQForm.get_UI()->wdg_RTGraph_Flex->replot();
-
         // 4. Motion label
         unlabeledDAQForm.get_UI()->wdg_RTGraph_Label->graph(0)->addData(key, Motion_label);
         unlabeledDAQForm.get_UI()->wdg_RTGraph_Label->xAxis->setRange(key, Width_X, Qt::AlignRight); // Size is set to [s] scale
@@ -629,15 +571,6 @@ void MainWindow::RealTimeDataPlot() {
         testOneForm.get_UI()->wdg_RTGraph_MAV->graph(6)->addData(key, sEMG_MAV[6]);
         testOneForm.get_UI()->wdg_RTGraph_MAV->xAxis->setRange(key, Width_X, Qt::AlignRight); // Size is set to [s] scale
         testOneForm.get_UI()->wdg_RTGraph_MAV->replot();
-
-        // 3. Flex sensor
-        testOneForm.get_UI()->wdg_RTGraph_Flex->graph(0)->addData(key, Flex_processed[0]);
-        testOneForm.get_UI()->wdg_RTGraph_Flex->graph(1)->addData(key, Flex_processed[1]);
-        testOneForm.get_UI()->wdg_RTGraph_Flex->graph(2)->addData(key, Flex_processed[2]);
-        testOneForm.get_UI()->wdg_RTGraph_Flex->graph(3)->addData(key, Flex_processed[3]);
-        testOneForm.get_UI()->wdg_RTGraph_Flex->graph(4)->addData(key, Flex_processed[4]);
-        testOneForm.get_UI()->wdg_RTGraph_Flex->xAxis->setRange(key, Width_X, Qt::AlignRight); // Size is set to [s] scale
-        testOneForm.get_UI()->wdg_RTGraph_Flex->replot();
 
         // 4. Motion estimation
         testOneForm.get_UI()->wdg_RTGraph_Est->graph(0)->addData(key, Motion_est);
@@ -820,9 +753,6 @@ void MainWindow::Thread_TwinCAT_func() {
                 // Data processing - Offset calculation
                 Offset_Calculation();
 
-                // Data processing - Flex sensor angle conversion
-                Flex_Angle_Calculation();
-
                 // Data processing - Normalization
                 Normalize_Features();
 
@@ -855,13 +785,6 @@ void MainWindow::Thread_TwinCAT_func() {
                             emit setRingRotZ_Cue_Trn(trj_hand[m_time_cnt - m_time_last_cnt]);
                             emit setLittleRotZ_Cue_Trn(trj_hand[m_time_cnt - m_time_last_cnt]);
                         }
-
-                        // Motion capture
-                        emit setThumbRotZ_MoCap_Trn(Flex_Angle[0]);
-                        emit setIndexRotZ_MoCap_Trn(Flex_Angle[1]);
-                        emit setMiddleRotZ_MoCap_Trn(Flex_Angle[2]);
-                        emit setRingRotZ_MoCap_Trn(Flex_Angle[3]);
-                        emit setLittleRotZ_MoCap_Trn(Flex_Angle[4]);
                     }
                 }
                 else if (m_radioMode == 1) {
@@ -879,13 +802,6 @@ void MainWindow::Thread_TwinCAT_func() {
                             emit setRingRotZ_Cue_UnlabeledDAQ(trj_hand[m_time_cnt - m_time_last_cnt]);
                             emit setLittleRotZ_Cue_UnlabeledDAQ(trj_hand[m_time_cnt - m_time_last_cnt]);
                         }
-
-                        // Motion capture
-                        emit setThumbRotZ_MoCap_UnlabeledDAQ(Flex_Angle[0]);
-                        emit setIndexRotZ_MoCap_UnlabeledDAQ(Flex_Angle[1]);
-                        emit setMiddleRotZ_MoCap_UnlabeledDAQ(Flex_Angle[2]);
-                        emit setRingRotZ_MoCap_UnlabeledDAQ(Flex_Angle[3]);
-                        emit setLittleRotZ_MoCap_UnlabeledDAQ(Flex_Angle[4]);
                     }
 
                     // Print the motion order
@@ -894,16 +810,6 @@ void MainWindow::Thread_TwinCAT_func() {
                             std::cout << n + 1 << "th motion complete" << std::endl;
                             break;
                         }
-                    }
-                }
-                else if (m_radioMode == 2) {
-                    if ((m_time_cnt - m_time_last_cnt) % 20 == 0) {
-                        // Motion capture
-                        emit setThumbRotZ_MoCap_TestOne(Flex_Angle[0]);
-                        emit setIndexRotZ_MoCap_TestOne(Flex_Angle[1]);
-                        emit setMiddleRotZ_MoCap_TestOne(Flex_Angle[2]);
-                        emit setRingRotZ_MoCap_TestOne(Flex_Angle[3]);
-                        emit setLittleRotZ_MoCap_TestOne(Flex_Angle[4]);
                     }
                 }
             }
@@ -1532,21 +1438,12 @@ void MainWindow::Offset_Calculation() {
             sEMG_WL_offset[i] += sEMG_WL[i];
         }
 
-        for (int i = 0 ; i < N_FLEX_CH; i++) {
-            Flex_raw_offset[i] += Flex_raw[i];
-        }
-
         if ((m_time_cnt - m_time_last_cnt) == int(T_OFFSET_END_TRN * 1000) - 1) {
             for (int i = 0 ; i < N_EMG; i++) {
                 sEMG_MAV_offset[i] /= (double)(int(T_OFFSET_END_TRN * 1000) -
                                                 int(T_OFFSET_START_TRN * 1000));
                 sEMG_WL_offset[i] /= (double)(int(T_OFFSET_END_TRN * 1000) -
                                                 int(T_OFFSET_START_TRN * 1000));
-            }
-
-            for (int i = 0 ; i < N_FLEX_CH; i++) {
-                Flex_raw_offset[i] /= (double)(int(T_OFFSET_END_TRN * 1000) -
-                                               int(T_OFFSET_START_TRN * 1000));
             }
         }
     }
@@ -1556,10 +1453,6 @@ void MainWindow::Offset_Calculation() {
         for (int i = 0; i < N_EMG; i++) {
             sEMG_MAV[i] = std::abs(sEMG_MAV[i] - sEMG_MAV_offset[i]);
             sEMG_WL[i] = std::abs(sEMG_WL[i] - sEMG_WL_offset[i]);
-        }
-
-        for (int i = 0; i < N_FLEX_CH; i++) {
-            Flex_processed[i] = Flex_raw[i] - Flex_raw_offset[i];
         }
     }
 }
@@ -1641,21 +1534,6 @@ void MainWindow::Rest_mean_std_Calculation() {
     }
 }
 
-void MainWindow::Flex_Angle_Calculation() {
-    if (int(T_OFFSET_END_TRN * 1000) <= (m_time_cnt - m_time_last_cnt)) {
-        double thumb_amp = 0.8;
-        double index_amp = 1.0;
-        double middle_amp = 1.2;
-        double ring_amp = 1.0;
-        double little_amp = 1.2;
-
-        Flex_Angle[0] = Flex_processed[0] / thumb_amp * 70.0 - 10.0;
-        Flex_Angle[1] = Flex_processed[1] / index_amp * 80.0 - 10.0;
-        Flex_Angle[2] = Flex_processed[2] / middle_amp * 80.0 - 10.0;
-        Flex_Angle[3] = Flex_processed[3] / ring_amp * 80.0 - 10.0;
-        Flex_Angle[4] = Flex_processed[4] / little_amp * 80.0 - 10.0;
-    }
-}
 
 bool MainWindow::Rest_Mot_Classification() {
     if (sum_sEMG_MAV >= rest_thres) {
@@ -1705,13 +1583,6 @@ void MainWindow::StackData() {
             stack_sEMG_ZC[i].push_back(sEMG_ZC[i]);
         }
 
-        // 3. Flex sensor variables
-        for (int i = 0; i < N_FLEX_CH; i++) {
-            stack_Flex_raw[i].push_back(Flex_raw[i]);
-            stack_Flex_processed[i].push_back(Flex_processed[i]);
-            stack_Flex_Angle[i].push_back(Flex_Angle[i]);
-        }
-
         // 4. Motion label
         stack_Motion_label.push_back(Motion_label);
 
@@ -1725,13 +1596,6 @@ void MainWindow::StackData() {
             stack_Ball_Ctr_sEMG_WL[Trial_idx - 1][Traj_idx - 1][i].push_back(sEMG_WL[i]);
             stack_Ball_Ctr_sEMG_SSC[Trial_idx - 1][Traj_idx - 1][i].push_back(sEMG_SSC[i]);
             stack_Ball_Ctr_sEMG_ZC[Trial_idx - 1][Traj_idx - 1][i].push_back(sEMG_ZC[i]);
-        }
-
-        // 3. Flex sensor variables
-        for (int i = 0; i < N_FLEX_CH; i++) {
-            stack_Ball_Ctr_Flex_raw[Trial_idx - 1][Traj_idx - 1][i].push_back(Flex_raw[i]);
-            stack_Ball_Ctr_Flex_processed[Trial_idx - 1][Traj_idx - 1][i].push_back(Flex_processed[i]);
-            stack_Ball_Ctr_Flex_Angle[Trial_idx - 1][Traj_idx - 1][i].push_back(Flex_Angle[i]);
         }
 
         // 4. Ball control histories
@@ -1760,12 +1624,6 @@ void MainWindow::PopUpData(unsigned int N_delete) {
             stack_sEMG_WL[i].pop_back();
             stack_sEMG_SSC[i].pop_back();
             stack_sEMG_ZC[i].pop_back();
-        }
-
-        for (int i = 0; i < N_FLEX_CH; i++) {
-            stack_Flex_raw[i].pop_back();
-            stack_Flex_processed[i].pop_back();
-            stack_Flex_Angle[i].pop_back();
         }
 
         stack_Motion_label.pop_back();
@@ -1854,51 +1712,6 @@ void MainWindow::SaveData_Training() {
         SaveOut << QString("\n");
     }
     std::cout << "5. sEMG ZC save complete" << std::endl;
-
-    // 10. Raw flex sensor.txt
-    filename = "/Flex_raw.txt";
-    QFile file_Flex_raw(SaveFolderStr + filename);
-    file_Flex_raw.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Flex_raw);
-    for (int i = 0; i < stack_Flex_raw[0].size(); i++) {
-        for (int j = 0; j < N_FLEX_CH; j++) {
-            SaveOut << QString::number(stack_Flex_raw[j][i]);
-            if (j != N_FLEX_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "10. Raw flex sensor save complete" << std::endl;
-
-    // 11. Offset-processed flex sensor.txt
-    filename = "/Flex_processed.txt";
-    QFile file_Flex_processed(SaveFolderStr + filename);
-    file_Flex_processed.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Flex_processed);
-    for (int i = 0; i < stack_Flex_raw[0].size(); i++) {
-        for (int j = 0; j < N_FLEX_CH; j++) {
-            SaveOut << QString::number(stack_Flex_processed[j][i]);
-            if (j != N_FLEX_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "11. Processed flex sensor save complete" << std::endl;
-
-    // 12. Angle flex sensor.txt
-    filename = "/Flex_angle.txt";
-    QFile file_Flex_angle(SaveFolderStr + filename);
-    file_Flex_angle.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Flex_angle);
-    for (int i = 0; i < stack_Flex_Angle[0].size(); i++) {
-        for (int j = 0; j < N_FLEX_CH; j++) {
-            SaveOut << QString::number(stack_Flex_Angle[j][i]);
-            if (j != N_FLEX_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "12. Angle flex sensor save complete" << std::endl;
 
     // 13. Motion label.txt
     filename = "/Motion_label.txt";
@@ -2006,51 +1819,6 @@ void MainWindow::SaveData_UnlabeledDAQ() {
         SaveOut << QString("\n");
     }
     std::cout << "5. sEMG ZC save complete" << std::endl;
-
-    // 10. Raw flex sensor.txt
-    filename = "/Flex_raw.txt";
-    QFile file_Flex_raw(SaveFolderStr + filename);
-    file_Flex_raw.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Flex_raw);
-    for (int i = 0; i < stack_Flex_raw[0].size(); i++) {
-        for (int j = 0; j < N_FLEX_CH; j++) {
-            SaveOut << QString::number(stack_Flex_raw[j][i]);
-            if (j != N_FLEX_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "10. Raw flex sensor save complete" << std::endl;
-
-    // 11. Offset-processed flex sensor.txt
-    filename = "/Flex_processed.txt";
-    QFile file_Flex_processed(SaveFolderStr + filename);
-    file_Flex_processed.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Flex_processed);
-    for (int i = 0; i < stack_Flex_raw[0].size(); i++) {
-        for (int j = 0; j < N_FLEX_CH; j++) {
-            SaveOut << QString::number(stack_Flex_processed[j][i]);
-            if (j != N_FLEX_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "11. Processed flex sensor save complete" << std::endl;
-
-    // 12. Angle flex sensor.txt
-    filename = "/Flex_angle.txt";
-    QFile file_Flex_angle(SaveFolderStr + filename);
-    file_Flex_angle.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Flex_angle);
-    for (int i = 0; i < stack_Flex_Angle[0].size(); i++) {
-        for (int j = 0; j < N_FLEX_CH; j++) {
-            SaveOut << QString::number(stack_Flex_Angle[j][i]);
-            if (j != N_FLEX_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "12. Angle flex sensor save complete" << std::endl;
 
     // 13. Motion label.txt
     filename = "/Motion_label.txt";
@@ -2185,111 +1953,6 @@ void MainWindow::SaveData_BallControl(int trial_idx, int traj_idx) {
     }
     std::cout << "7. sEMG ZC save complete" << std::endl;
 
-    // 8. IMU orientation
-    filename = "/IMU_Ori.txt";
-    QFile file_Ball_Ctr_IMU_Ori(SaveFolderStr + filename);
-    file_Ball_Ctr_IMU_Ori.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Ball_Ctr_IMU_Ori);
-    for (int i = 0; i < stack_Ball_Ctr_IMU_ori[trial_idx - 1][traj_idx - 1][0].size(); i++) {
-        for (int j = 0; j < N_IMU_CH; j++) {
-            SaveOut << QString::number(stack_Ball_Ctr_IMU_ori[trial_idx - 1][traj_idx - 1][j][i]);
-            if (j != N_IMU_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "8. IMU orientation save complete" << std::endl;
-
-    // 9. IMU gyroscope
-    filename = "/IMU_Gyro.txt";
-    QFile file_Ball_Ctr_IMU_Gyro(SaveFolderStr + filename);
-    file_Ball_Ctr_IMU_Gyro.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Ball_Ctr_IMU_Gyro);
-    for (int i = 0; i < stack_Ball_Ctr_IMU_gyro[trial_idx - 1][traj_idx - 1][0].size(); i++) {
-        for (int j = 0; j < N_IMU_CH; j++) {
-            SaveOut << QString::number(stack_Ball_Ctr_IMU_gyro[trial_idx - 1][traj_idx - 1][j][i]);
-            if (j != N_IMU_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "9. IMU gyroscope save complete" << std::endl;
-
-    // 10. IMU accelerometer
-    filename = "/IMU_Acc.txt";
-    QFile file_Ball_Ctr_IMU_Acc(SaveFolderStr + filename);
-    file_Ball_Ctr_IMU_Acc.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Ball_Ctr_IMU_Acc);
-    for (int i = 0; i < stack_Ball_Ctr_IMU_acc[trial_idx - 1][traj_idx - 1][0].size(); i++) {
-        for (int j = 0; j < N_IMU_CH; j++) {
-            SaveOut << QString::number(stack_Ball_Ctr_IMU_acc[trial_idx - 1][traj_idx - 1][j][i]);
-            if (j != N_IMU_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "10. IMU accelerometer save complete" << std::endl;
-
-    // 11. IMU magnetometer
-    filename = "/IMU_Mag.txt";
-    QFile file_Ball_Ctr_IMU_Mag(SaveFolderStr + filename);
-    file_Ball_Ctr_IMU_Mag.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Ball_Ctr_IMU_Mag);
-    for (int i = 0; i < stack_Ball_Ctr_IMU_mag[trial_idx - 1][traj_idx - 1][0].size(); i++) {
-        for (int j = 0; j < N_IMU_CH; j++) {
-            SaveOut << QString::number(stack_Ball_Ctr_IMU_mag[trial_idx - 1][traj_idx - 1][j][i]);
-            if (j != N_IMU_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "11. IMU magnetometer save complete" << std::endl;
-
-    // 12. Raw flex sensor.txt
-    filename = "/Flex_raw.txt";
-    QFile file_Ball_Ctr_Flex_raw(SaveFolderStr + filename);
-    file_Ball_Ctr_Flex_raw.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Ball_Ctr_Flex_raw);
-    for (int i = 0; i < stack_Ball_Ctr_Flex_raw[trial_idx - 1][traj_idx - 1][0].size(); i++) {
-        for (int j = 0; j < N_FLEX_CH; j++) {
-            SaveOut << QString::number(stack_Ball_Ctr_Flex_raw[trial_idx - 1][traj_idx - 1][j][i]);
-            if (j != N_FLEX_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "12. Raw flex sensor save complete" << std::endl;
-
-    // 13. Offset-processed flex sensor.txt
-    filename = "/Flex_processed.txt";
-    QFile file_Ball_Ctr_Flex_processed(SaveFolderStr + filename);
-    file_Ball_Ctr_Flex_processed.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Ball_Ctr_Flex_processed);
-    for (int i = 0; i < stack_Ball_Ctr_Flex_raw[trial_idx - 1][traj_idx - 1][0].size(); i++) {
-        for (int j = 0; j < N_FLEX_CH; j++) {
-            SaveOut << QString::number(stack_Ball_Ctr_Flex_processed[trial_idx - 1][traj_idx - 1][j][i]);
-            if (j != N_FLEX_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "13. Processed flex sensor save complete" << std::endl;
-
-    // 14. Angle flex sensor.txt
-    filename = "/Flex_angle.txt";
-    QFile file_Ball_Ctr_Flex_angle(SaveFolderStr + filename);
-    file_Ball_Ctr_Flex_angle.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Ball_Ctr_Flex_angle);
-    for (int i = 0; i < stack_Ball_Ctr_Flex_Angle[trial_idx - 1][traj_idx - 1][0].size(); i++) {
-        for (int j = 0; j < N_FLEX_CH; j++) {
-            SaveOut << QString::number(stack_Ball_Ctr_Flex_Angle[trial_idx - 1][traj_idx - 1][j][i]);
-            if (j != N_FLEX_CH - 1)
-                SaveOut << QString(" ");
-        }
-        SaveOut << QString("\n");
-    }
-    std::cout << "14. Angle flex sensor save complete" << std::endl;
-
     // 15. Motion estimation from TwinCAT Thread
     filename = "/Motion_est_TwinCAT.txt";
     QFile file_Ball_Ctr_Motion_est(SaveFolderStr + filename);
@@ -2423,12 +2086,6 @@ void MainWindow::ClearData_Training() {
         stack_sEMG_ZC[i].clear();
     }
 
-    for (int i = 0; i < N_FLEX_CH; i++) {
-        stack_Flex_raw[i].clear();
-        stack_Flex_processed[i].clear();
-        stack_Flex_Angle[i].clear();
-    }
-
     stack_Motion_label.clear();
     stack_Time_elapse_Processing.clear();
 }
@@ -2440,12 +2097,6 @@ void MainWindow::ClearData_UnlabeledDAQ() {
         stack_sEMG_WL[i].clear();
         stack_sEMG_SSC[i].clear();
         stack_sEMG_ZC[i].clear();
-    }
-
-    for (int i = 0; i < N_FLEX_CH; i++) {
-        stack_Flex_raw[i].clear();
-        stack_Flex_processed[i].clear();
-        stack_Flex_Angle[i].clear();
     }
 
     stack_Motion_label.clear();
@@ -2461,12 +2112,6 @@ void MainWindow::ClearData_BallControl(int trial_idx, int traj_idx) {
         stack_Ball_Ctr_sEMG_ZC[trial_idx - 1][traj_idx - 1][i].clear();
     }
     stack_Ball_Ctr_sEMG_MAV_amp[trial_idx - 1][traj_idx - 1].clear();
-
-    for (int i = 0; i < N_FLEX_CH; i++) {
-        stack_Ball_Ctr_Flex_raw[trial_idx - 1][traj_idx - 1][i].clear();
-        stack_Ball_Ctr_Flex_processed[trial_idx - 1][traj_idx - 1][i].clear();
-        stack_Ball_Ctr_Flex_Angle[trial_idx - 1][traj_idx - 1][i].clear();
-    }
 
     stack_Ball_Ctr_Motion_est[trial_idx - 1][traj_idx - 1].clear();
     stack_Ball_Ctr_Motion_est_TensorRT_thread[trial_idx - 1][traj_idx - 1].clear();

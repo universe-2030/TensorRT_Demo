@@ -264,9 +264,6 @@ public:
     void Normalize_Features();
     void Offset_Calculation();
 
-    // Flex sensor processing
-    void Flex_Angle_Calculation();
-
     // Motion classification
     void Rest_mean_std_Calculation();
     bool Rest_Mot_Classification();
@@ -430,10 +427,6 @@ private:
     std::vector<double>* stack_sEMG_SSC;
     std::vector<double>* stack_sEMG_ZC;
 
-    std::vector<double>* stack_Flex_raw;
-    std::vector<double>* stack_Flex_processed;
-    std::vector<double>* stack_Flex_Angle;
-
     std::vector<double>  stack_Time_elapse_Processing;
     std::vector<double>  stack_Time_elapse_TensorRT;
     std::vector<int>     stack_Motion_label;
@@ -444,15 +437,6 @@ private:
     std::vector<double>*** stack_Ball_Ctr_sEMG_WL;
     std::vector<double>*** stack_Ball_Ctr_sEMG_SSC;
     std::vector<double>*** stack_Ball_Ctr_sEMG_ZC;
-
-    std::vector<double>*** stack_Ball_Ctr_IMU_ori;
-    std::vector<double>*** stack_Ball_Ctr_IMU_gyro;
-    std::vector<double>*** stack_Ball_Ctr_IMU_acc;
-    std::vector<double>*** stack_Ball_Ctr_IMU_mag;
-
-    std::vector<double>*** stack_Ball_Ctr_Flex_raw;
-    std::vector<double>*** stack_Ball_Ctr_Flex_processed;
-    std::vector<double>*** stack_Ball_Ctr_Flex_Angle;
 
     std::vector<double>** stack_Ball_Ctr_X;
     std::vector<double>** stack_Ball_Ctr_Y;
