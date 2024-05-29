@@ -18,7 +18,7 @@
 #define TRIANGLE_HEIGHT 20
 
 #define N_TRAJ_PRACTICE 1
-#define N_TRAJ_TEST 2
+#define N_TRAJ_TEST 1
 
 #define T_READY_BALL_CTR 5.0
 #define T_MAX_BALL_CTR_PRACTICE 75.0
@@ -43,22 +43,11 @@ public:
     void Initialize_DAVariables();
 
     // Template
-    void CountDown(QPainter *painter); // Count down
-    void Traj_practice(QPainter *painter); // Trajectory for practice
-    void Traj_test1(QPainter *painter); // Trajectory - test 1
-    void Traj_test2(QPainter *painter); // Trajectory - test 2
+    void CountDown(QPainter *painter); // Countdown for 5 seconds
+    void Traj_test(QPainter *painter); // Trajectory - test
 
     // Current state
     void Current(QPainter *painter);
-
-    // Timer
-    void Timer(QPainter *painter);
-
-    // Success
-    void Success(QPainter *painter);
-
-    // Time Over
-    void TimeOver(QPainter *painter);
 
     // 'Get' Functions
     double Get_time();
@@ -71,11 +60,6 @@ public:
     double Get_Start_Scale_Practice();
     double Get_Start_X_Practice();
     double Get_Start_Y_Practice();
-
-    double Get_End_Rot_Practice();
-    double Get_End_Scale_Practice();
-    double Get_End_X_Practice();
-    double Get_End_Y_Practice();
 
     double Get_Start_Rot(int trial_idx);
     double Get_Start_Scale(int trial_idx);
@@ -180,11 +164,6 @@ private:
     double* End_Scale;
     double* End_X;
     double* End_Y;
-
-    double End_Rot_Practice;
-    double End_Scale_Practice;
-    double End_X_Practice;
-    double End_Y_Practice;
 
     // Current state variables
     double Cur_Rot;

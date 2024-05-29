@@ -51,12 +51,15 @@ MainWindow::MainWindow(QWidget *parent)
     player_UnlabeledDAQ->move((width - 1600) / 2 + 1920,
                               (height - 900) / 2 - 30);
 
-//    if (m_radioMode == 0) { // Training mode
-//        player_Training->show();
-//    }
-//    else if (m_radioMode == 1) { // Unlabeled dataset acquisition mode
-//        player_UnlabeledDAQ->show();
-//    }
+    if (m_radioMode == 0) { // Training mode
+        player_Training->show();
+    }
+    else if (m_radioMode == 1) { // Unlabeled dataset acquisition mode
+        player_UnlabeledDAQ->show();
+    }
+    else if (m_radioMode == 2) { // Unlabeled dataset acquisition mode
+        player_TestOne.show();
+    }
 
     // 3D model) signal connection
     connect(this, &MainWindow::setPalmRotX_Cue_Trn, player_Training->get_Model(), &SceneModifier::set_Palm_RotX);
@@ -330,10 +333,8 @@ void MainWindow::Initialize_GUI() {
     ui->radioBtn_Mode_3->setEnabled(true);
 
     ui->radioBtn_Network_1->setEnabled(false);
-    ui->radioBtn_Network_2->setEnabled(false);
-    ui->radioBtn_Network_3->setEnabled(false);
 
-    PathStr = QString("D:/STDAN_TensorRT/Data/");
+    PathStr = QString("D:/TensorRT_demo/Data/");
     TimeStr = QDateTime::currentDateTime().toString("yyMMdd_hhmmss_");
     if (m_radioMode == 0)
         ModeStr = QString("_Training");
@@ -370,8 +371,6 @@ void MainWindow::Initialize_GUI() {
     connect(ui->radioBtn_Mode_3, SIGNAL(clicked()), this, SLOT(RadioCtrl_Mode()));
 
     connect(ui->radioBtn_Network_1, SIGNAL(clicked()), this, SLOT(RadioCtrl_Network()));
-    connect(ui->radioBtn_Network_2, SIGNAL(clicked()), this, SLOT(RadioCtrl_Network()));
-    connect(ui->radioBtn_Network_3, SIGNAL(clicked()), this, SLOT(RadioCtrl_Network()));
 
     connect(ui->radioBtn_SaveOption_1, SIGNAL(clicked()), this, SLOT(RadioCtrl_SaveOpt()));
     connect(ui->radioBtn_SaveOption_2, SIGNAL(clicked()), this, SLOT(RadioCtrl_SaveOpt()));
@@ -392,17 +391,13 @@ void MainWindow::Initialize_MenuBar() {
     menuBar()->addMenu(file)->setText(tr("&Dialogs"));
 
     QAction *action2;
-    action2 = new QAction(tr("&2. Prediction"), this);
+    action2 = new QAction(tr("&2. UnlabeledDAQ"), this);
     file->addAction(action2);
     menuBar()->addMenu(file)->setText(tr("&Dialogs"));
 
     QAction *action3;
     action3 = new QAction(tr("&3. Ball Control"), this);
     file->addAction(action3);
-    menuBar()->addMenu(file)->setText(tr("&Dialogs"));
-
-    QAction *action4;
-    action4 = new QAction(tr("&4. (Reserved)"), this);
     menuBar()->addMenu(file)->setText(tr("&Dialogs"));
 }
 
@@ -888,7 +883,7 @@ void MainWindow::Thread_TensorRT_func() {
                                 }
                                 else if (Motion_est == 2) {
                                     double X_val = player_TestOne.Get_PaintTestOne()->Get_Cur_X();
-                                    if (X_val + X_val_inc <= 1150)
+                                    if (X_val + X_val_inc <= SCREEN_WIDTH)
                                         player_TestOne.Get_PaintTestOne()->Set_Cur_X(X_val + X_val_inc);
                                 }
                                 else if (Motion_est == 3) {
@@ -937,7 +932,7 @@ void MainWindow::Thread_TensorRT_func() {
                                     }
                                     else if (Motion_est == 2) {
                                         double X_val = player_TestOne.Get_PaintTestOne()->Get_Cur_X();
-                                        if (X_val + X_val_inc <= 1150)
+                                        if (X_val + X_val_inc <= SCREEN_WIDTH)
                                             player_TestOne.Get_PaintTestOne()->Set_Cur_X(X_val + X_val_inc);
                                     }
                                     else if (Motion_est == 3) {
@@ -1438,10 +1433,7 @@ bool MainWindow::Determine_Success(int traj_idx) {
     double End_X, End_Y, End_Rot, End_Scale;
     double cur_X, cur_Y, cur_Rot, cur_Scale;
     if (traj_idx == 0) {
-        End_X = player_TestOne.Get_PaintTestOne()->Get_End_X_Practice();
-        End_Y = player_TestOne.Get_PaintTestOne()->Get_End_Y_Practice();
-        End_Rot = player_TestOne.Get_PaintTestOne()->Get_End_Rot_Practice();
-        End_Scale = player_TestOne.Get_PaintTestOne()->Get_End_Scale_Practice();
+
     }
     else {
         End_X = player_TestOne.Get_PaintTestOne()->Get_End_X(traj_idx);
@@ -2069,8 +2061,6 @@ void MainWindow::on_BtnSwitch_clicked() {
         ui->radioBtn_Mode_3->setEnabled(false);
 
         ui->radioBtn_Network_1->setEnabled(false);
-        ui->radioBtn_Network_2->setEnabled(false);
-        ui->radioBtn_Network_3->setEnabled(false);
 
         ui->radioBtn_SaveOption_1->setEnabled(false);
         ui->radioBtn_SaveOption_2->setEnabled(false);
@@ -2462,8 +2452,6 @@ void MainWindow::RadioCtrl_Mode() {
         ui->lineEdit_Traj_Idx->setEnabled(false);
 
         ui->radioBtn_Network_1->setEnabled(false);
-        ui->radioBtn_Network_2->setEnabled(false);
-        ui->radioBtn_Network_3->setEnabled(false);
 
         ui->radioBtn_DataStream_1->setEnabled(true);
         ui->radioBtn_DataStream_2->setEnabled(false);
@@ -2489,8 +2477,6 @@ void MainWindow::RadioCtrl_Mode() {
         ui->lineEdit_Traj_Idx->setEnabled(false);
 
         ui->radioBtn_Network_1->setEnabled(false);
-        ui->radioBtn_Network_2->setEnabled(false);
-        ui->radioBtn_Network_3->setEnabled(false);
 
         ui->radioBtn_DataStream_1->setEnabled(true);
         ui->radioBtn_DataStream_2->setEnabled(false);
@@ -2514,20 +2500,13 @@ void MainWindow::RadioCtrl_Mode() {
         ui->lineEdit_Traj_Idx->setEnabled(false);
 
         ui->radioBtn_Network_1->setEnabled(true);
-        ui->radioBtn_Network_2->setEnabled(true);
-        ui->radioBtn_Network_3->setEnabled(true);
 
-        if (!ui->radioBtn_Network_1->isChecked() &&
-            !ui->radioBtn_Network_2->isChecked() &&
-            !ui->radioBtn_Network_3->isChecked()) {
+        if (!ui->radioBtn_Network_1->isChecked()) {
+            ui->BtnSwitch->setEnabled(false);
             ui->radioBtn_DataStream_1->setEnabled(false);
             ui->radioBtn_DataStream_2->setEnabled(false);
         }
 
-        if (!ui->radioBtn_Network_1->isChecked() &&
-            !ui->radioBtn_Network_2->isChecked() &&
-            !ui->radioBtn_Network_3->isChecked())
-            ui->BtnSwitch->setEnabled(false);
         ui->BtnDelete->setEnabled(false);
         ui->BtnSkipPractice->setEnabled(true);
 
@@ -2542,21 +2521,9 @@ void MainWindow::RadioCtrl_Mode() {
 void MainWindow::RadioCtrl_Network() {
     if (ui->radioBtn_Network_1->isChecked()) { // No network loaded
         m_radioNetwork = 0;
-        NetworkStr = "_Fine_Tune";
-        if (TRT_Fine_Tune == nullptr)
-            TRT_Fine_Tune = new TensorRT_module("FT_C_sbj_T12_sbj_S3_iter50.uff");    // For CNN comparison
-    }
-    else if (ui->radioBtn_Network_2->isChecked()) { // No network loaded
-        m_radioNetwork = 1;
-        NetworkStr = "_STM";
-        if (TRT_STM == nullptr)
-            TRT_STM = new TensorRT_module("STM_C_sbj_T12_sbj_S3_beta_0.20_gamma_0.00_iter50.uff");  // For WDGRL comparison
-    }
-    else if (ui->radioBtn_Network_3->isChecked()) { // No network loaded
-        m_radioNetwork = 2;
         NetworkStr = "_Proposed";
-        if (TRT_Proposed == nullptr)
-            TRT_Proposed = new TensorRT_module("STDAN_C_sbj_T12_sbj_S3_acpt_thres_0.4_iter10.uff");  // For WDGRL comparison
+        if (TRT_Fine_Tune == nullptr)
+            TRT_Fine_Tune = new TensorRT_module("Proposed_C_sbj_T12_sbj_S3_iter50.uff");    // For CNN comparison
     }
 
     ui->BtnSwitch->setEnabled(true);

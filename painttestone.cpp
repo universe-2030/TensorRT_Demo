@@ -75,15 +75,10 @@ void PaintTestOne::Initialize_Cursor(int traj_idx) {
 
 void PaintTestOne::Initialize_Variables() {
     // Trajectory - practice
-    Start_X_Practice = 150;
-    Start_Y_Practice = 700;
+    Start_X_Practice = 800;
+    Start_Y_Practice = 400;
     Start_Rot_Practice = 0;
     Start_Scale_Practice = 1.2;
-
-    End_X_Practice = 900;
-    End_Y_Practice = 200;
-    End_Rot_Practice = 60;
-    End_Scale_Practice = 1.9;
 }
 
 void PaintTestOne::Initialize_DAVariables() {
@@ -107,62 +102,22 @@ void PaintTestOne::Initialize_DAVariables() {
     End_Y[0] = 300;
     End_Rot[0] = 45;
     End_Scale[0] = 1.9;
-
-    // 2. Trajectory - test 2
-    Start_X[1] = 1000;
-    Start_Y[1] = 720;
-    Start_Rot[1] = 0;
-    Start_Scale[1] = 1.6;
-
-    End_X[1] = 700;
-    End_Y[1] = 470;
-    End_Rot[1] = -45;
-    End_Scale[1] = 0.9;
 }
 
 void PaintTestOne::paint(QPainter *painter, QPaintEvent *event) {
     painter->fillRect(event->rect(), background);
 
-    // 0. Count-down
+    // 1. Count-down
     if ((time - T_trial_start) <= T_READY_BALL_CTR)
         CountDown(painter);
 
-    // 1. Timer
-    if (PracticeOrNot) {
-        if (T_READY_BALL_CTR < (time - T_trial_start) &&
-               (time - T_trial_start) <= (T_READY_BALL_CTR + T_MAX_BALL_CTR_PRACTICE))
-            Timer(painter);
-    }
-    else {
-        if (T_READY_BALL_CTR < (time - T_trial_start) &&
-               (time - T_trial_start) <= (T_READY_BALL_CTR + T_MAX_BALL_CTR) &&
-                    !isSuccess && !isTimeOver)
-            Timer(painter);
-    }
-
     // 2. Trajectory rendering
-    if (PracticeOrNot) {
-        Traj_practice(painter);
-    }
-    else {
-        if (Traj_idx == 1) {
-            Traj_test1(painter);
-        }
-        else if (Traj_idx == 2) {
-            Traj_test2(painter);
-        }
+    if (!PracticeOrNot) {
+        Traj_test(painter);
     }
 
     // 3. Current state rendering
     Current(painter);
-
-    // 4. Success or not?
-    if (isSuccess)
-        Success(painter);
-
-    // 5. Time Over or not?
-    if (isTimeOver)
-        TimeOver(painter);
 }
 
 // Template
@@ -180,165 +135,9 @@ void PaintTestOne::CountDown(QPainter *painter) {
     //!
 }
 
-void PaintTestOne::Traj_practice(QPainter *painter) {
-    //! 0. Trajectory point assignment
-        Traj_X_1 = 800;
-        Traj_Y_1 = 700;
+void PaintTestOne::Traj_test(QPainter *painter) {
+    int traj_idx = 0;
 
-        Traj_X_2 = 800;
-        Traj_Y_2 = 500;
-
-        Traj_X_3 = 350;
-        Traj_Y_3 = 500;
-
-        Traj_X_4 = 350;
-        Traj_Y_4 = 200;
-    //!
-
-    //! 1. 'Start' location
-        painter->setPen(textPen);
-        painter->setFont(textFont);
-        painter->translate(Start_X_Practice, Start_Y_Practice);
-        painter->drawText(QRect(-25, -25, 50, 50),
-                          Qt::AlignCenter, QStringLiteral("Start"));
-        painter->translate(-Start_X_Practice, -Start_Y_Practice);
-    //!
-
-    //! 2. Initial orientation
-        painter->setPen(startPolyPen);
-        painter->setBrush(startPolyBrush);
-
-        // Translate & Rotate
-        painter->translate(Start_X_Practice, Start_Y_Practice);
-        painter->rotate(-Start_Rot_Practice);
-        QRect rect1(-30 * Start_Scale_Practice, -30 * Start_Scale_Practice,
-                     60 * Start_Scale_Practice, 60 * Start_Scale_Practice);
-        painter->drawEllipse(rect1);
-        QRect rect2(-10 * Start_Scale_Practice, -50 * Start_Scale_Practice,
-                     20 * Start_Scale_Practice, 30 * Start_Scale_Practice);
-        painter->drawRect(rect2);
-        painter->rotate(Start_Rot_Practice);
-        painter->translate(-Start_X_Practice, -Start_Y_Practice);
-    //!
-
-    //! 3. 1st trajectory
-        painter->setPen(linePen);
-        painter->drawLine(Start_X_Practice, Start_Y_Practice, Traj_X_1, Traj_Y_1);
-
-        painter->setPen(arrowPen);
-        painter->setBrush(arrowBrush);
-        QPoint arrows_1st[3] = {
-                QPoint(Traj_X_1 + TRIANGLE_WIDTH / 2, Traj_Y_1),
-                QPoint(Traj_X_1 - TRIANGLE_WIDTH / 2, Traj_Y_1 - TRIANGLE_HEIGHT / 2),
-                QPoint(Traj_X_1 - TRIANGLE_WIDTH / 2, Traj_Y_1 + TRIANGLE_HEIGHT / 2)
-            };
-        painter->drawPolygon(arrows_1st, 3, Qt::WindingFill);
-    //!
-
-    //! 4. 2nd trajectory
-        painter->setPen(linePen);
-        painter->drawLine(Traj_X_1, Traj_Y_1, Traj_X_2, Traj_Y_2);
-
-        painter->setPen(arrowPen);
-        painter->setBrush(arrowBrush);
-        QPoint arrows_2nd[3] = {
-                QPoint(Traj_X_2, Traj_Y_2 - TRIANGLE_HEIGHT / 2),
-                QPoint(Traj_X_2 - TRIANGLE_WIDTH / 2, Traj_Y_2 + TRIANGLE_HEIGHT / 2),
-                QPoint(Traj_X_2 + TRIANGLE_WIDTH / 2, Traj_Y_2 + TRIANGLE_HEIGHT / 2)
-            };
-        painter->drawPolygon(arrows_2nd, 3, Qt::WindingFill);
-    //!
-
-    //! 5. 3rd trajectory
-        painter->setPen(linePen);
-        painter->drawLine(Traj_X_2, Traj_Y_2, Traj_X_3, Traj_Y_3);
-
-        painter->setPen(arrowPen);
-        painter->setBrush(arrowBrush);
-        QPoint arrows_3rd[3] = {
-                QPoint(Traj_X_3 - TRIANGLE_WIDTH / 2, Traj_Y_3),
-                QPoint(Traj_X_3 + TRIANGLE_WIDTH / 2, Traj_Y_3 - TRIANGLE_HEIGHT / 2),
-                QPoint(Traj_X_3 + TRIANGLE_WIDTH / 2, Traj_Y_3 + TRIANGLE_HEIGHT / 2)
-            };
-        painter->drawPolygon(arrows_3rd, 3, Qt::WindingFill);
-    //!
-
-    //! 6. 4th trajectory
-        painter->setPen(linePen);
-        painter->drawLine(Traj_X_3, Traj_Y_3, Traj_X_4, Traj_Y_4);
-
-        painter->setPen(arrowPen);
-        painter->setBrush(arrowBrush);
-        QPoint arrows_4th[3] = {
-                QPoint(Traj_X_4, Traj_Y_4 - TRIANGLE_HEIGHT / 2),
-                QPoint(Traj_X_4 - TRIANGLE_WIDTH / 2, Traj_Y_4 + TRIANGLE_HEIGHT / 2),
-                QPoint(Traj_X_4 + TRIANGLE_WIDTH / 2, Traj_Y_4 + TRIANGLE_HEIGHT / 2)
-            };
-        painter->drawPolygon(arrows_4th, 3, Qt::WindingFill);
-    //!
-
-    //! 7. 5th trajectory
-        painter->setPen(linePen);
-        painter->drawLine(Traj_X_4, Traj_Y_4, End_X_Practice, End_Y_Practice);
-
-        painter->setPen(arrowPen);
-        painter->setBrush(arrowBrush);
-        QPoint arrows_5th[3] = {
-                QPoint(End_X_Practice + TRIANGLE_WIDTH / 2, End_Y_Practice),
-                QPoint(End_X_Practice - TRIANGLE_WIDTH / 2, End_Y_Practice - TRIANGLE_HEIGHT / 2),
-                QPoint(End_X_Practice - TRIANGLE_WIDTH / 2, End_Y_Practice + TRIANGLE_HEIGHT / 2)
-            };
-        painter->drawPolygon(arrows_5th, 3, Qt::WindingFill);
-    //!
-
-    //! 8. Final orientation
-        painter->setPen(endPolyPen);
-        painter->setBrush(endPolyBrush);
-
-        // Translate & Rotate
-        painter->translate(End_X_Practice, End_Y_Practice);
-        painter->rotate(-End_Rot_Practice);
-        QRect rect = QRect(-30 * End_Scale_Practice, -30 * End_Scale_Practice,
-                    60 * End_Scale_Practice, 60 * End_Scale_Practice);
-        painter->drawEllipse(rect);
-        rect = QRect(-10 * End_Scale_Practice, -50 * End_Scale_Practice,
-                    20 * End_Scale_Practice, 30 * End_Scale_Practice);
-        painter->drawRect(rect);
-        painter->rotate(End_Rot_Practice);
-        painter->translate(-End_X_Practice, -End_Y_Practice);
-
-        // Rotation arc
-        painter->translate(End_X_Practice, End_Y_Practice);
-        rect = QRect(-40 * End_Scale_Practice, -40 * End_Scale_Practice,
-                     80 * End_Scale_Practice, 80 * End_Scale_Practice);
-        int startAngle = 16 * 90;
-        int spanAngle = 16 * 120;
-        painter->drawArc(rect, startAngle, spanAngle);
-        painter->translate(-End_X_Practice, -End_Y_Practice);
-
-        // Rotation arc arrow
-        painter->translate(End_X_Practice, End_Y_Practice);
-        painter->rotate(-120);
-        QPoint arrows_final[3] = {
-                QPoint(- TRIANGLE_WIDTH / 2, - 40 * End_Scale_Practice),
-                QPoint(+ TRIANGLE_WIDTH / 2, - 40 * End_Scale_Practice - TRIANGLE_HEIGHT / 2),
-                QPoint(+ TRIANGLE_WIDTH / 2, - 40 * End_Scale_Practice + TRIANGLE_HEIGHT / 2)
-            };
-        painter->drawPolygon(arrows_final, 3, Qt::WindingFill);
-        painter->rotate(120);
-        painter->translate(-End_X_Practice, -End_Y_Practice);
-    //!
-
-    //! 9. 'End' location
-        painter->setPen(textPen);
-        painter->setFont(textFont);
-        painter->translate(End_X_Practice, End_Y_Practice);
-        painter->drawText(QRect(-25, -25, 50, 50), Qt::AlignCenter, QStringLiteral("End"));
-        painter->translate(-End_X_Practice, -End_Y_Practice);
-    //!
-}
-
-void PaintTestOne::Traj_test1(QPainter *painter) {
     //! 0. Trajectory point assignment
         Traj_X_1 = 100;
         Traj_Y_1 = 700;
@@ -348,8 +147,6 @@ void PaintTestOne::Traj_test1(QPainter *painter) {
 
         Traj_X_3 = 850;
         Traj_Y_3 = 300;
-
-        int traj_idx = 0;
     //!
 
     //! 1. 'Start' location
@@ -491,158 +288,6 @@ void PaintTestOne::Traj_test1(QPainter *painter) {
     //!
 }
 
-void PaintTestOne::Traj_test2(QPainter *painter) {
-    //! 0. Trajectory point assignment
-        Traj_X_1 = 150;
-        Traj_Y_1 = 720;
-
-        Traj_X_2 = 150;
-        Traj_Y_2 = 70;
-
-        Traj_X_3 = 700;
-        Traj_Y_3 = 70;
-
-        int traj_idx = 1;
-    //!
-
-    //! 1. 'Start' location
-        painter->setPen(textPen);
-        painter->setFont(textFont);
-        painter->translate(Start_X[traj_idx], Start_Y[traj_idx]);
-        painter->drawText(QRect(-25, -25, 50, 50),
-                          Qt::AlignCenter, QStringLiteral("Start"));
-        painter->translate(-Start_X[traj_idx], -Start_Y[traj_idx]);
-    //!
-
-    //! 2. Initial orientation
-        painter->setPen(startPolyPen);
-        painter->setBrush(startPolyBrush);
-
-        // Translate & Rotate
-        painter->translate(Start_X[traj_idx], Start_Y[traj_idx]);
-        painter->rotate(-Start_Rot[traj_idx]);
-        QRect rect1 = QRect(-30 * Start_Scale[traj_idx], -30 * Start_Scale[traj_idx],
-                    60 * Start_Scale[traj_idx], 60 * Start_Scale[traj_idx]);
-        painter->drawEllipse(rect1);
-        QRect rect2 = QRect(-10 * Start_Scale[traj_idx], -50 * Start_Scale[traj_idx],
-                    20 * Start_Scale[traj_idx], 30 * Start_Scale[traj_idx]);
-        painter->drawRect(rect2);
-        painter->rotate(Start_Rot[traj_idx]);
-        painter->translate(-Start_X[traj_idx], -Start_Y[traj_idx]);
-    //!
-
-    //! 3. 1st trajectory
-        painter->setPen(linePen);
-        painter->drawLine(Start_X[traj_idx], Start_Y[traj_idx], Traj_X_1, Traj_Y_1);
-
-        painter->setPen(arrowPen);
-        painter->setBrush(arrowBrush);
-        QPoint arrows_1st[3] = {
-                QPoint(Traj_X_1 - TRIANGLE_WIDTH / 2, Traj_Y_1),
-                QPoint(Traj_X_1 + TRIANGLE_WIDTH / 2, Traj_Y_1 - TRIANGLE_HEIGHT / 2),
-                QPoint(Traj_X_1 + TRIANGLE_WIDTH / 2, Traj_Y_1 + TRIANGLE_HEIGHT / 2)
-            };
-        painter->drawPolygon(arrows_1st, 3, Qt::WindingFill);
-    //!
-
-    //! 4. 2nd trajectory
-        painter->setPen(linePen);
-        painter->drawLine(Traj_X_1, Traj_Y_1, Traj_X_2, Traj_Y_2);
-
-        painter->setPen(arrowPen);
-        painter->setBrush(arrowBrush);
-        QPoint arrows_2nd[3] = {
-                QPoint(Traj_X_2, Traj_Y_2 - TRIANGLE_HEIGHT / 2),
-                QPoint(Traj_X_2 - TRIANGLE_WIDTH / 2, Traj_Y_2 + TRIANGLE_HEIGHT / 2),
-                QPoint(Traj_X_2 + TRIANGLE_WIDTH / 2, Traj_Y_2 + TRIANGLE_HEIGHT / 2)
-            };
-        painter->drawPolygon(arrows_2nd, 3, Qt::WindingFill);
-    //!
-
-    //! 5. 3rd trajectory
-        painter->setPen(linePen);
-        painter->drawLine(Traj_X_2, Traj_Y_2, Traj_X_3, Traj_Y_3);
-
-        painter->setPen(arrowPen);
-        painter->setBrush(arrowBrush);
-        QPoint arrows_3rd[3] = {
-                QPoint(Traj_X_3 + TRIANGLE_WIDTH / 2, Traj_Y_3),
-                QPoint(Traj_X_3 - TRIANGLE_WIDTH / 2, Traj_Y_3 - TRIANGLE_HEIGHT / 2),
-                QPoint(Traj_X_3 - TRIANGLE_WIDTH / 2, Traj_Y_3 + TRIANGLE_HEIGHT / 2)
-            };
-        painter->drawPolygon(arrows_3rd, 3, Qt::WindingFill);
-    //!
-
-    //! 6. 4th trajectory
-        painter->setPen(linePen);
-        painter->drawLine(Traj_X_3, Traj_Y_3, End_X[traj_idx], End_Y[traj_idx]);
-
-        painter->setPen(arrowPen);
-        painter->setBrush(arrowBrush);
-        QPoint arrows_4th[3] = {
-                QPoint(End_X[traj_idx], End_Y[traj_idx] + TRIANGLE_HEIGHT / 2),
-                QPoint(End_X[traj_idx] - TRIANGLE_WIDTH / 2, End_Y[traj_idx] - TRIANGLE_HEIGHT / 2),
-                QPoint(End_X[traj_idx] + TRIANGLE_WIDTH / 2, End_Y[traj_idx] - TRIANGLE_HEIGHT / 2)
-            };
-        painter->drawPolygon(arrows_4th, 3, Qt::WindingFill);
-    //!
-
-    //! 8. Final orientation
-        painter->setPen(endPolyPen);
-        painter->setBrush(endPolyBrush);
-
-        // Translate & Rotate
-        painter->translate(End_X[traj_idx], End_Y[traj_idx]);
-        painter->rotate(-End_Rot[traj_idx]);
-        QRect rect = QRect(-30 * End_Scale[traj_idx], -30 * End_Scale[traj_idx],
-                    60 * End_Scale[traj_idx], 60 * End_Scale[traj_idx]);
-        painter->drawEllipse(rect);
-        rect = QRect(-10 * End_Scale[traj_idx], -50 * End_Scale[traj_idx],
-                    20 * End_Scale[traj_idx], 30 * End_Scale[traj_idx]);
-        painter->drawRect(rect);
-        painter->rotate(End_Rot[traj_idx]);
-        painter->translate(-End_X[traj_idx], -End_Y[traj_idx]);
-
-        // Rotation arc
-        painter->translate(End_X[traj_idx], End_Y[traj_idx]);
-        rect = QRect(-40, -40, 80, 80);
-        int startAngle = 16 * 90;
-        int spanAngle = 16 * (-120);
-        painter->drawArc(rect, startAngle, spanAngle);
-        painter->translate(-End_X[traj_idx], -End_Y[traj_idx]);
-
-        // Rotation arc arrow
-        painter->translate(End_X[traj_idx], End_Y[traj_idx]);
-        painter->rotate(120);
-        if (End_Rot[traj_idx] > 0) {
-            QPoint arrows_final[3] = {
-                    QPoint(- TRIANGLE_WIDTH / 2, - 40),
-                    QPoint(+ TRIANGLE_WIDTH / 2, - 40 - TRIANGLE_HEIGHT / 2),
-                    QPoint(+ TRIANGLE_WIDTH / 2, - 40 + TRIANGLE_HEIGHT / 2)
-                };
-            painter->drawPolygon(arrows_final, 3, Qt::WindingFill);
-        }
-        else {
-            QPoint arrows_final[3] = {
-                    QPoint(+ TRIANGLE_WIDTH / 2, - 40),
-                    QPoint(- TRIANGLE_WIDTH / 2, - 40 - TRIANGLE_HEIGHT / 2),
-                    QPoint(- TRIANGLE_WIDTH / 2, - 40 + TRIANGLE_HEIGHT / 2)
-                };
-            painter->drawPolygon(arrows_final, 3, Qt::WindingFill);
-        }
-        painter->rotate(-120);
-        painter->translate(-End_X[traj_idx], -End_Y[traj_idx]);
-    //!
-
-    //! 9. 'End' location
-        painter->setPen(textPen);
-        painter->setFont(textFont);
-        painter->translate(End_X[traj_idx], End_Y[traj_idx]);
-        painter->drawText(QRect(-25, -25, 50, 50), Qt::AlignCenter, QStringLiteral("End"));
-        painter->translate(-End_X[traj_idx], -End_Y[traj_idx]);
-    //!
-}
-
 void PaintTestOne::Current(QPainter *painter) {
     //! Current location & orientation
         painter->setPen(curPolyPen);
@@ -659,46 +304,6 @@ void PaintTestOne::Current(QPainter *painter) {
         painter->drawRect(rect2);
         painter->rotate(Cur_Rot);
         painter->translate(-Cur_X, -Cur_Y);
-    //!
-}
-
-void PaintTestOne::Timer(QPainter* painter) {
-    //! Time notification
-        painter->setPen(timerPen);
-        painter->setFont(timerFont);
-
-        painter->translate(1400, 250);
-        QString temp = QString::fromStdString(std::to_string((int)(T_MAX_BALL_CTR -
-                                                                   ((time - T_trial_start) - T_READY_BALL_CTR)) + 1));
-        painter->drawText(QRect(-175, -150, 350, 300),
-                          Qt::AlignCenter, temp);
-        painter->translate(-1400, -250);
-    //!
-}
-
-void PaintTestOne::Success(QPainter* painter) {
-    //! Time notification
-        painter->setPen(successPen);
-        painter->setFont(successFont);
-
-        painter->translate(1400, 450);
-        QString temp = QString::fromStdString("Success");
-        painter->drawText(QRect(-175, -150, 350, 300),
-                          Qt::AlignCenter, temp);
-        painter->translate(-1400, -450);
-    //!
-}
-
-void PaintTestOne::TimeOver(QPainter* painter) {
-    //! Time notification
-        painter->setPen(timeoverPen);
-        painter->setFont(timeoverFont);
-
-        painter->translate(1400, 650);
-        QString temp = QString::fromStdString("Time Over");
-        painter->drawText(QRect(-175, -150, 350, 300),
-                          Qt::AlignCenter, temp);
-        painter->translate(-1400, -650);
     //!
 }
 
@@ -733,22 +338,6 @@ double PaintTestOne::Get_Start_X_Practice() {
 
 double PaintTestOne::Get_Start_Y_Practice() {
     return Start_Y_Practice;
-}
-
-double PaintTestOne::Get_End_Rot_Practice() {
-    return End_Rot_Practice;
-}
-
-double PaintTestOne::Get_End_Scale_Practice() {
-    return End_Scale_Practice;
-}
-
-double PaintTestOne::Get_End_X_Practice() {
-    return End_X_Practice;
-}
-
-double PaintTestOne::Get_End_Y_Practice() {
-    return End_Y_Practice;
 }
 
 double PaintTestOne::Get_Start_Rot(int traj_idx) {
