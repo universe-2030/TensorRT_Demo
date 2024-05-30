@@ -12,13 +12,13 @@ TrainingUserForm::TrainingUserForm(QWidget *parent) :
 
     // Figure container assignment
     Figures_motion = new cv::Mat[N_MOTIONS + 1];
-    Figures_motion[0] = cv::imread("../TRT_demo/Figures/Motions/Rest.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[1] = cv::imread("../TRT_demo/Figures/Motions/Wrist Flexion.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[2] = cv::imread("../TRT_demo/Figures/Motions/Wrist Extension.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[3] = cv::imread("../TRT_demo/Figures/Motions/Radial Deviation.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[4] = cv::imread("../TRT_demo/Figures/Motions/Ulnar Deviation.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[5] = cv::imread("../TRT_demo/Figures/Motions/Hand Close.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[6] = cv::imread("../TRT_demo/Figures/Motions/Hand Open.png", cv::IMREAD_UNCHANGED);
+    Figures_motion[0] = cv::imread("../Figures/Motions/Rest.png", cv::IMREAD_UNCHANGED);
+    Figures_motion[1] = cv::imread("../Figures/Motions/Wrist Flexion.png", cv::IMREAD_UNCHANGED);
+    Figures_motion[2] = cv::imread("../Figures/Motions/Wrist Extension.png", cv::IMREAD_UNCHANGED);
+    Figures_motion[3] = cv::imread("../Figures/Motions/Radial Deviation.png", cv::IMREAD_UNCHANGED);
+    Figures_motion[4] = cv::imread("../Figures/Motions/Ulnar Deviation.png", cv::IMREAD_UNCHANGED);
+    Figures_motion[5] = cv::imread("../Figures/Motions/Hand Close.png", cv::IMREAD_UNCHANGED);
+    Figures_motion[6] = cv::imread("../Figures/Motions/Hand Open.png", cv::IMREAD_UNCHANGED);
 
     /////////////////////////////////// OpenGL widget ///////////////////////////////////
     Qt3DExtras::Qt3DWindow *view = new Qt3DExtras::Qt3DWindow();

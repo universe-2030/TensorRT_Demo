@@ -328,13 +328,13 @@ void MainWindow::Initialize_StackedWidget(int mode) {
 
 void MainWindow::Initialize_Figures() {
     Figures_motion = new cv::Mat[N_MOTIONS + 1];
-    Figures_motion[0] = cv::imread("../TRT_demo/Figures/Motions/Rest.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[1] = cv::imread("../TRT_demo/Figures/Motions/Wrist Flexion.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[2] = cv::imread("../TRT_demo/Figures/Motions/Wrist Extension.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[3] = cv::imread("../TRT_demo/Figures/Motions/Radial Deviation.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[4] = cv::imread("../TRT_demo/Figures/Motions/Ulnar Deviation.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[5] = cv::imread("../TRT_demo/Figures/Motions/Hand Close.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[6] = cv::imread("../TRT_demo/Figures/Motions/Hand Open.png", cv::IMREAD_UNCHANGED);
+    Figures_motion[0] = cv::imread("../Figures/Motions/Rest.png", cv::IMREAD_UNCHANGED);
+    Figures_motion[1] = cv::imread("../Figures/Motions/Wrist Flexion.png", cv::IMREAD_UNCHANGED);
+    Figures_motion[2] = cv::imread("../Figures/Motions/Wrist Extension.png", cv::IMREAD_UNCHANGED);
+    Figures_motion[3] = cv::imread("../Figures/Motions/Radial Deviation.png", cv::IMREAD_UNCHANGED);
+    Figures_motion[4] = cv::imread("../Figures/Motions/Ulnar Deviation.png", cv::IMREAD_UNCHANGED);
+    Figures_motion[5] = cv::imread("../Figures/Motions/Hand Close.png", cv::IMREAD_UNCHANGED);
+    Figures_motion[6] = cv::imread("../Figures/Motions/Hand Open.png", cv::IMREAD_UNCHANGED);
 }
 
 void MainWindow::Initialize_trnForm() {
@@ -445,6 +445,32 @@ void MainWindow::OnTimerFigCallbackFunc() {
                                                                                     PIXMAP_HEIGHT_TRAINING,
                                                                                     Qt::IgnoreAspectRatio));
         delete qimg_motion;
+    }
+    else if (m_radioMode == 1) {
+        if ((m_time - m_time_last) <= T_READY) {
+            qimg_motion = new QImage((unsigned char *)player_UnlabeledDAQ->get_Figures_motion()[0].data,
+                                                      player_UnlabeledDAQ->get_Figures_motion()[0].cols,
+                                                      player_UnlabeledDAQ->get_Figures_motion()[0].rows,
+                                                      QImage::Format_ARGB32);
+            qpix_motion = QPixmap::fromImage(*qimg_motion);
+
+            player_UnlabeledDAQ->get_m_MotionImg()->setPixmap(qpix_motion.scaled(player_UnlabeledDAQ->get_m_MotionImg()->width(),
+                                                                                 player_UnlabeledDAQ->get_m_MotionImg()->height(),
+                                                                                 Qt::IgnoreAspectRatio));
+            delete qimg_motion;
+        }
+        else {
+            qimg_motion = new QImage((unsigned char *)player_UnlabeledDAQ->get_Figures_motion()[1].data,
+                                                      player_UnlabeledDAQ->get_Figures_motion()[1].cols,
+                                                      player_UnlabeledDAQ->get_Figures_motion()[1].rows,
+                                                      QImage::Format_ARGB32);
+            qpix_motion = QPixmap::fromImage(*qimg_motion);
+
+            player_UnlabeledDAQ->get_m_MotionImg()->setPixmap(qpix_motion.scaled(player_UnlabeledDAQ->get_m_MotionImg()->width(),
+                                                                                 player_UnlabeledDAQ->get_m_MotionImg()->height(),
+                                                                                 Qt::IgnoreAspectRatio));
+            delete qimg_motion;
+        }
     }
     else if (m_radioMode == 2) {
         // (Labeling) Figures - Estimation
@@ -566,7 +592,7 @@ void MainWindow::Thread_TwinCAT_func() {
                                                 <std::chrono::nanoseconds>(end - start).count() / (double)1000000.0);
 
                 // Motion label & state indicator assignment
-                if (m_radioMode == 0 || m_radioMode == 1) {
+                if (m_radioMode == 0) {
                     Motion_label = Get_Motion_Label(m_radioMode, m_time - m_time_last);
                     State_indicator = Get_State_Indicator(m_radioMode, m_time - m_time_last);
                 }

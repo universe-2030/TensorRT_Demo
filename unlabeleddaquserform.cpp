@@ -11,8 +11,9 @@ UnlabeledDAQUserForm::UnlabeledDAQUserForm(QWidget *parent) :
     ui->setupUi(this);
 
     // Figure container assignment
-    Figures_motion = new cv::Mat();
-    Figures_motion[0] = cv::imread("../TRT_demo/Figures/Motions/Rest.png", cv::IMREAD_UNCHANGED);
+    Figures_motion = new cv::Mat[2];
+    Figures_motion[0] = cv::imread("../Figures/Rest_UnlabeledDAQ.png", cv::IMREAD_UNCHANGED);
+    Figures_motion[1] = cv::imread("../Figures/UnlabeledDAQ.png", cv::IMREAD_UNCHANGED);
 
     /////////////////////////////////// Image & Video widget ///////////////////////////////////
     m_MotionImg = new QLabel(this);
@@ -329,4 +330,8 @@ void UnlabeledDAQUserForm::showColorDialog() {
 
 QLabel *UnlabeledDAQUserForm::get_m_MotionImg() {
     return m_MotionImg;
+}
+
+cv::Mat *UnlabeledDAQUserForm::get_Figures_motion() {
+    return Figures_motion;
 }

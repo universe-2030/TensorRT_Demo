@@ -65,6 +65,7 @@ public:
 
     // 'Get' functions
     QLabel *get_m_MotionImg();
+    cv::Mat *get_Figures_motion();
 
     // 'set' functions
 
