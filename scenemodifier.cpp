@@ -172,19 +172,19 @@ SceneModifier::SceneModifier(Qt3DCore::QEntity *rootEntity)
     m_LowerArmEntity[0]->addComponent(LowerArmTransform[0]);
 
     LowerArmTransform[1] = new Qt3DCore::QTransform();
-    LowerArmTransform[1]->setRotationX(90);
+    LowerArmTransform[1]->setRotationX(0); // Elbow sagittal
 
     m_LowerArmEntity[1] = new Qt3DCore::QEntity(m_LowerArmEntity[0]);
     m_LowerArmEntity[1]->addComponent(LowerArmTransform[1]);
 
     LowerArmTransform[2] = new Qt3DCore::QTransform();
-    LowerArmTransform[2]->setRotationY(0);
+    LowerArmTransform[2]->setRotationY(0); // Elbow internal rotation
 
     m_LowerArmEntity[2] = new Qt3DCore::QEntity(m_LowerArmEntity[1]);
     m_LowerArmEntity[2]->addComponent(LowerArmTransform[2]);
 
     LowerArmTransform[3] = new Qt3DCore::QTransform();
-    LowerArmTransform[3]->setRotationZ(0);
+    LowerArmTransform[3]->setRotationZ(0); // Elbow frontal
 
     m_LowerArmEntity[3] = new Qt3DCore::QEntity(m_LowerArmEntity[2]);
     m_LowerArmEntity[3]->addComponent(mesh_lower_arm);

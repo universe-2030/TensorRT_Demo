@@ -33,9 +33,9 @@ TrainingUserForm::TrainingUserForm(QWidget *parent) :
     // Camera setup
     Qt3DRender::QCamera *cameraEntity = view->camera();
     cameraEntity->lens()->setPerspectiveProjection(45.0f, 16.0f/9.0f, 0.1f, 1000.0f);
-    cameraEntity->setPosition(QVector3D(12.5f, 6.25f, 6.0f));      // Position (12.5, 6.25, 6.0)
-    cameraEntity->setUpVector(QVector3D(0.5f, 2.2f, 0.3f));        // Up Vector (0.5, 2.2, 0.3)
-    cameraEntity->setViewCenter(QVector3D(0.5f, 0.0f, -1.5f));    // View Center (0.5, 0.0, -1.5)
+    cameraEntity->setPosition(QVector3D(12.0f, 4.2f, 11.2f));      // Position (12.5, 6.25, 6.0)
+    cameraEntity->setUpVector(QVector3D(0.0f, 1.1f, 0.0f));        // Up Vector (0.5, 2.2, 0.3)
+    cameraEntity->setViewCenter(QVector3D(0.5f, -2.0f, -0.5f));    // View Center (0.5, 0.0, -1.5)
 
     // Light setup
     Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity(rootEntity);
