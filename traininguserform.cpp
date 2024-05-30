@@ -135,7 +135,7 @@ TrainingUserForm::TrainingUserForm(QWidget *parent) :
     delete qimg_motion;
 
     // Load videos
-    QString url_1 = "file:///D:/STDAN_TensorRT/Video/";
+    QString url_1 = "file:///D:/TensorRT_demo/Video/";
     QString url_2 = "Training.avi";
     QUrl url1(url_1 + url_2);
 
