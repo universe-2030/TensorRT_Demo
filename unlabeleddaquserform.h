@@ -24,7 +24,6 @@
 #include "opencv2/opencv.hpp"
 #include <opencv2/imgproc/imgproc.hpp>
 
-#define N_MOTIONS 8
 #define PIXMAP_WIDTH_UNLABELED_DAQ 1050
 #define PIXMAP_HEIGHT_UNLABELED_DAQ 900
 

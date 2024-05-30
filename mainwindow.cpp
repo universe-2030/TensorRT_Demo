@@ -221,18 +221,6 @@ void MainWindow::Initialize_DAVariables() {
     sEMG_CH[4] = 4;
     sEMG_CH[5] = 5;
 
-    Motion_prob = new double[N_MOTIONS];
-    Target_motion_N = new int[N_MOTIONS];
-    for (int m = 0; m < N_MOTIONS; m++) {
-        Motion_prob[m] = 0.0;
-        Target_motion_N[m] = 0;
-    }
-
-    Target_motion_list = new int[N_REPEAT];
-    for (int i = 0; i < N_REPEAT; i++) {
-        Target_motion_list[i] = 0;
-    }
-
     /////////////////////////////////// Ball control vector ///////////////////////////////////
     stack_Ball_Ctr_sEMG_raw = new std::vector<double>[N_EMG];
     stack_Ball_Ctr_sEMG_MAV = new std::vector<double>[N_EMG];
@@ -588,10 +576,10 @@ void MainWindow::Thread_TwinCAT_func() {
 
                 // Trajectory assignment
                 if (m_radioMode == 0) {
+                    double T_repeat = (T_REST + T_CONTRACT) * N_MOTIONS;
                     if ((m_time_cnt - m_time_last_cnt) % 20 == 0) {
-                        // Visual cuess
-                        if ((m_time_cnt - m_time_last_cnt) < (int)((T_READY + N_MOTIONS * T_CONTRACT +
-                                                (N_MOTIONS - 1) * T_REST + T_RESIDUAL) * FS)) {
+                        // Visual cue
+                        if ((m_time_cnt - m_time_last_cnt) < (int)((T_READY + T_repeat * N_REPEAT - T_REST + T_RESIDUAL) * FS)) {
                             emit setPalmRotX_Cue_Trn(trj_wrist_X[m_time_cnt - m_time_last_cnt]);
                             emit setLowerArmRotY_Cue_Trn(trj_wrist_Y[m_time_cnt - m_time_last_cnt]);
                             emit setPalmRotZ_Cue_Trn(trj_wrist_Z[m_time_cnt - m_time_last_cnt]);
@@ -2282,27 +2270,26 @@ int MainWindow::Get_Motion_Label(int mode, double time) {
     int mot_idx = 0;
     double T_start = 0.0; // Starting time for this trial
     double T_end = 0.0;   // Starting time for this trial
+    double T_repeat = (T_REST + T_CONTRACT) * N_MOTIONS;
 
+    bool isBreak = false;
     if (mode == 0) {        // Training
-        for (int M = 0; M < N_MOTIONS; M++) {
-            T_start = T_READY + T_REST * M + T_CONTRACT * M + T_MARGIN_START_TRN;
-            T_end = T_READY + T_REST * M + T_CONTRACT * (M + 1) - T_MARGIN_END_TRN;
+        for (int Rep = 0; Rep < N_REPEAT; Rep++) {
+            for (int M = 0; M < N_MOTIONS; M++) {
+                T_start = T_READY + T_repeat * Rep + T_REST * M + T_CONTRACT * M + T_MARGIN_START_TRN;
+                T_end   = T_READY + T_repeat * Rep + T_REST * M + T_CONTRACT * (M + 1) - T_MARGIN_END_TRN;
 
-            if (T_start <= time && time < T_end) {
-                mot_idx = M + 1;
-                break;
-            }
-        }
-    }
-    else if (mode == 1) {   // Unlabeled DAQ
-        for (int i = 0; i < N_REPEAT; i++) {
-            T_start = T_READY + T_REST * i + T_CONTRACT * i + T_MARGIN_START_UNLABELED_DAQ;
-            T_end = T_READY + T_REST * i + T_CONTRACT * (i + 1) - T_MARGIN_END_UNLABELED_DAQ;
+                if (T_start <= time && time < T_end) {
+                    mot_idx = M + 1;
+                    isBreak = true;
 
-            if (T_start <= time && time < T_end) {
-                mot_idx = Target_motion_list[i];
-                break;
+                    if (isBreak)
+                        break;
+                }
             }
+
+            if (isBreak)
+                break;
         }
     }
 
@@ -2313,27 +2300,26 @@ int MainWindow::Get_State_Indicator(int mode, double time) {
     int state_idx = 0;
     double T_start = 0.0; // Starting time for this trial
     double T_end = 0.0;   // Starting time for this trial
+    double T_repeat = (T_REST + T_CONTRACT) * N_MOTIONS;
 
+    bool isBreak = false;
     if (mode == 0) {        // Training
-        for (int M = 0; M < N_MOTIONS; M++) {
-            T_start = T_READY + T_REST * M + T_CONTRACT * M;
-            T_end = T_READY + T_REST * M + T_CONTRACT * (M + 1);
+        for (int Rep = 0; Rep < N_REPEAT; Rep++) {
+            for (int M = 0; M < N_MOTIONS; M++) {
+                T_start = T_READY + T_repeat * Rep + T_REST * M + T_CONTRACT * M;
+                T_end   = T_READY + T_repeat * Rep + T_REST * M + T_CONTRACT * (M + 1);
 
-            if (T_start <= time && time < T_end) {
-                state_idx = M + 1;
-                break;
-            }
-        }
-    }
-    else if (mode == 1) {   // Unlabeled DAQ
-        for (int i = 0; i < N_REPEAT; i++) {
-            T_start = T_READY + T_REST * i + T_CONTRACT * i;
-            T_end = T_READY + T_REST * i + T_CONTRACT * (i + 1);
+                if (T_start <= time && time < T_end) {
+                    state_idx = M + 1;
+                    isBreak = true;
 
-            if (T_start <= time && time < T_end) {
-                state_idx = Target_motion_list[i];
-                break;
+                    if (isBreak)
+                        break;
+                }
             }
+
+            if (isBreak)
+                break;
         }
     }
 
@@ -2360,9 +2346,10 @@ void MainWindow::Set_Motion_Trajectory(int mode) {
     std::vector<double> temp7; temp7.swap(trj_wrist_Z);
     std::vector<double> temp8; temp8.swap(trj_hand);
 
+    double T_repeat = (T_REST + T_CONTRACT) * N_MOTIONS;
     if (mode == 0) {        // Training
         // Fill up the vector
-        for (int i = 0; i < (int)((T_READY + N_MOTIONS * T_CONTRACT + (N_MOTIONS - 1) * T_REST + T_RESIDUAL) * FS); i++) {
+        for (int i = 0; i < (int)((T_READY + T_repeat * N_REPEAT - T_REST + T_RESIDUAL) * FS); i++) {
             trj_shd_X.push_back(0.0);
             trj_shd_axis.push_back(0.0);
             trj_shd_Y.push_back(0.0);
@@ -2376,88 +2363,90 @@ void MainWindow::Set_Motion_Trajectory(int mode) {
         // std::cout << trj_shd_X.size() << std::endl;
 
         //////////////////////////////////// Hand & Wrist Motions ////////////////////////////////////
-        for (int M = 0; M < N_MOTIONS; M++) {
-            double T_start_contract = T_READY + T_REST * M + T_CONTRACT * M;
-            double T_end_contract   = T_READY + T_REST * M + T_CONTRACT * M + T_MARGIN_START;
-            double T_start_release  = T_READY + T_REST * M + T_CONTRACT * (M + 1);
-            double T_end_release    = T_READY + T_REST * M + T_CONTRACT * (M + 1) + T_MARGIN_END;
-            // std::cout << T_start_contract << " " << T_end_contract << " " << T_start_release << " " << T_end_release << std::endl;
+        for (int Rep = 0; Rep < N_REPEAT; Rep++) {
+            for (int M = 0; M < N_MOTIONS; M++) {
+                double T_start_contract = T_READY + T_repeat * Rep + T_REST * M + T_CONTRACT * M;
+                double T_end_contract   = T_READY + T_repeat * Rep + T_REST * M + T_CONTRACT * M + T_MARGIN_START;
+                double T_start_release  = T_READY + T_repeat * Rep + T_REST * M + T_CONTRACT * (M + 1);
+                double T_end_release    = T_READY + T_repeat * Rep + T_REST * M + T_CONTRACT * (M + 1) + T_MARGIN_END;
+                // std::cout << T_start_contract << " " << T_end_contract << " " << T_start_release << " " << T_end_release << std::endl;
 
-            // Contraction
-            for (int t = (int)(T_start_contract * FS); t < (int)(T_end_contract * FS); t++) {
-                if (M == 0) {               // Wrist Flexion
-                    trj_wrist_Z[t] = 15.0 - WF_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
-                                                                / (float)(T_MARGIN_START);
+                // Contraction
+                for (int t = (int)(T_start_contract * FS); t < (int)(T_end_contract * FS); t++) {
+                    if (M == 0) {               // Wrist Flexion
+                        trj_wrist_Z[t] = 15.0 - WF_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
+                                                                    / (float)(T_MARGIN_START);
+                    }
+                    else if (M == 1) {          // Wrist Extension
+                        trj_wrist_Z[t] = 15.0 + WE_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
+                                                                    / (float)(T_MARGIN_START);
+                    }
+                    else if (M == 2) {          // Radial Deviation
+                        trj_wrist_X[t] = 10.0 + RD_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
+                                                                    / (float)(T_MARGIN_START);
+                    }
+                    else if (M == 3) {          // Ulnar Deviation
+                        trj_wrist_X[t] = 10.0 - UD_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
+                                                                    / (float)(T_MARGIN_START);
+                    }
+                    else if (M == 4) {          // Radial Deviation
+                        trj_hand[t] = -10.0 - HC_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
+                                                                    / (float)(T_MARGIN_START);
+                    }
+                    else if (M == 5) {          // Ulnar Deviation
+                        trj_hand[t] = -10.0 + HO_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
+                                                                    / (float)(T_MARGIN_START);
+                    }
                 }
-                else if (M == 1) {          // Wrist Extension
-                    trj_wrist_Z[t] = 15.0 + WE_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
-                                                                / (float)(T_MARGIN_START);
-                }
-                else if (M == 2) {          // Radial Deviation
-                    trj_wrist_X[t] = 10.0 + RD_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
-                                                                / (float)(T_MARGIN_START);
-                }
-                else if (M == 3) {          // Ulnar Deviation
-                    trj_wrist_X[t] = 10.0 - UD_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
-                                                                / (float)(T_MARGIN_START);
-                }
-                else if (M == 4) {          // Radial Deviation
-                    trj_hand[t] = -10.0 - HC_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
-                                                                / (float)(T_MARGIN_START);
-                }
-                else if (M == 5) {          // Ulnar Deviation
-                    trj_hand[t] = -10.0 + HO_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
-                                                                / (float)(T_MARGIN_START);
-                }
-            }
 
-            // Steady state
-            for (int t = (int)(T_end_contract * FS); t < (int)(T_start_release * FS); t++) {
-                if (M == 0) {               // Wrist Flexion
-                    trj_wrist_Z[t] = 15.0 - WF_ROM;
+                // Steady state
+                for (int t = (int)(T_end_contract * FS); t < (int)(T_start_release * FS); t++) {
+                    if (M == 0) {               // Wrist Flexion
+                        trj_wrist_Z[t] = 15.0 - WF_ROM;
+                    }
+                    else if (M == 1) {          // Wrist Extension
+                        trj_wrist_Z[t] = 15.0 + WE_ROM;
+                    }
+                    else if (M == 2) {          // Radial Deviation
+                        trj_wrist_X[t] = 10.0 + RD_ROM;
+                    }
+                    else if (M == 3) {          // Ulnar Deviation
+                        trj_wrist_X[t] = 10.0 - UD_ROM;
+                    }
+                    else if (M == 4) {          // Radial Deviation
+                        trj_hand[t] = -10.0 - HC_ROM;
+                    }
+                    else if (M == 5) {          // Ulnar Deviation
+                        trj_hand[t] = -10.0 + HO_ROM;
+                    }
                 }
-                else if (M == 1) {          // Wrist Extension
-                    trj_wrist_Z[t] = 15.0 + WE_ROM;
-                }
-                else if (M == 2) {          // Radial Deviation
-                    trj_wrist_X[t] = 10.0 + RD_ROM;
-                }
-                else if (M == 3) {          // Ulnar Deviation
-                    trj_wrist_X[t] = 10.0 - UD_ROM;
-                }
-                else if (M == 4) {          // Radial Deviation
-                    trj_hand[t] = -10.0 - HC_ROM;
-                }
-                else if (M == 5) {          // Ulnar Deviation
-                    trj_hand[t] = -10.0 + HO_ROM;
-                }
-            }
 
-            // Release
-            for (int t = (int)(T_start_release * FS); t < (int)(T_end_release * FS); t++) {
-                if (M == 0) {               // Wrist Flexion
-                    trj_wrist_Z[t] = 15.0 - WF_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
-                                                                / (float)(T_MARGIN_END);
-                }
-                else if (M == 1) {          // Wrist Extension
-                    trj_wrist_Z[t] = 15.0 + WE_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
-                                                                / (float)(T_MARGIN_END);
-                }
-                else if (M == 2) {          // Radial Deviation
-                    trj_wrist_X[t] = 10.0 + RD_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
-                                                                / (float)(T_MARGIN_END);
-                }
-                else if (M == 3) {          // Ulnar Deviation
-                    trj_wrist_X[t] = 10.0 - UD_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
-                                                                / (float)(T_MARGIN_END);
-                }
-                else if (M == 4) {          // Radial Deviation
-                    trj_hand[t] = -10.0 - HC_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
-                                                                / (float)(T_MARGIN_END);
-                }
-                else if (M == 5) {          // Ulnar Deviation
-                    trj_hand[t] = -10.0 + HO_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
-                                                                / (float)(T_MARGIN_END);
+                // Release
+                for (int t = (int)(T_start_release * FS); t < (int)(T_end_release * FS); t++) {
+                    if (M == 0) {               // Wrist Flexion
+                        trj_wrist_Z[t] = 15.0 - WF_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
+                                                                    / (float)(T_MARGIN_END);
+                    }
+                    else if (M == 1) {          // Wrist Extension
+                        trj_wrist_Z[t] = 15.0 + WE_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
+                                                                    / (float)(T_MARGIN_END);
+                    }
+                    else if (M == 2) {          // Radial Deviation
+                        trj_wrist_X[t] = 10.0 + RD_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
+                                                                    / (float)(T_MARGIN_END);
+                    }
+                    else if (M == 3) {          // Ulnar Deviation
+                        trj_wrist_X[t] = 10.0 - UD_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
+                                                                    / (float)(T_MARGIN_END);
+                    }
+                    else if (M == 4) {          // Radial Deviation
+                        trj_hand[t] = -10.0 - HC_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
+                                                                    / (float)(T_MARGIN_END);
+                    }
+                    else if (M == 5) {          // Ulnar Deviation
+                        trj_hand[t] = -10.0 + HO_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
+                                                                    / (float)(T_MARGIN_END);
+                    }
                 }
             }
         }

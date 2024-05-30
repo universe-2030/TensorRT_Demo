@@ -87,7 +87,7 @@
 #define N_EMG 6
 #define WIN_SIZE 150
 #define N_MOTIONS 6
-#define N_REPEAT 40
+#define N_REPEAT 3
 
 // Maximal sum of MAV
 #define MAV_MAX_AMP 10.0
@@ -325,11 +325,6 @@ private:
 
     double rest_thres = 0.0;
     int*   sEMG_CH;
-
-    // Randomized motion rate & Corresponding target motion list
-    double* Motion_prob;
-    int*    Target_motion_N;
-    int*    Target_motion_list;
 
     // Label & Estimation variables
     int Motion_label = 0;
