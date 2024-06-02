@@ -1224,7 +1224,8 @@ void MainWindow::StackData() {
         }
 
         // 4. Motion label
-        stack_Motion_label.push_back(Motion_label);
+        if (m_radioMode == 0)
+            stack_Motion_label.push_back(Motion_label);
 
         // 5. Time elapse for processing
         stack_Time_elapse_Processing.push_back(Time_elapse_Processing);
@@ -1348,7 +1349,7 @@ void MainWindow::SaveData_Training() {
     }
     std::cout << "5. sEMG ZC save complete" << std::endl;
 
-    // 13. Motion label.txt
+    // 6. Motion label.txt
     filename = "/Motion_label.txt";
     QFile file_Motion_label(SaveFolderStr + filename);
     file_Motion_label.open(QIODevice::WriteOnly | QIODevice::Text);
@@ -1357,7 +1358,7 @@ void MainWindow::SaveData_Training() {
         SaveOut << QString::number(stack_Motion_label[i]);
         SaveOut << QString("\n");
     }
-    std::cout << "13. Motion label save complete" << std::endl;
+    std::cout << "6. Motion label save complete" << std::endl;
 
     // 14. Preprocessing time elapse
     filename = "/Time_elapse_Processing.txt";
@@ -1368,7 +1369,7 @@ void MainWindow::SaveData_Training() {
         SaveOut << QString::number(stack_Time_elapse_Processing[i]);
         SaveOut << QString("\n");
     }
-    std::cout << "14. Time elapse for TwinCAT save complete" << std::endl;
+    std::cout << "7. Time elapse for TwinCAT save complete" << std::endl;
 
     std::cout << "################ save complete ################" << std::endl;
 }
@@ -1455,18 +1456,7 @@ void MainWindow::SaveData_UnlabeledDAQ() {
     }
     std::cout << "5. sEMG ZC save complete" << std::endl;
 
-    // 13. Motion label.txt
-    filename = "/Motion_label.txt";
-    QFile file_Motion_label(SaveFolderStr + filename);
-    file_Motion_label.open(QIODevice::WriteOnly | QIODevice::Text);
-    SaveOut.setDevice(&file_Motion_label);
-    for (int i = 0; i < stack_Motion_label.size(); i++) {
-        SaveOut << QString::number(stack_Motion_label[i]);
-        SaveOut << QString("\n");
-    }
-    std::cout << "13. Motion label save complete" << std::endl;
-
-    // 14. Preprocessing time elapse
+    // 6. Preprocessing time elapse
     filename = "/Time_elapse_Processing.txt";
     QFile file_Time_elapse_processing(SaveFolderStr + filename);
     file_Time_elapse_processing.open(QIODevice::WriteOnly | QIODevice::Text);
@@ -1475,7 +1465,7 @@ void MainWindow::SaveData_UnlabeledDAQ() {
         SaveOut << QString::number(stack_Time_elapse_Processing[i]);
         SaveOut << QString("\n");
     }
-    std::cout << "14. Time elapse for TwinCAT save complete" << std::endl;
+    std::cout << "6. Time elapse for TwinCAT save complete" << std::endl;
 
     std::cout << "################ save complete ################" << std::endl;
 }
