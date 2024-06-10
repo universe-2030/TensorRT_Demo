@@ -684,7 +684,6 @@ void MainWindow::Thread_TensorRT_func() {
     cv::Mat image_TRT = cv::Mat::ones(4, N_EMG, CV_32F);
     int X_val_inc = INC_MAX_X;
     int Y_val_inc = INC_MAX_Y;
-    double Scale_val_inc = INC_MAX_SCALE;
 
     while (!pShared_Data->bProcessEnd) {
         std::chrono::system_clock::time_point start = std::chrono::system_clock::now();
@@ -734,23 +733,47 @@ void MainWindow::Thread_TensorRT_func() {
                             // Move the cursor corresponding to the motion estimation
                             if (Motion_est == 1) {
                                 double X_val = player_TestOne.Get_PaintTestOne()->Get_Cur_X();
-                                if (X_val - X_val_inc >= 0)
-                                    player_TestOne.Get_PaintTestOne()->Set_Cur_X(X_val - X_val_inc);
+                                if (sum_sEMG_MAV <= 0.7 * MAV_MAX_WF) {
+                                    if (X_val - X_val_inc >= 0)
+                                        player_TestOne.Get_PaintTestOne()->Set_Cur_X(X_val - X_val_inc);
+                                }
+                                else {
+                                    if (X_val - 2 * X_val_inc >= 0)
+                                        player_TestOne.Get_PaintTestOne()->Set_Cur_X(X_val - 2 * X_val_inc);
+                                }
                             }
                             else if (Motion_est == 2) {
                                 double X_val = player_TestOne.Get_PaintTestOne()->Get_Cur_X();
-                                if (X_val + X_val_inc <= SCREEN_WIDTH)
-                                    player_TestOne.Get_PaintTestOne()->Set_Cur_X(X_val + X_val_inc);
+                                if (sum_sEMG_MAV <= 0.7 * MAV_MAX_WE) {
+                                    if (X_val + X_val_inc <= SCREEN_WIDTH)
+                                        player_TestOne.Get_PaintTestOne()->Set_Cur_X(X_val + X_val_inc);
+                                }
+                                else {
+                                    if (X_val + 2 * X_val_inc <= SCREEN_WIDTH)
+                                        player_TestOne.Get_PaintTestOne()->Set_Cur_X(X_val + 2 * X_val_inc);
+                                }
                             }
                             else if (Motion_est == 3) {
                                 double Y_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Y();
-                                if (Y_val - Y_val_inc >= 0)
-                                    player_TestOne.Get_PaintTestOne()->Set_Cur_Y(Y_val - Y_val_inc);
+                                if (sum_sEMG_MAV <= 0.7 * MAV_MAX_RD) {
+                                    if (Y_val - Y_val_inc >= 0)
+                                        player_TestOne.Get_PaintTestOne()->Set_Cur_Y(Y_val - Y_val_inc);
+                                }
+                                else {
+                                    if (Y_val - 2 * Y_val_inc >= 0)
+                                        player_TestOne.Get_PaintTestOne()->Set_Cur_Y(Y_val - 2 * Y_val_inc);
+                                }
                             }
                             else if (Motion_est == 4) {
                                 double Y_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Y();
-                                if (Y_val + Y_val_inc <= SCREEN_HEIGHT)
-                                    player_TestOne.Get_PaintTestOne()->Set_Cur_Y(Y_val + Y_val_inc);
+                                if (sum_sEMG_MAV <= 0.7 * MAV_MAX_UD) {
+                                    if (Y_val + Y_val_inc <= SCREEN_HEIGHT)
+                                        player_TestOne.Get_PaintTestOne()->Set_Cur_Y(Y_val + Y_val_inc);
+                                }
+                                else {
+                                    if (Y_val + 2 * Y_val_inc <= SCREEN_HEIGHT)
+                                        player_TestOne.Get_PaintTestOne()->Set_Cur_Y(Y_val + 2 * Y_val_inc);
+                                }
                             }
                         }
                     }

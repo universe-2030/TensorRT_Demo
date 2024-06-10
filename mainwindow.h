@@ -90,7 +90,10 @@
 #define N_REPEAT 3
 
 // Maximal sum of MAV
-#define MAV_MAX_AMP 10.0
+#define MAV_MAX_WF  0.3580
+#define MAV_MAX_WE  0.3281
+#define MAV_MAX_RD  0.1425
+#define MAV_MAX_UD  0.4020
 
 // Thresholds for distinguishing 'rest' and 'motions'
 #define STD_THRES_SCALE 20.0

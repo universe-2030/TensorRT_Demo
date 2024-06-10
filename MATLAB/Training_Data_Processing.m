@@ -41,6 +41,23 @@ sEMG_ZC_lbl = reshape(sEMG_ZC_lbl, [size(sEMG_ZC_lbl, 1), 1, size(sEMG_ZC_lbl, 2
 Filename = 'Motion_label.txt';
 label_lbl = load(strcat(Fldr_path, Fldr_name_lbl, Filename));
 
+% Calculate the max. amplitude of MAV for each class
+sEMG_MAV_lbl_tmp = squeeze(sEMG_MAV_lbl);
+for mot_idx = 1 : 4
+    idx_mot = find(label_lbl == mot_idx);
+    sEMG_MAV_lbl_tmp_mot = sEMG_MAV_lbl_tmp(idx_mot, :);
+    
+    if (mot_idx == 1)
+        MAV_max_WF = max(sum(sEMG_MAV_lbl_tmp_mot, 2), [], 1);
+    elseif (mot_idx == 2)
+        MAV_max_WE = max(sum(sEMG_MAV_lbl_tmp_mot, 2), [], 1);
+    elseif (mot_idx == 3)
+        MAV_max_RD = max(sum(sEMG_MAV_lbl_tmp_mot, 2), [], 1);
+    elseif (mot_idx == 4)
+        MAV_max_UD = max(sum(sEMG_MAV_lbl_tmp_mot, 2), [], 1);
+    end
+end
+
 % Concatenate all features
 sEMG_data_lbl = cat(2, sEMG_MAV_lbl, sEMG_WL_lbl, sEMG_SSC_lbl, sEMG_ZC_lbl);
 
