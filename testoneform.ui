@@ -58,16 +58,6 @@
     <string/>
    </property>
   </widget>
-  <widget class="QWidget" name="wdg_Upper_limb" native="true">
-   <property name="geometry">
-    <rect>
-     <x>1250</x>
-     <y>10</y>
-     <width>380</width>
-     <height>450</height>
-    </rect>
-   </property>
-  </widget>
   <widget class="QCustomPlot" name="wdg_RTGraph_MAV" native="true">
    <property name="geometry">
     <rect>
