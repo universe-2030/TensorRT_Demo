@@ -219,7 +219,6 @@ void MainWindow::Initialize_DAVariables() {
     sEMG_CH[2] = 2;
     sEMG_CH[3] = 3;
     sEMG_CH[4] = 4;
-    sEMG_CH[5] = 5;
 
     /////////////////////////////////// Ball control vector ///////////////////////////////////
     stack_Ball_Ctr_sEMG_raw = new std::vector<double>[N_EMG];
@@ -333,8 +332,6 @@ void MainWindow::Initialize_Figures() {
     Figures_motion[2] = cv::imread("../Figures/Motions/Wrist Extension.png", cv::IMREAD_UNCHANGED);
     Figures_motion[3] = cv::imread("../Figures/Motions/Radial Deviation.png", cv::IMREAD_UNCHANGED);
     Figures_motion[4] = cv::imread("../Figures/Motions/Ulnar Deviation.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[5] = cv::imread("../Figures/Motions/Hand Close.png", cv::IMREAD_UNCHANGED);
-    Figures_motion[6] = cv::imread("../Figures/Motions/Hand Open.png", cv::IMREAD_UNCHANGED);
 }
 
 void MainWindow::Initialize_trnForm() {
@@ -755,16 +752,6 @@ void MainWindow::Thread_TensorRT_func() {
                                 if (Y_val + Y_val_inc <= SCREEN_HEIGHT)
                                     player_TestOne.Get_PaintTestOne()->Set_Cur_Y(Y_val + Y_val_inc);
                             }
-                            else if (Motion_est == 5) {
-                                double Scale_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Scale();
-                                if (Scale_val - Scale_val_inc >= 0.3)
-                                    player_TestOne.Get_PaintTestOne()->Set_Cur_Scale(Scale_val - Scale_val_inc);
-                            }
-                            else if (Motion_est == 6) {
-                                double Scale_val = player_TestOne.Get_PaintTestOne()->Get_Cur_Scale();
-                                if (Scale_val + Scale_val_inc <= 2.5)
-                                    player_TestOne.Get_PaintTestOne()->Set_Cur_Scale(Scale_val + Scale_val_inc);
-                            }
                         }
                     }
                 }
@@ -1021,18 +1008,40 @@ void MainWindow::Calculate_ZC() {
 }
 
 void MainWindow::Normalize_MAV() {
+    // 1. Divide by maximal value
+//    for (int i = 0; i < N_EMG; i++) {
+//        sEMG_MAV_norm[i] = sEMG_MAV[i] / MAV_MAX_VAL;
+//        if (sEMG_MAV_norm[i] >= 1.0)
+//            sEMG_MAV_norm[i] = 1.0;
+//    }
+
+    // 2. Orientation
+    double sEMG_MAV_sum = 0.0;
     for (int i = 0; i < N_EMG; i++) {
-        sEMG_MAV_norm[i] = sEMG_MAV[i] / MAV_MAX_VAL;
-        if (sEMG_MAV_norm[i] >= MAV_MAX_VAL)
-            sEMG_MAV_norm[i] = MAV_MAX_VAL;
+        sEMG_MAV_sum += sEMG_MAV[i] * sEMG_MAV[i];
+    }
+
+    for (int i = 0; i < N_EMG; i++) {
+        sEMG_MAV_norm[i] = sEMG_MAV[i] / sqrt(sEMG_MAV_sum);
     }
 }
 
 void MainWindow::Normalize_WL() {
+    // 1. Divide by maximal value
+//    for (int i = 0; i < N_EMG; i++) {
+//        sEMG_WL_norm[i] = sEMG_WL[i] / WL_MAX_VAL;
+//        if (sEMG_WL_norm[i] >= 1.0)
+//            sEMG_WL_norm[i] = 1.0;
+//    }
+
+    // 2. Orientation
+    double sEMG_WL_sum = 0.0;
     for (int i = 0; i < N_EMG; i++) {
-        sEMG_WL_norm[i] = sEMG_WL[i] / WL_MAX_VAL;
-        if (sEMG_WL_norm[i] >= WL_MAX_VAL)
-            sEMG_WL_norm[i] = WL_MAX_VAL;
+        sEMG_WL_sum += sEMG_WL[i] * sEMG_WL[i];
+    }
+
+    for (int i = 0; i < N_EMG; i++) {
+        sEMG_WL_norm[i] = sEMG_WL[i] / sqrt(sEMG_WL_sum);
     }
 }
 
@@ -1894,15 +1903,6 @@ void MainWindow::on_BtnDelete_clicked() {
         // Video
         player_Training->positionChange(m_time_cnt - m_time_last_cnt);
 
-        // 3D modeling - Shoulder
-        player_Training->get_Model()->set_Upper_arm_RotX(trj_shd_X[m_time_cnt - m_time_last_cnt]);
-        player_Training->get_Model()->set_Upper_arm_Axis(trj_shd_axis[m_time_cnt - m_time_last_cnt]);
-        player_Training->get_Model()->set_Upper_arm_RotY(trj_shd_Y[m_time_cnt - m_time_last_cnt]);
-        player_Training->get_Model()->set_Upper_arm_RotZ(trj_shd_Z[m_time_cnt - m_time_last_cnt]);
-
-        // 3D modeling - Elbow
-        player_Training->get_Model()->set_Lower_arm_RotX(trj_elb_X[m_time_cnt - m_time_last_cnt]);
-
         // 3D modeling - Wrist
         player_Training->get_Model()->set_Palm_RotX(trj_wrist_X[m_time_cnt - m_time_last_cnt]);
         player_Training->get_Model()->set_Lower_arm_RotY(trj_wrist_Y[m_time_cnt - m_time_last_cnt]);
@@ -2185,7 +2185,7 @@ void MainWindow::RadioCtrl_Network() {
         m_radioNetwork = 0;
         NetworkStr = "_Proposed";
         if (TRT_Fine_Tune == nullptr)
-            TRT_Fine_Tune = new TensorRT_module("Proposed_C_sbj_T12_sbj_S3_iter50.uff");    // For CNN comparison
+            TRT_Fine_Tune = new TensorRT_module("STDAN_C_sbj0_Acpt_thres_0.5_iter10.uff");    // For CNN comparison
 
         ui->radioBtn_Mode_1->setEnabled(false);
         ui->radioBtn_Mode_2->setEnabled(false);
@@ -2405,14 +2405,6 @@ void MainWindow::Set_Motion_Trajectory(int mode) {
                         trj_wrist_X[t] = 10.0 - UD_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
                                                                     / (float)(T_MARGIN_START);
                     }
-                    else if (M == 4) {          // Radial Deviation
-                        trj_hand[t] = -10.0 - HC_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
-                                                                    / (float)(T_MARGIN_START);
-                    }
-                    else if (M == 5) {          // Ulnar Deviation
-                        trj_hand[t] = -10.0 + HO_ROM * (float)((t - (int)(T_start_contract * FS) + 1) * TS)
-                                                                    / (float)(T_MARGIN_START);
-                    }
                 }
 
                 // Steady state
@@ -2428,12 +2420,6 @@ void MainWindow::Set_Motion_Trajectory(int mode) {
                     }
                     else if (M == 3) {          // Ulnar Deviation
                         trj_wrist_X[t] = 10.0 - UD_ROM;
-                    }
-                    else if (M == 4) {          // Radial Deviation
-                        trj_hand[t] = -10.0 - HC_ROM;
-                    }
-                    else if (M == 5) {          // Ulnar Deviation
-                        trj_hand[t] = -10.0 + HO_ROM;
                     }
                 }
 
@@ -2453,14 +2439,6 @@ void MainWindow::Set_Motion_Trajectory(int mode) {
                     }
                     else if (M == 3) {          // Ulnar Deviation
                         trj_wrist_X[t] = 10.0 - UD_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
-                                                                    / (float)(T_MARGIN_END);
-                    }
-                    else if (M == 4) {          // Radial Deviation
-                        trj_hand[t] = -10.0 - HC_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
-                                                                    / (float)(T_MARGIN_END);
-                    }
-                    else if (M == 5) {          // Ulnar Deviation
-                        trj_hand[t] = -10.0 + HO_ROM * (float)(((int)(T_end_release * FS) - t + 1) * TS)
                                                                     / (float)(T_MARGIN_END);
                     }
                 }

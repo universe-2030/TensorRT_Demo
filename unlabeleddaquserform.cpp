@@ -74,7 +74,8 @@ UnlabeledDAQUserForm::UnlabeledDAQUserForm(QWidget *parent) :
 
     // Load videos
     QString url_1 = "file:///D:/TensorRT_demo/Video/";
-    QString url_2 = "UnlabeledDAQ.avi";
+    QString url_2 = "UnlabeledDAQ_2min.avi";
+//    QString url_2 = "UnlabeledDAQ_6min.avi";
     QUrl url1(url_1 + url_2);
 
     QList<QUrl> url_list;

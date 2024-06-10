@@ -72,8 +72,8 @@
 #define FS 1000
 
 // sEMG MAV & WL Normalization
-#define MAV_MAX_VAL 0.2204
-#define WL_MAX_VAL 38.1962
+#define MAV_MAX_VAL 0.4027
+#define WL_MAX_VAL 61.5058
 
 // Real-time graph macros
 #define GRAPH_MAV_Y_MIN 0.0
@@ -84,16 +84,16 @@
 // sEMG DAQ macros
 #define DELSYS_CH_MAX 16
 #define N_FEATURES 4
-#define N_EMG 6
+#define N_EMG 5
 #define WIN_SIZE 150
-#define N_MOTIONS 6
+#define N_MOTIONS 4
 #define N_REPEAT 3
 
 // Maximal sum of MAV
 #define MAV_MAX_AMP 10.0
 
 // Thresholds for distinguishing 'rest' and 'motions'
-#define STD_THRES_SCALE 5.0
+#define STD_THRES_SCALE 20.0
 
 // IMU macros
 #define N_IMU 1

@@ -90,11 +90,11 @@ void PaintTestOne::Initialize_DAVariables() {
     // 1. Trajectory - test 1
     Start_X[0] = 300;
     Start_Y[0] = 200;
-    Start_Scale[0] = 1.1;
+    Start_Scale[0] = 1.2;
 
     End_X[0] = 550;
     End_Y[0] = 200;
-    End_Scale[0] = 1.9;
+    End_Scale[0] = 1.2;
 }
 
 void PaintTestOne::paint(QPainter *painter, QPaintEvent *event) {

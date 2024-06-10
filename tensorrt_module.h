@@ -31,11 +31,8 @@
 
 #include <QTime>
 
-#define TOTAL_FEATURE_MAP 6
-#define N_MOTIONS 4
-
 #define IMAGE_H 4
-#define IMAGE_W 7
+#define IMAGE_W 5
 #define IMAGE_C 1
 
 struct SampleUffSSDParams : public samplesCommon::SampleParams {
